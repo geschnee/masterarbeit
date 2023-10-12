@@ -1,5 +1,11 @@
 # masterarbeit
 
+## Motivation Idee
+
+Arbeit von Maddi97 war schon sehr erfolgreich in der Simulation
+in der Realitaet ist die Preprocessing Pipeline aber abgestuerzt
+Ziel:
+das Problem loesen in der Realitaet
 
 ## Unity as Gym Env
 https://github.com/Unity-Technologies/ml-agents
@@ -34,6 +40,7 @@ https://github.com/search?q=repo%3AMaddi97%2Fmaster_thesis%20.py&type=code
 wie startet man das Training?
 * mlagents-learn Befehl startet einen Python Prozess, welcher auf Unity wartet
 * man muss eine Unity Scene starten, der Python Prozess uebernimmt dann Kontrolle
+* schreibt Ergebnisse zu Tensorboard
 
 Funktioniert Training mit mehreren Envs (parallel) mit dem Setup?
 * ja, einfach die ganze Arena duplizieren
