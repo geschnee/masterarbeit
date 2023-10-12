@@ -1,0 +1,43 @@
+# mlagents config tree used by Maximilian
+trainer_type:    ppo
+    hyperparameters:
+      batch_size:    512
+      buffer_size:    2048
+      learning_rate:    0.0003
+      beta:    0.01
+      epsilon:    0.2
+      lambd:    0.95
+      num_epoch:    3
+      shared_critic:    False
+      learning_rate_schedule:    linear
+      beta_schedule:    linear
+      epsilon_schedule:    linear
+    network_settings:
+      normalize:    True
+      hidden_units:    256
+      num_layers:    2
+      vis_encode_type:    simple
+      memory:    None
+      goal_conditioning_type:    hyper
+      deterministic:    False
+    reward_signals:
+      extrinsic:
+        gamma:    0.99
+        strength:    1.0
+        network_settings:
+          normalize:    False
+          hidden_units:    128
+          num_layers:    2
+          vis_encode_type:    simple
+          memory:    None
+          goal_conditioning_type:    hyper
+          deterministic:    False
+    init_path:    None
+    keep_checkpoints:    5
+    checkpoint_interval:    500000
+    max_steps:    5000000
+    time_horizon:    128
+    summary_freq:    1024
+    threaded:    False
+    self_play:    None
+    behavioral_cloning:    None

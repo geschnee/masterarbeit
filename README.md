@@ -27,7 +27,50 @@ https://github.com/Maddi97/master_thesis
 warum sind hier nur 7 Python Skripte? (alle zur Analyse der Ergebnisse)
 https://github.com/search?q=repo%3AMaddi97%2Fmaster_thesis%20.py&type=code
 
+
+
+## Notizen aus Discord Call
+
 wie startet man das Training?
+* mlagents-learn Befehl startet einen Python Prozess, welcher auf Unity wartet
+* man muss eine Unity Scene starten, der Python Prozess uebernimmt dann Kontrolle
+
+Funktioniert Training mit mehreren Envs (parallel) mit dem Setup?
+* ja, einfach die ganze Arena duplizieren
+* am Ende hat Maximilian das nicht verwendet, da der DataFrame mit den Skripten so nicht funktioniert hat
+
+wie war der Zeitplan?
+* arbeiten/vorbereiten bis man bereit ist
+* Masterarbeit beantragen
+* 6 Monate Zeit
+* man kann schon vor Ende der 6 Monate die Arbeit einreichen --> sie wird dann auch frueher bewertet
+
+Wen sollte man nach Hilfe fragen?
+* Johannes Häfner (war auch schon im ScadsAI beim ersten Treffen dabei)
+* Es gibt noch einen anderen Mitarbeiter im ScadsAI mit Interesse an RL und self-driving
+
+Wie installiert man EmguCV korrekt?
+* leider unklar weil lange her
+* vielleicht kann jemand mit C# Erfahrung im ScadsAI helfen
+* Maximilian hatte das wahrscheinlich selbst kompiliert
+
+Wie war die Benotung / Betreuung?
+* Benotung guter Eindruck
+
+
+Nutzung der echten JetBots?
+* die PreprocessingPipeline ist ausserhalb der Simulation zusammengebrochen
+* Transfer in die Realitaet ist schwer
+    * entweder das ist der Fokus der Arbeit oder sein lassen meint Maximilian
+
+alle Packages die Maximilian bei NuGet importiert hatte:
+* EmguCV
+* JsonNet
+
+
+Training Videos
+* https://www.dropbox.com/home/MaximilianSchaller_MA_Videos
+* https://www.dropbox.com/scl/fo/ri8jy01q61yrx8u5j1pce/h?rlkey=x5g2e0cyxsvi06c4ctabfdt59&dl=0
 
 ## wie dieses Repo?
 
