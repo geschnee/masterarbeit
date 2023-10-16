@@ -33,7 +33,44 @@ https://github.com/Maddi97/master_thesis
 warum sind hier nur 7 Python Skripte? (alle zur Analyse der Ergebnisse)
 https://github.com/search?q=repo%3AMaddi97%2Fmaster_thesis%20.py&type=code
 
+* so viele Aussagen ohne Begründung
+	* Therefore, developing realistic simulated environments offers a safe, cost-effective alternative for training and evaluating algorithms. Furthermore, it is central to divide the problem into small sub-tasks to achieve progress in such a complex challenge.
+	* wieso muss man aufteilen??
+* viel Aussagen wie "Dieses Research paper hilft mir sehr weiter in den Konfigurationen/Research..."
+	* wird gesagt wie genau???
 
+gibt es Infos zu Tesla's Autopilot (der ist doch mit RL traininert) bzw. ist RL mit Autos in Simulation nicht schon gut untersucht?
+* Infos dazu in Section 2.3?
+
+
+offene Fragen:
+* mehrere blaue und rote Blöcke, merkt das Netzwerk wie viele von beiden sind? einmal hab ich wiedersprüchlichen Unity Code gesehen
+* Input pro Block: x, y, width und height
+	* "precisely the same input as Jonas König"
+	* das ist schlecht, weil das NN dann erstmal x + width machen muss um die andere Ecke zu erhalten
+	* Bounding Box max_x, min_x, max_y und min_y wäre besser imo
+
+
+die simulation2reality Gap wirkt für mich interessanter als Ziel der eigenen Arbeit,
+da algemeine Fragen wie "Kann RL genutzt werden für autom. driving?" zu schwer zu beantworten sind
+* Self-driving scale car trained by Deep reinforcement learning 
+	* self driving roboter mit Training in Simulation und Transfer zu Realität
+* Simulated Autonomous Driving Using Reinforcement Learning: A Comparative Study on Unity and ML-Agents Framework
+
+
+Man kann argumentieren, dass die Unity-Training-Arena von Maximilian ähnlich komplex ist wie ein Atari game
+
+MuZero oder EfficientZero für Automatic driving? (ich meine den Algo der ein World Model selbst erstellt)
+
+Taxonomy of RL
+* AlphaGo should be it's own category (search based...)
+* AlphaGo zero ist nicht model based meiner Meinung nach	
+	* die Erweiterung mit simulierter Transition function hingegen schon
+
+
+TODOs:
+DQN ist Off-Policy? warum?
+PPO ist On-Policy 
 
 ## Notizen aus Discord Call
 
