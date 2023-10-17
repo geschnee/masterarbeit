@@ -33,11 +33,27 @@ https://github.com/Maddi97/master_thesis
 warum sind hier nur 7 Python Skripte? (alle zur Analyse der Ergebnisse)
 https://github.com/search?q=repo%3AMaddi97%2Fmaster_thesis%20.py&type=code
 
+generelle Kritik
 * so viele Aussagen ohne Begründung
 	* Therefore, developing realistic simulated environments offers a safe, cost-effective alternative for training and evaluating algorithms. Furthermore, it is central to divide the problem into small sub-tasks to achieve progress in such a complex challenge.
 	* wieso muss man aufteilen??
+	* the significant reduction in state size greatly benefits the training process...
+		* Er sagt, dass es Experimente ohne Preprocessing gab, beschreibt diese aber nicht weiter. 6.2.1
+		* der Memory approach erreicht bessere Ergebnisse als ohne MEM (MAM hat einen größeren Statespace) 
 * viel Aussagen wie "Dieses Research paper hilft mir sehr weiter in den Konfigurationen/Research..."
 	* wird gesagt wie genau???
+* warum wird in Detail erklärt was Unity ist und was és alles kann??? z.B. Unity-Scenes
+* warum keine Visualisierung der der Succes-rate während Training?
+	* plus Vergleich der final training succes-rate und evaluation succes-rate?
+* wie wird der Reward Normalisiert? (Figure 6.3)
+	* wenn durch den maximalen CumReward dieses Training Scenarios z.B. PPO-MEM-FMT geteilt wird, ist die unterschiedliche Kurve für die beiden Reward functions SGT und FMT total verständlich
+		* der Max reward ist dort größer (weil mehr Zeit in Simulation und mehr Goals)
+		* Again drawing the inferences from Figure 6.3, the FMT attempts to convert much slower towards a strong performance. 
+		* Der Satz ist Quatsch, da man allein vom Normalized CumReward nicht sagen kann ob die Performance schon gut ist.
+		* Besser wäre hier eine Auswertung der Average Completed goals gewesen um die beiden Reward Funktionen vergleichen zu können
+
+
+wie lang ist jeder Timestep (in Sekunden)? das Environment ist nicht discrete!!!
 
 gibt es Infos zu Tesla's Autopilot (der ist doch mit RL traininert) bzw. ist RL mit Autos in Simulation nicht schon gut untersucht?
 * Infos dazu in Section 2.3?
@@ -49,10 +65,20 @@ offene Fragen:
 	* "precisely the same input as Jonas König"
 	* das ist schlecht, weil das NN dann erstmal x + width machen muss um die andere Ecke zu erhalten
 	* Bounding Box max_x, min_x, max_y und min_y wäre besser imo
+* wieso lenken die Räder in der Simulation, wenn sie in Realität nicht lenken können?
+* warum hat der Jetbot in der Simulation 4 Räder und der echte nur 2 Räder + einen Ball (differential steering)?
+* enthält die reward function einen reward für Nähe zum nächsten Ziel? oder ähnliches?
+	* An example of an issue is that the agent only drives in circles to gain speed reward and, thus, is stuck in a local optima.
+	* nein, nur Velocity, Goal, collision and finish episode reward
+* zum Experiment mit varying motor powers
+	* werden die beide Motoren gleichmäßig angepasst?
+	* ja
+	* das Experiment sollte die Motoren unterschiedlich anpassen um die Realität besser zu testen
 
 
 die simulation2reality Gap wirkt für mich interessanter als Ziel der eigenen Arbeit,
 da algemeine Fragen wie "Kann RL genutzt werden für autom. driving?" zu schwer zu beantworten sind
+Es gibt schon einige Arbeiten mit sim2reality Transfer:
 * Self-driving scale car trained by Deep reinforcement learning 
 	* self driving roboter mit Training in Simulation und Transfer zu Realität
 * Simulated Autonomous Driving Using Reinforcement Learning: A Comparative Study on Unity and ML-Agents Framework
@@ -68,9 +94,22 @@ Taxonomy of RL
 	* die Erweiterung mit simulierter Transition function hingegen schon
 
 
-TODOs:
+
+
+## TODOs:
 DQN ist Off-Policy? warum?
 PPO ist On-Policy 
+
+Maximilian's Erklärung von Policy-Based Methoden ist gut verständlich
+* TODO check: entspricht seine Erklärung der Realität?
+
+### TODOs im Scads.AI
+
+* Arena und Roboter Daten abmessen
+* kann der Roboter nur mit differential steering lenken?
+* haben die Motoren links und rechts unterschiedliche max Torques?
+* wie sieht ein Bild aus, welches mit der Robo Kamera gemacht wird?
+
 
 ## Notizen aus Discord Call
 
