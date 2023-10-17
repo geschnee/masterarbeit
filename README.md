@@ -16,6 +16,9 @@ https://github.com/Unity-Technologies/ml-agents
 
 https://www.youtube.com/watch?v=FqNpVLKSFJg
 
+Communication between Unity and Python
+https://github.com/hughperkins/peaceful-pie
+
 ## Send data from python to Unity (Socket)
 https://www.youtube.com/watch?v=Dm0CiAiZk14
 
