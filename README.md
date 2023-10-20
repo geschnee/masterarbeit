@@ -107,8 +107,12 @@ Maximilian's Erklärung von Policy-Based Methoden ist gut verständlich
 
 * Arena und Roboter Daten abmessen
 * kann der Roboter nur mit differential steering lenken?
+	* ja
+	* 2 Räder und eine Kugel
 * haben die Motoren links und rechts unterschiedliche max Torques?
+	* durchaus
 * wie sieht ein Bild aus, welches mit der Robo Kamera gemacht wird?
+	* Raspberry Camera v2 1080p im Videomodus (1920 x 1080 bei 30fps)
 
 
 ## Notizen aus Discord Call

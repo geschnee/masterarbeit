@@ -1,0 +1,20 @@
+\chapter{Methods}
+\label{cha:Methods}
+%\lipsum \autocite{DBLP:books/sp/HarderR01}
+
+
+
+
+
+\section{improvements compared to Maximilian...}
+
+Highlight the changes made and justify them.
+
+* reward function (distance to the next goal)
+* CNN instead of MLP (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
+* brightness rebalancing / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
+* time passed since last step as additional input (gives the agent a feeling of time passed) (if the time difference was always the same this would not be necessary but we cannot guarantee that)
+* future reward? (reward obtained in the next x seconds) (trackmania video)
+* improved agent (more realistic (2 wheels + ball))
+* memory? last few steps as additional input (is that an improvement? or did he do it like that)
+
