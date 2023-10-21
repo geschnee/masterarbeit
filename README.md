@@ -283,3 +283,6 @@ how it reached carsim/Packages is not known
 
 ml agents lernen
 
+# eigener Raspberry pie
+
+wir haben keinen Zuhause, nur Arduinos
