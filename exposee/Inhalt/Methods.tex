@@ -2,18 +2,18 @@
 \label{cha:Methods}
 %\lipsum \autocite{DBLP:books/sp/HarderR01}
 
-  
+
 
 \section{Task Description}
 
 In this section I will be describing the task and the simulation environment as these two aspects are the foundation of this thesis and will not change over the course of the project.
-The task is to develop and agent using reinforcement learning that is able to complete a parcour in a simulated environment without collisions. The agent has to traverse the parcour by passing through a number of goals indicated by pairs of either red or blue blocks, see figure \ref*{task}.
-The task and agent are simulated using the Unity game engine
+The task is to develop and agent using reinforcement learning that is able to complete a parcour in a simulated environment without collisions. The agent has to traverse the parcour by passing through a number of goals indicated by pairs of either red or blue blocks without collisions, see figure \ref*{task}. The agent starts at a random location and rotation on a line and the parcour is successfully completed when the agent reaches the final goal.
+The task and agent are simulated using the Unity game engine, the game engine handles the rendering of the environment, collisions, agent movement and everything else.
 
 
 \begin{figure}[h!]
-     \includegraphics[height=7cm]{Bilder/Uni-L.png}\\[2.5ex]
-     \caption{Caption here TODO.... in Unity}
+     \includegraphics[height=7cm]{Bilder/parcour.png}\\[2.5ex]
+     \caption{Example image of the agent at the start of a parcour with 3 goals in Unity}
      \label{task}
 \end{figure}
 
@@ -54,7 +54,7 @@ It is also possible to let agents learn not only from the reward at the current 
 
 \subsection{Convolutional Neural Networks}
 
-The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis will investigate using convolutional neural networks instead of an object detection pipeline, this should make the agent more robust to varying light settings and improve the performance of the agent. 
+The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis will investigate using convolutional neural networks instead of an object detection pipeline, this should make the agent more robust to varying light settings and improve the performance of the agent.
 Using convolutional networks to process images is a common practise in the field of reinforcement learning, due to the ability of these networks to adapt. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all of the information provided by the object detection pipeline was considered to be relevant by the neural network, this could be mitigated by training the CNN end-to-end.
 % (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
 
