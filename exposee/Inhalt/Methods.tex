@@ -10,8 +10,8 @@ In this section I will be describing the task and the simulation environment as 
 The task is to develop and agent using reinforcement learning that is able to complete a parcour in a simulated environment without collisions. The agent has to traverse the parcour by passing through a number of goals indicated by pairs of either red or blue blocks without collisions, see figure \ref*{task}. The agent starts at a random location and rotation on a line and the parcour is successfully completed when the agent reaches the final goal.
 The task and agent are simulated using the Unity game engine, the game engine handles the rendering of the environment, collisions, agent movement and everything else.
 
-
 \begin{figure}[h!]
+     \centering
      \includegraphics[height=7cm]{Bilder/parcour.png}\\[2.5ex]
      \caption{Example image of the agent at the start of a parcour with 3 goals in Unity}
      \label{task}
@@ -59,6 +59,14 @@ Using convolutional networks to process images is a common practise in the field
 % (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
 
 % \autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
+
+\begin{figure}[h!]
+     \centering
+     \includegraphics[height=7cm]{Bilder/agent_input_image.png}\\[2.5ex]
+     \caption{Example image that will be processed by the agent's convolution neural network.}
+     \label{input_image}
+\end{figure}
+
 
 
 \subsection{brightness rebalancing}
