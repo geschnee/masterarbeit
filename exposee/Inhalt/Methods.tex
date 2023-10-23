@@ -2,51 +2,92 @@
 \label{cha:Methods}
 %\lipsum \autocite{DBLP:books/sp/HarderR01}
 
-do a general description here
-
+  
 
 \section{Task Description}
 
-mention the similarity/simplicity of the task
-
-describe the task at headings
-
-
-\section{Implementation}
-
-explain used frameworks and libraries and how they work together
-
-Unity plus sb3 or another rl framework 
+In this section I will be describing the task and the simulation environment as these two aspects are the foundation of this thesis and will not change over the course of the project.
+The task is to develop and agent using reinforcement learning that is able to complete a parcour in a simulated environment without collisions. The agent has to traverse the parcour by passing through a number of goals indicated by pairs of either red or blue blocks, see figure \ref*{task}.
+The task and agent are simulated using the Unity game engine
 
 
+\begin{figure}[h!]
+     \includegraphics[height=7cm]{Bilder/Uni-L.png}\\[2.5ex]
+     \caption{Caption here TODO.... in Unity}
+     \label{task}
+\end{figure}
+
+
+% mention the similarity/simplicity of the task
 
 
 
-\section{improvements compared to Maximilian...}
+\section{Reinforcement learning algorithm and frameworks}
 
-\autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
+I will then describe the reinforcement learning algorithm and possible frameworks that may be used to implement it. There are multiple approaches to training an agent in the Unity simulation environment as highlighted in the related works section, it is not yet decided which approach will be chosen, therefore I will quickly describe the possible scenarios and highlight their advantages and disavantages.
 
-Highlight the changes made and justify them.
+\subsection*{Unity and ML-Agents}
 
-* reward function (distance to the next goal)
-     * key word: reward shaping \autocite*{drl_for_ad}
-     * this is more frequent and accurate feedback for the agent
-* CNN instead of MLP (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
-* brightness rebalancing / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
-* time passed since last step as additional input (gives the agent a feeling of time passed) (if the time difference was always the same this would not be necessary but we cannot guarantee that)
-* future reward? (reward obtained in the next x seconds) (trackmania video)
-* improved agent (more realistic (2 wheels + ball))
-* memory? last few steps as additional input (is that an improvement? or did he do it like that)
+Reinforcement learning agents can be trained directly in the Unity simulation environment using the ML-Agents framework \autocite{mlagents}. This approach has the advantage of being very simple to implement and use, since the agent and simulation are in the same framework. The biggest disadvantage of this approach is that it might be difficult to implement some of the implementation details investigated in this thesis. %TODO mention one
+The PPO algorithm by \autocite{mlagents} was used in \autocite{maximilian} to successfully train the agent on the investigated task.
 
+\subsection*{Unity and separate reinforcement learning frameworks}
+
+There are many reinforcement learning frameworks publically available that can be used to train agents in simulated environments, such as the OpenAI's baselines \autocite{sb3} and Google's dopamine \autocite{dopamine}. These frameworks often support the Gymnasium API \autocite{gymnasium}, wrapping the Unity simulation environment in a Gymnasium environment would allow for easy use of these frameworks. This approach has the advantage of being able to use the many features of these frameworks and makes it easy to change the training algorithms which might be necessary for the investigated implementation details. The disadvantage of this approach is that it might be difficult to wrap the Unity simulation environment in a Gymnasium environment, there already exist frameworks to help with this \autocite{peacefulpie}.
+
+
+% maybe mention the similarity/simplicity of the task here to show PPO is good
+
+
+
+\section{Investigated implementation details}
+
+As mentioned in the research goals section multiple different implementation details will be tested in this thesis and evaluated, a list of these implementation details will be given in this section, together with the reasoning behind using them.
+
+\subsection{Reward shaping}
+
+Reward shaping is the practise of providing reinforcement learning agents with frequent and accurate rewards. This helps the agent develop the desired behaviour quicker and more reliably since reward signals are less sparse with reward shaping \autocite{drl_for_ad}. This practice was already employed by \autocite{maximilian} by providing the agent with a reward proportional to its speed, this encourages the agent to drive faster and thus hopefully complete the parcour quicker. This thesis will investigate the use of a reward proportional to the difference in distance to the next goal between timesteps, this should encourage the agent to drive towards the next goal and to drive faster in this direction.
+
+It is also possible to let agents learn not only from the reward at the current timestep but also from the near future reward \autocite{nstepreward}. This also results in a less sparse reward signal and can improve the training stability and performance of the agent. This is called n-step reward and is proven to be useful in solving environments with delayed rewards (passing a goal + the associated reward may happen much later than a steering action that lead to this reward).
+
+% trackmania video? (reward obtained in the next x seconds) (trackmania video)
+
+\subsection{Convolutional Neural Networks}
+
+The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis will investigate using convolutional neural networks instead of an object detection pipeline, this should make the agent more robust to varying light settings and improve the performance of the agent. 
+Using convolutional networks to process images is a common practise in the field of reinforcement learning, due to the ability of these networks to adapt. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all of the information provided by the object detection pipeline was considered to be relevant by the neural network, this could be mitigated by training the CNN end-to-end.
+% (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
+
+% \autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
+
+
+\subsection{brightness rebalancing}
+
+The previous work this thesis builds upon used the HSV color space to extract the differently colored objects. Colors in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the objects. In theory the utilization of this color space should make the object detection resilient to changes in brightness since this information does not affect the hue value.
+Convolutional neural network typically use the RGB color space or a greyscale colorspace. A brightness rebalance of the imput images could play a big role in making the agent more resilient to changes in illumination, with which the agent by \autocite{maximilian} struggled with.
+
+%* brightness rebalancing / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
+
+\subsection{Time perception}
+
+Two configurations of the agent by \autocite{maximilian} used a memory to enhance the agent's input, the memory consisted of the input of the last few steps of the agent. This can improve the performance and stability during training \autocite{memory}.
+This exact technique is often used for discrete environments, such as the boardgame Go \autocite{alphago}. However since the investigated environment does not have fixed timesteps this approach might not be as effective. The time elapsed between two steps can vary due to many factors such as varying compute resources. It could prove useful to provide the model with the input of the last few steps and in addition the elapsed time between these steps.
+
+
+% TODO also give the agent the current velocity as input? in theory this is not needed as the agent defines the next velocity by itself (there is not acceleration/deceleration process)
+
+
+
+
+%\section{Evaluation}
+
+%Finally I will describe the evaluation metrics that will be used to evaluate the performance of the agent.
 
 
 
 % my approach to self driving is closer to end2end than the previous one
 
-\section{Implementation}
-\subsection{Simulation}
 
-\subsection{Training Algorithm}
 
 
 
