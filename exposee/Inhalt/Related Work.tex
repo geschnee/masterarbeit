@@ -19,7 +19,7 @@ A mayor weakness of the Deep Q-learning algorithm was its stability, the paramet
 %TODO maybe introduce TRPO as it was the predecessor of PPO
 
 
-Another major improvement in the domain of reinforcement learning was the combination of neural networks with traditional planning and search algorithms, the most famous example for this is AlphaGo \autocite{alphago}. AlphaGo and the many algorithms inspired by it use a search algorithm (typically Monte Carlo Tree Search) to evaluate the possible actions at a given state. Neural networks are used for the evaluation of states and actions in the search algorithms. AlphaGo was developed for a 2 player game with a discrete state and action space, but the combination of neural networks and search algorithms has also been used in continuous state and action spaces with a single player \autocite{alphagoimprovement}.
+Another major improvement in the domain of reinforcement learning was the combination of neural networks with traditional planning and search algorithms, the most famous example for this is AlphaGo \autocite{alphago}. AlphaGo and the many algorithms inspired by it use a search algorithm (typically Monte Carlo Tree Search) to evaluate the possible actions at a given state. Neural networks are used for the evaluation of states and actions in the search algorithms. AlphaGo was developed for a 2 player deterministic game with a discrete state and action space. Since then the combination of neural networks and search algorithms has also been used for all kinds of problems, such as for example continuous state and action spaces with a single player \autocite{alphagoimprovementmuzero}.
 
 
 \section{Self Driving}

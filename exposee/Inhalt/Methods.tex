@@ -48,9 +48,10 @@ As mentioned in the research goals section multiple different implementation det
 
 Reward shaping is the practise of providing reinforcement learning agents with frequent and accurate rewards. This helps the agent develop the desired behaviour quicker and more reliably since reward signals are less sparse with reward shaping \autocite{drl_for_ad}. This practice was already employed by \autocite{maximilian} by providing the agent with a reward proportional to its speed, this encourages the agent to drive faster and thus hopefully complete the parcour quicker. This thesis will investigate the use of a reward proportional to the difference in distance to the next goal between timesteps, this should encourage the agent to drive towards the next goal and to drive faster in this direction.
 
-It is also possible to let agents learn not only from the reward at the current timestep but also from the near future reward \autocite{nstepreward}. This also results in a less sparse reward signal and can improve the training stability and performance of the agent. This is called n-step reward and is proven to be useful in solving environments with delayed rewards (passing a goal + the associated reward may happen much later than a steering action that lead to this reward).
+It is also possible to let agents learn not only from the reward at the current timestep but also from the near future reward \autocite{nstepbootstrapping}. This is called n-step bootstrapping, it results in a more accurate reward signal and can improve the training stability and performance of the agent. N-step bootstrapping can be useful in solving environments with delayed rewards (passing a goal + the associated reward may happen much later than a steering action that lead to this reward).
 
-% trackmania video? (reward obtained in the next x seconds) (trackmania video)
+% trackmania video? (reward obtained in the next x seconds) (trackmania video) 
+% trackmania video is not n-step rewards
 
 \subsection{Convolutional Neural Networks}
 
@@ -66,8 +67,6 @@ Using convolutional networks to process images is a common practise in the field
      \caption{Example image that will be processed by the agent's convolution neural network.}
      \label{input_image}
 \end{figure}
-
-
 
 \subsection{brightness rebalancing}
 
