@@ -286,3 +286,18 @@ ml agents lernen
 # eigener Raspberry pie
 
 wir haben keinen Zuhause, nur Arduinos
+
+
+
+# weitere Ansprechpersonen
+
+## Tobias Jagla
+
+- Robotik, Schwarmintelligenz
+- mit Lea im Roboterfussballteam 
+
+
+## Johannes Häfner
+
+- Maximilian hat ihn empfohlen
+- war beim ersten Treffen im Scads.AI dabei
