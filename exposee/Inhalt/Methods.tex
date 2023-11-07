@@ -10,13 +10,29 @@ The task is to develop an agent using reinforcement learning that is able to com
 
 The task and agent are simulated using the Unity game engine, the game engine handles the rendering of the environment, collisions, agent movement and reward functions.
 
+
+\begin{figure}
+     \centering
+          \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[height=5cm]{Bilder/parcour.png}}\qquad
+          \subfigure[Agent camera view]{\includegraphics{Bilder/agent_input_image.png}}\\
+     \caption{Unity TODO make both images fit side by side}
+\end{figure}
+
+
+\iffalse
 \begin{figure}[h!]
      \centering
      \includegraphics[height=7cm]{Bilder/parcour.png}\\[2.5ex]
      \caption{Example image of the agent at the start of a parcour with 3 goals in Unity}
      \label{task}
 \end{figure}
-
+\begin{figure}[h!]
+     \centering
+     \includegraphics[height=7cm]{Bilder/agent_input_image.png}\\[2.5ex]
+     \caption{Example image that will be processed by the agent's convolution neural network.}
+     \label{input_image}
+\end{figure}
+\fi
 
 % mention the similarity/simplicity of the task
 
@@ -85,26 +101,26 @@ In theory the agent at hand does not require a history and perception of time si
 
 The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis will investigate using convolutional neural networks instead of an object detection pipeline, this should make the agent more robust to varying light settings and improve the performance of the agent.
 Using convolutional networks to process images is a common practise in the field of reinforcement learning, due to the ability of these networks to adapt. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all of the information provided by the object detection pipeline was considered to be relevant by the neural network, this could be mitigated by training the CNN end-to-end.
+As a starting point for experimentation the CNN architecture will be the same as \autocite{human_level_control}.
+
+% TODO we use the default CnnPolicy network, is it the same as the one described in Atari?
+% architecture: https://github.com/DLR-RM/stable-baselines3/blob/d671402c9373391f44d8a2ad11deed615e0f4bae/stable_baselines3/common/torch_layers.py#L89-L106
+% it is exactly as described in "Human-level control through deep reinforcement learning"
+% \autocite{atari} has a slightly smaller NN
+
 % (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
 
-% \autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
-
-\begin{figure}[h!]
-     \centering
-     \includegraphics[height=7cm]{Bilder/agent_input_image.png}\\[2.5ex]
-     \caption{Example image that will be processed by the agent's convolution neural network.}
-     \label{input_image}
-\end{figure}
 
 \subsubsection{Feature reduction / preprocessing}
 
-There are several preprocessing approaches that can be used to prepare an image for processing by a convolutional network. The goal of these approaches is to reduce the feature space to increase processing speed, they can also help encourage the network to generalize. The following steps were taken in the foundational \autocite{atari} paper:
+There are several preprocessing approaches that can be used to prepare an image for processing by a convolutional network. The goal of these approaches is to reduce the feature space to increase processing speed, they can also help encourage the network to generalize. The following steps were taken in the foundational \autocite{atari} paper. These techniques will be used due to the similar complexity of our task and many atari games.
+
 \begin{description}
      \item[downsampling] reduces size of input space
      \item[converting to gray-scale] reduces size of input space and potentially removes irrelevant information
-     \item[Rescaling pixel values to between 0 and 1] can help the neural network learn quicker %TODO true? why was this done?
+     \item[Rescaling pixel values to between 0 and 1] can help the neural network learn quicker %TODO https://machinelearningmastery.com/how-to-improve-neural-network-stability-and-modeling-performance-with-data-scaling/
 \end{description}
-% TODO why was rescaling done?
+% TODO why was rescaling done? 
 
 
 % TODO a figure that shows the original image, downsampled and greyscaled image
@@ -120,3 +136,13 @@ Convolutional neural network typically use the RGB color space or a greyscale co
 
 %* brightness rebalancing / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
 
+% \autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
+
+\begin{figure}
+\centering
+     \subfigure[Original Image]{\includegraphics{Bilder/agent_input_image.png}}\qquad
+     \subfigure[Downsampled image with dimension TODO]{\includegraphics{Bilder/downsampled.png}}\\
+     \subfigure[gray-scale]{\includegraphics{Bilder/greyscaled.png}}\qquad
+     \subfigure[brightness rebalanced image]{\includegraphics{Bilder/brightness.png}}
+\caption{4 Bildchen TODO}
+\end{figure}
