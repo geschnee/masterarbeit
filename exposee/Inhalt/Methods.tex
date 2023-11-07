@@ -14,8 +14,8 @@ The task and agent are simulated using the Unity game engine, the game engine ha
 \begin{figure}
      \centering
           \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[height=5cm]{Bilder/parcour.png}}\qquad
-          \subfigure[Agent camera view]{\includegraphics{Bilder/agent_input_image.png}}\\
-     \caption{Unity TODO make both images fit side by side}
+          \subfigure[Agent camera view]{\includegraphics{Bilder/agent_input_image2.png}}\\
+     \caption{Unity simulation environment and agent camera view}
 \end{figure}
 
 
@@ -46,7 +46,7 @@ There are multiple approaches to training an agent in the Unity simulation envir
 
 \subsection*{Unity and ML-Agents}
 
-Reinforcement learning agents can be trained directly in the Unity simulation environment using the ML-Agents framework \autocite{mlagents}. This approach has the advantage of being very simple to implement and use, since the agent and simulation are in the same framework. The biggest disadvantage of this approach is that it might be difficult to implement some of the implementation details investigated in this thesis. %TODO mention one
+Reinforcement learning agents can be trained directly in the Unity simulation environment using the ML-Agents framework \autocite{mlagents}. This approach has the advantage of being very simple to implement and use, since the agent and simulation are in the same framework. The biggest disadvantage of this approach is that it might be difficult to implement some of the implementation details theat might be used in this thesis such as the proposed changes for dealing with delayed rewards. 
 The PPO algorithm by \autocite{mlagents} was used in \autocite{maximilian} to successfully train the agent on the investigated task.
 
 \subsection*{Unity and separate reinforcement learning frameworks}
@@ -118,31 +118,26 @@ There are several preprocessing approaches that can be used to prepare an image 
 \begin{description}
      \item[downsampling] reduces size of input space
      \item[converting to gray-scale] reduces size of input space and potentially removes irrelevant information
-     \item[Rescaling pixel values to between 0 and 1] can help the neural network learn quicker %TODO https://machinelearningmastery.com/how-to-improve-neural-network-stability-and-modeling-performance-with-data-scaling/
+     \item[Rescaling pixel values to between 0 and 1] can help the neural network learn quicker % see https://machinelearningmastery.com/how-to-improve-neural-network-stability-and-modeling-performance-with-data-scaling/
 \end{description}
-% TODO why was rescaling done? 
 
 
-% TODO a figure that shows the original image, downsampled and greyscaled image
-% greyscale rebalanced?
-
-\subsubsection{brightness rebalancing}
+\subsubsection{histogram equalization}
 
 The previous work this thesis builds upon used the HSV color space to extract the differently colored objects. Colors in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the objects. In theory the utilization of this color space should make the object detection resilient to changes in brightness since this information does not affect the hue value.
-Convolutional neural network typically use the RGB color space or a greyscale colorspace. A brightness rebalance of the imput images could play a big role in making the agent more resilient to changes in illumination, with which the agent by \autocite{maximilian} struggled with.
+Convolutional neural network typically use the RGB color space or a greyscale colorspace. A histogram equalization of the imput images could play a big role in making the agent more resilient to changes in illumination, with which the agent by \autocite{maximilian} struggled with. Image d) in \ref{fig:4bildchen} shows the effect of histogram equalization on an image, the image looks worse for identifying objects. This suggests the equalization might not be necessary/useful, it is to be investigated during the implementation/experimentation phase.
 
 
-% TODO image with and without brightness rebalancing
-
-%* brightness rebalancing / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
+%* histogram equalization / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
 
 % \autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
 
 \begin{figure}
 \centering
-     \subfigure[Original Image]{\includegraphics{Bilder/agent_input_image.png}}\qquad
-     \subfigure[Downsampled image with dimension TODO]{\includegraphics{Bilder/downsampled.png}}\\
+     \subfigure[Original Image]{\includegraphics{Bilder/agent_input_image2.png}}\qquad
+     \subfigure[Downsampled image]{\includegraphics{Bilder/downsampled.png}}\\
      \subfigure[gray-scale]{\includegraphics{Bilder/greyscaled.png}}\qquad
-     \subfigure[brightness rebalanced image]{\includegraphics{Bilder/brightness.png}}
-\caption{4 Bildchen TODO}
+     \subfigure[histogram equalized image]{\includegraphics{Bilder/equalized.png}}
+\caption{4 Stages of preprocessing images for the CNN}
+\label{fig:4bildchen}
 \end{figure}
