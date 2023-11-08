@@ -38,3 +38,14 @@ Ausgangssignale verzögerungsfrei erzeugen kann.
 Terminvorschlag: 8.11 um 15 Uhr.
 
 Grüße Thomas
+
+# 08.11.2023
+
+- Experimente zur varying Motorpower können weggelassen werden
+- Expose sollte vor dem Vortrag am 15.12. fertig sein
+- Arbeit sollte auch angemeldet sein
+- wie? ein Dokument vom Prüfungsamt ausdrucken, ausfüllen und an Thomas geben
+
+TODO 
+- Field of view für den Roboter prüfen
+- Framerate prüfen
