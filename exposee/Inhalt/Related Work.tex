@@ -17,11 +17,17 @@ To solve this problem neural networks have been used to approximate the Q-values
 
 A mayor weakness of the initial Deep Q-learning algorithm was its stability during training, the parameter updates of the Q-learning agent's neural network can result in a collapse in performance. Proximal Policy Optimization (PPO) and other algorithms have been developed to improve the training process stability. The PPO \autocite{ppo} algorithm restricts the size of policy changes caused by parameter updates, this ensures the policy cannot change drastically and improves stability. PPO is currently one of the most popular algorithms for reinforcement learning and has already been successfully used in the domain of autonomous driving \autocite{maximilian}.
 % other algorithms with better training stability are Double DQN, TRPO
-%TODO maybe introduce TRPO as it was the predecessor of PPO
+% maybe introduce TRPO as it was the predecessor of PPO
 
 
 Another major improvement in the domain of reinforcement learning was the combination of neural networks with traditional planning and search algorithms, the most famous example for this is AlphaGo \autocite{alphago}. The search algorithms (typically Monte Carlo Tree Search) evaluate the possible actions at a given state. The neural networks are used for the evaluation of states and actions in the search algorithms. AlphaGo was developed for a 2 player deterministic game with a discrete state and action space. Since then the combination of neural networks and search algorithms has also been used for all kinds of problems, for example single player continuous state and action spaces \autocite{alphagoimprovementmuzero}.
 
+
+\subsection*{Convolutional Neural Network for Reinforcement Learning}
+
+As mentioned already convolutional neural network are often used in Reinforcement Learning. Convolutional neural networks are a neural network architecture specifically developed for processing image data, they consist of a number of filters and a fully connected neural network. The filters are applied to the image in a sliding window fashion, the filters detect pattern in the image such as for example edges and corners. The fully connected neural network analyses the results of the filters and makes the final prediction.
+CNNs are ideal for the use in Reinforcement Learning since Reinforcement Learning problems often require an agent to process visual input. Furthermore CNNs can be trained end-to-end in Reinforcement Learning compared to other feature extraction methods, this means the CNN can learn what features are important for the task at hand.
+CNNs typically do not take the raw camera/simulation images but rather preprocessed images, e.g. greyscaled images. Preprocessing steps are discussed in the Methods section \ref*{light_setting_robustness}.
 
 
 

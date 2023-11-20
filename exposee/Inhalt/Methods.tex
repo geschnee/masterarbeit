@@ -93,9 +93,11 @@ In theory the agent at hand does not require a history and perception of time si
 
 %However since the investigated environment does not have fixed timesteps this approach might not be as effective. The time elapsed between two steps can vary due to many factors such as varying compute resources. It could prove useful to provide the model with the input of the last few steps and in addition the elapsed time between these steps. % these few sentences only make sense if the varying time is dicussed in the first part of the Methods section
 
+% TODO test other memory mechanisms?
+% like for example also feeding the previous time step's hidden layer activation as input
+% that way the agent would know the previous "decision" not just the previous input
 
-
-\subsection{Improvements for Light setting robustness}
+\subsection{Improvements for Light setting robustness} \label{light_setting_robustness}
 
 \subsubsection{Convolutional Neural Networks}
 
@@ -103,7 +105,7 @@ The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the a
 Using convolutional networks to process images is a common practise in the field of reinforcement learning, due to the ability of these networks to adapt. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all of the information provided by the object detection pipeline was considered to be relevant by the neural network, this could be mitigated by training the CNN end-to-end.
 As a starting point for experimentation the CNN architecture will be the same as \autocite{human_level_control}.
 
-% TODO we use the default CnnPolicy network, is it the same as the one described in Atari?
+% we use the default CnnPolicy network, is it the same as the one described in Atari?
 % architecture: https://github.com/DLR-RM/stable-baselines3/blob/d671402c9373391f44d8a2ad11deed615e0f4bae/stable_baselines3/common/torch_layers.py#L89-L106
 % it is exactly as described in "Human-level control through deep reinforcement learning"
 % \autocite{atari} has a slightly smaller NN
@@ -141,3 +143,21 @@ Convolutional neural network typically use the RGB color space or a greyscale co
 \caption{4 Stages of preprocessing images for the CNN}
 \label{fig:4bildchen}
 \end{figure}
+
+
+\section{Training Process}
+
+
+\subsection*{Training Parcours}
+The PPO Reinforcement Learning algorithm requires the agent to be placed in a simulation environment similar to the evaluation environment to achieve good results. The agent will be placed in an arena with goal objects during training. In previous work \autocite{maximilian} two different training regimes were used, Single-Goal-Training and Full-Map-Training. In Single-Goal-Training the training was stopped after completing the first goal or upon collision. In Full-Map-Training the training was stopped after completing the whole map or upon collision. The reasoning behind Single-Goal-Training is that the agent will encounter a bigger variety of states during training since it will start at different positions in the map. However the Full-Map-Training scenario is closer to the evaluation scenario since the agent has to complete multiple goals in succession during evaluation.
+Single-Goal-Training performed worse than Full-Map-Training in the previous work \autocite{maximilian} for all evaluation parcours except for the difficult one. 
+
+A third possible regime would be Full-Map-Training with randomized starting positions, this combines both approaches. The Single-Goal-Training is not stricktly worse or better than Full-Map-Training. Therefore is not clear what training regime to chose for this thesis, therefore SGT, FMT and FMT with randomized starting positions will be compared during the experimentation phase.
+% randomized starting positions also means start at random goals
+
+\subsection*{Training Light Settings}
+Since the agent utillizes a Convolutional Neural Network to be resilient towards changing light conditions it is also necessary to train the agent with varying light conditions, otherwise the adaptability of the CNN would not be fully utilized. This way the agent will be able to learn to generalize to different light conditions. The light conditions will be randomized for each training parcour.
+Training with fixed light settings could also provide interesting insights when comparing the results to the results of training with varying light settings. If there is enough time the agent will be trained with fixed light settings as well. The comparison would show if the varying light settings during training helps for the generalization to different light settings.
+
+% TODO put a figure with randomized light settings here
+% maybe camera image from agents with different light settings
