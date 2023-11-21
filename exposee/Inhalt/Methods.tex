@@ -89,7 +89,7 @@ A similar approach does not use the reward from the next \(n\) steps but rather 
 \subsubsection{Time perception}
 
 Two configurations of the agent by \autocite{maximilian} used a memory to enhance the agent's input, the memory consisted of the input of the last few steps of the agent. This technique of stacking the history has been widely used in RL for continuous \autocite{atari} and discrete action spaces \autocite{alphago}. This allows the agent to perceive object movement, time and velocities \autocite{atari}.
-In theory the agent at hand does not require a history and perception of time since there are no moving obstacles and the agent moves at constant speeds.
+In our case the agent needs a history since the next goal could leave the agent's current field of vision.
 
 %However since the investigated environment does not have fixed timesteps this approach might not be as effective. The time elapsed between two steps can vary due to many factors such as varying compute resources. It could prove useful to provide the model with the input of the last few steps and in addition the elapsed time between these steps. % these few sentences only make sense if the varying time is dicussed in the first part of the Methods section
 
@@ -161,3 +161,14 @@ Training with fixed light settings could also provide interesting insights when 
 
 % TODO put a figure with randomized light settings here
 % maybe camera image from agents with different light settings
+
+
+\subsection*{Data Augmentation}
+Convolutional Neural Networks require a lot of data to learn and generalize. Data augmentation is a technique to increase the amount of data available during training by applying transformations to the collected data. Collected data can be used to produce many more training examples by applying transformations such as rotation, translation, scaling, flipping and color changes. In addition to providing a more diverse set of training data, this saves a lot of time since the new data points are not collected in simulation. \autocite{conditional_imitation_learning} employed a diverse set of data augmentation for their imitation learning approach that used a CNN.
+During the training process the collected images will be augmented by applying random transformations to them. The transformations change the image similarly to how different environment conditions (e.g. lighting, camera quality and fog) might change the image. It is not yet decided which transformations will be used, possible candidates are changes in contrast, brightness and tone, as well as filters like Gaussian blur, Gaussian noise, salt-and-pepper noise.
+Geometric transformations such as translations and rotations are not used since our control commands are not invariant to these transformations.
+
+% TODO put a figure with some augmented data here
+
+
+% TODO find another paper with data augmentaton

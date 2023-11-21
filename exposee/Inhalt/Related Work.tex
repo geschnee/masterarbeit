@@ -27,9 +27,7 @@ Another major improvement in the domain of reinforcement learning was the combin
 
 As mentioned already convolutional neural network are often used in Reinforcement Learning. Convolutional neural networks are a neural network architecture specifically developed for processing image data, they consist of a number of filters and a fully connected neural network. The filters are applied to the image in a sliding window fashion, the filters detect pattern in the image such as for example edges and corners. The fully connected neural network analyses the results of the filters and makes the final prediction.
 CNNs are ideal for the use in Reinforcement Learning since Reinforcement Learning problems often require an agent to process visual input. Furthermore CNNs can be trained end-to-end in Reinforcement Learning compared to other feature extraction methods, this means the CNN can learn what features are important for the task at hand.
-CNNs typically do not take the raw camera/simulation images but rather preprocessed images, e.g. greyscaled images. Preprocessing steps are discussed in the Methods section \ref*{light_setting_robustness}.
-
-
+CNNs typically do not take the raw camera/simulation images but rather preprocessed images, e.g. greyscaled images. Preprocessing steps are discussed in the Methods section \ref*{light_setting_robustness}. Furthermore data augmentation can be done during training, this is another kind of preprocessing. Data augmentation generates new samples from already collected ones by applying transformations to the samples, this can be used to increase the size of the training set and to make the agent more robust.
 
 \section{Self Driving}
 
@@ -41,13 +39,13 @@ Another interesting approach to building self driving agents is using imiatation
 
 % \autocite{autonomous_vehicles_review} %TODO read this paper and cite it
 
-%https://safe-intelligence.fraunhofer.de/en/autonomous-driving
+% https://safe-intelligence.fraunhofer.de/en/autonomous-driving
 
-%Papers that use Carla
+% Papers that use Carla
 
 
 
-%Mention experiments from PopCulture/YouTube
+% Mention experiments from PopCulture/YouTube
 
 
 \section{Simulation for Reinforcement Learning (and Self Driving)}
