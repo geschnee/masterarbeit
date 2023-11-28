@@ -13,25 +13,25 @@ The task and agent are simulated using the Unity game engine, the game engine ha
 
 \begin{figure}
      \centering
-          \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[height=5cm]{Bilder/parcour.png}}\qquad
-          \subfigure[Agent camera view]{\includegraphics{Bilder/agent_input_image2.png}}\\
+     \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[height=5cm]{Bilder/parcour.png}}\qquad
+     \subfigure[Agent camera view]{\includegraphics{Bilder/agent_input_image2.png}}\\
      \caption{Unity simulation environment and agent camera view}
 \end{figure}
 
 
 \iffalse
-\begin{figure}[h!]
-     \centering
-     \includegraphics[height=7cm]{Bilder/parcour.png}\\[2.5ex]
-     \caption{Example image of the agent at the start of a parcour with 3 goals in Unity}
-     \label{task}
-\end{figure}
-\begin{figure}[h!]
-     \centering
-     \includegraphics[height=7cm]{Bilder/agent_input_image.png}\\[2.5ex]
-     \caption{Example image that will be processed by the agent's convolution neural network.}
-     \label{input_image}
-\end{figure}
+     \begin{figure}[h!]
+          \centering
+          \includegraphics[height=7cm]{Bilder/parcour.png}\\[2.5ex]
+          \caption{Example image of the agent at the start of a parcour with 3 goals in Unity}
+          \label{task}
+     \end{figure}
+     \begin{figure}[h!]
+          \centering
+          \includegraphics[height=7cm]{Bilder/agent_input_image.png}\\[2.5ex]
+          \caption{Example image that will be processed by the agent's convolution neural network.}
+          \label{input_image}
+     \end{figure}
 \fi
 
 % mention the similarity/simplicity of the task
@@ -46,7 +46,7 @@ There are multiple approaches to training an agent in the Unity simulation envir
 
 \subsection*{Unity and ML-Agents}
 
-Reinforcement learning agents can be trained directly in the Unity simulation environment using the ML-Agents framework \autocite{mlagents}. This approach has the advantage of being very simple to implement and use, since the agent and simulation are in the same framework. The biggest disadvantage of this approach is that it might be difficult to implement some of the implementation details that might be used in this thesis such as the proposed changes for dealing with delayed rewards. 
+Reinforcement learning agents can be trained directly in the Unity simulation environment using the ML-Agents framework \autocite{mlagents}. This approach has the advantage of being very simple to implement and use, since the agent and simulation are in the same framework. The biggest disadvantage of this approach is that it might be difficult to implement some of the implementation details that might be used in this thesis such as the proposed changes for dealing with delayed rewards.
 The PPO algorithm by \autocite{mlagents} was used in \autocite{maximilian} to successfully train the agent on the investigated task.
 
 \subsection*{Unity and separate reinforcement learning frameworks}
@@ -62,14 +62,14 @@ There are many reinforcement learning frameworks publicly available that can be 
 The goal of this thesis is to answer two questions with a subitem each.
 \begin{enumerate}
      \item Is it possible to train an agent to reliably solve the parcours of all difficulty levels?
-     \begin{itemize}
-          \item Are memory mechanisms necessary in achieving this?
-     \end{itemize}
+           \begin{itemize}
+                \item Are memory mechanisms necessary in achieving this?
+           \end{itemize}
      \item Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
-     \begin{itemize}
-          \item Is it possible to use a CNN which is small enough to be used in the JetBot?
-     \end{itemize}
-  \end{enumerate}
+           \begin{itemize}
+                \item Is it possible to use a CNN which is small enough to be used in the JetBot?
+           \end{itemize}
+\end{enumerate}
 
 \subsection{Improvements for training the agent}
 
@@ -82,7 +82,7 @@ Reward shaping is the practise of providing reinforcement learning agents with f
 Delayed rewards can be a big problem in reinforcement learning and make the training process difficult. Delayed rewards are rewards that are not obtained immediately after the responsible action is taken. In our environment an action \(a_n\) (e.g. turning right) may lead to a collision at state \(s_{n+x}\) which results in a negative reward for action \(a_{n+x}\). The RL algorithm might fail learn to avoid the action \(a_n\).
 
 There are a multiple approaches to dealing with delayed rewards. These approaches use the reward at the current timestep and the near future. These approaches result in a more accurate and dense reward signal and can improve the training stability and performance of the agent.
-N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.  
+N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.
 A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than the previous one.
 
 
@@ -135,13 +135,13 @@ Convolutional neural network typically use the RGB colour space or a greyscale c
 % \autocite*{drl_for_ad} shows a lot of best practises in RL for autonomous driving
 
 \begin{figure}
-\centering
+     \centering
      \subfigure[Original Image]{\includegraphics{Bilder/agent_input_image2.png}}\qquad
      \subfigure[Downsampled image]{\includegraphics{Bilder/downsampled.png}}\\
      \subfigure[greyscale]{\includegraphics{Bilder/greyscaled.png}}\qquad
      \subfigure[histogram equalized image]{\includegraphics{Bilder/equalized.png}}
-\caption{4 Stages of preprocessing images for the CNN}
-\label{fig:4bildchen}
+     \caption{4 Stages of preprocessing images for the CNN}
+     \label{fig:4bildchen}
 \end{figure}
 
 
@@ -150,7 +150,7 @@ Convolutional neural network typically use the RGB colour space or a greyscale c
 
 \subsection*{Training Parcours}
 The PPO Reinforcement Learning algorithm requires the agent to be placed in a simulation environment similar to the evaluation environment to achieve good results. The agent will be placed in an arena with goal objects during training. In previous work \autocite{maximilian} two different training regimes were used, Single-Goal-Training and Full-Map-Training. In Single-Goal-Training the training was stopped after completing the first goal or upon collision. In Full-Map-Training the training was stopped after completing the whole map or upon collision. The reasoning behind Single-Goal-Training is that the agent will encounter a bigger variety of states during training since it will start at different positions in the map. However the Full-Map-Training scenario is closer to the evaluation scenario since the agent has to complete multiple goals in succession during evaluation.
-Single-Goal-Training performed worse than Full-Map-Training in the previous work \autocite{maximilian} for all evaluation parcours except for the difficult one. 
+Single-Goal-Training performed worse than Full-Map-Training in the previous work \autocite{maximilian} for all evaluation parcours except for the difficult one.
 
 A third possible regime would be Full-Map-Training with randomized starting positions, this combines both approaches. The Single-Goal-Training is not strictly worse or better than Full-Map-Training. Therefore is not clear what training regime to chose for this thesis, therefore SGT, FMT and FMT with randomized starting positions will be compared during the experimentation phase.
 % randomized starting positions also means start at random goals
@@ -164,12 +164,12 @@ Training with fixed light settings could also provide interesting insights when 
 
 \begin{figure}
      \centering
-          \subfigure[standard lighting]{\includegraphics{Bilder/light_setting_standard.png}}\\
-          \subfigure[reduced lighting]{\includegraphics{Bilder/light_setting_reduced_lighting.png}}
-          \subfigure[Increased lighting]{\includegraphics{Bilder/light_setting_increased_lighting.png}}
+     \subfigure[standard lighting]{\includegraphics{Bilder/light_setting_standard.png}}\\
+     \subfigure[reduced lighting]{\includegraphics{Bilder/light_setting_reduced_lighting.png}}
+     \subfigure[Increased lighting]{\includegraphics{Bilder/light_setting_increased_lighting.png}}
      \caption{different lightings TODO fix the images}
      \label{fig:3tracks}
- \end{figure}
+\end{figure}
 
 % TODO do we need an image equalization if the network is trained on varying light conditions?
 
@@ -181,11 +181,10 @@ Geometric transformations such as translations and rotations are not used since 
 
 \begin{figure}
      \centering
-          \subfigure[Original image]{\includegraphics{Bilder/data_entry_original.png}}\qquad
-          \subfigure[reduced lighting]{\includegraphics{Bilder/data_entry_augmented_reduced_lighting.png}}\\
-          \subfigure[Increased lighting]{\includegraphics{Bilder/data_entry_augmented_increased_lighting.png}}\qquad
-          \subfigure[salt-and-pepper noise]{\includegraphics{Bilder/data_entry_augmented_salt_and_pepper.png}}
-     \caption{augmented data TODO fix the images}
+     \subfigure[Original image]{\includegraphics{Bilder/data_entry_original.png}}\\
+     \subfigure[Gaussian Noise Mean 0 Sigma 5]{\includegraphics{Bilder/data_entry_augmented_gaussian_sigma_5.png}}\\
+     \subfigure[salt-and-pepper noise]{\includegraphics{Bilder/data_entry_augmented_salt_and_pepper.png}}
+     \caption{Data augmentation examples}
      \label{fig:3tracks}
 \end{figure}
 
