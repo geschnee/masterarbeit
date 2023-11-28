@@ -126,7 +126,7 @@ There are several preprocessing approaches that can be used to prepare an image 
 
 \subsubsection{Histogram Equalization}
 
-The previous work this thesis builds upon used the HSV colour space to extract the differently coloured objects. colours in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the objects. In theory the utilization of this colour space should make the object detection resilient to changes in brightness since this information does not affect the hue value.
+The previous work this thesis builds upon used the HSV colour space to extract the differently coloured objects. Colours in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the objects. In theory the utilization of this colour space should make the object detection resilient to changes in brightness since this information does not affect the hue value. However this proved to not be true in practice as shown by \autocite{maximilian}.
 Convolutional neural network typically use the RGB colour space or a greyscale colour space. A histogram equalization of the input images could play a big role in making the agent more resilient to changes in illumination, with which the agent by \autocite{maximilian} struggled with. Image d) in \ref{fig:4bildchen} shows the effect of histogram equalization on an image, the image looks worse for identifying objects. This suggests the equalization might not be necessary/useful, it is to be investigated during the implementation/experimentation phase.
 
 
@@ -159,19 +159,6 @@ A third possible regime would be Full-Map-Training with randomized starting posi
 Since the agent utilizes a Convolutional Neural Network to be resilient towards changing light conditions it is also necessary to train the agent with varying light conditions, otherwise the adaptability of the CNN would not be fully utilized. This way the agent will be able to learn to generalize to different light conditions. The light conditions will be randomized for each training parcour.
 Training with fixed light settings could also provide interesting insights when comparing the results to the results of training with varying light settings. If there is enough time the agent will be trained with fixed light settings as well. The comparison would show if the varying light settings during training helps for the generalization to different light settings.
 
-% TODO put a figure with randomized light settings here
-% maybe camera image from agents with different light settings
-
-\iffalse
-     \begin{figure}
-          \centering
-          \subfigure[standard lighting]{\includegraphics{Bilder/light_setting_pov_standard.png}}\\
-          \subfigure[reduced lighting]{\includegraphics{Bilder/light_setting_pov_reduced_lighting.png}}
-          \subfigure[Increased lighting]{\includegraphics{Bilder/light_setting_pov_increased_lighting.png}}
-          \caption{different lightings TODO fix the images currently waiting for Maximilian to tell me how the evaluation environment was configured for different lighting settings}
-          \label{fig:3tracks_lighting}
-     \end{figure}
-\fi
 
 \begin{figure}
      \centering
