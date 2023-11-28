@@ -162,14 +162,29 @@ Training with fixed light settings could also provide interesting insights when 
 % TODO put a figure with randomized light settings here
 % maybe camera image from agents with different light settings
 
+\iffalse
+     \begin{figure}
+          \centering
+          \subfigure[standard lighting]{\includegraphics{Bilder/light_setting_pov_standard.png}}\\
+          \subfigure[reduced lighting]{\includegraphics{Bilder/light_setting_pov_reduced_lighting.png}}
+          \subfigure[Increased lighting]{\includegraphics{Bilder/light_setting_pov_increased_lighting.png}}
+          \caption{different lightings TODO fix the images currently waiting for Maximilian to tell me how the evaluation environment was configured for different lighting settings}
+          \label{fig:3tracks_lighting}
+     \end{figure}
+\fi
+
 \begin{figure}
      \centering
-     \subfigure[standard lighting]{\includegraphics{Bilder/light_setting_standard.png}}\\
-     \subfigure[reduced lighting]{\includegraphics{Bilder/light_setting_reduced_lighting.png}}
-     \subfigure[Increased lighting]{\includegraphics{Bilder/light_setting_increased_lighting.png}}
-     \caption{different lightings TODO fix the images}
-     \label{fig:3tracks}
+     \subfigure[Standard Lighting Agent POV]{\includegraphics[width=0.25\textwidth]{Bilder/light_setting_pov_standard.png}}\qquad
+     \subfigure[Standard Lighting Arena]{\includegraphics[width=0.5\textwidth]{Bilder/light_setting_arena_standard.png}}
+     \subfigure[Reduced Lighting Agent POV]{\includegraphics[width=0.25\textwidth]{Bilder/light_setting_pov_reduced_lighting.png}}\qquad
+     \subfigure[Reduced Lighting Arena]{\includegraphics[width=0.5\textwidth]{Bilder/light_setting_arena_reduced_lighting.png}}
+     \subfigure[Increased Lighting Agent POV]{\includegraphics[width=0.25\textwidth]{Bilder/light_setting_pov_increased_lighting.png}}\qquad
+     \subfigure[Increased Lighting Arena]{\includegraphics[width=0.5\textwidth]{Bilder/light_setting_arena_increased_lighting.png}}
+
+     \caption{Lighting Agent POV and Arena TODO real images wait for information by Maximilian about how lighting was done} \label{fig:1}
 \end{figure}
+
 
 % TODO do we need an image equalization if the network is trained on varying light conditions?
 
@@ -181,11 +196,11 @@ Geometric transformations such as translations and rotations are not used since 
 
 \begin{figure}
      \centering
-     \subfigure[Original image]{\includegraphics{Bilder/data_entry_original.png}}\\
-     \subfigure[Gaussian Noise Mean 0 Sigma 5]{\includegraphics{Bilder/data_entry_augmented_gaussian_sigma_5.png}}\\
+     \subfigure[Original image]{\includegraphics{Bilder/data_entry_original.png}}
+     \subfigure[Gaussian Noise Mean 0 Sigma 5]{\includegraphics{Bilder/data_entry_augmented_gaussian_sigma_5.png}}
      \subfigure[salt-and-pepper noise]{\includegraphics{Bilder/data_entry_augmented_salt_and_pepper.png}}
      \caption{Data augmentation examples}
-     \label{fig:3tracks}
+     \label{fig:data_augmentation}
 \end{figure}
 
 % TODO find another paper with data augmentaton
