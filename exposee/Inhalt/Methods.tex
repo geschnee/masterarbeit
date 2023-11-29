@@ -83,7 +83,7 @@ Delayed rewards can be a big problem in reinforcement learning and make the trai
 
 There are a multiple approaches to dealing with delayed rewards. These approaches use the reward at the current timestep and the near future. These approaches result in a more accurate and dense reward signal and can improve the training stability and performance of the agent.
 N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.
-A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than the previous one.
+A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than N-step bootstrapping.
 
 
 \subsubsection{Time perception}
@@ -136,10 +136,10 @@ Convolutional neural network typically use the RGB colour space or a greyscale c
 
 \begin{figure}
      \centering
-     \subfigure[Original Image]{\includegraphics{Bilder/agent_input_image2.png}}\qquad
-     \subfigure[Downsampled image]{\includegraphics{Bilder/downsampled.png}}\\
-     \subfigure[greyscale]{\includegraphics{Bilder/greyscaled.png}}\qquad
-     \subfigure[histogram equalized image]{\includegraphics{Bilder/equalized.png}}
+     \subfigure[Original Image]{\includegraphics{Bilder/agent_image_from_unity.png}}\qquad
+     \subfigure[Downsampled image]{\includegraphics{Bilder/agent_downsampled.png}}\\
+     \subfigure[greyscale]{\includegraphics{Bilder/agent_grey.png}}\qquad
+     \subfigure[histogram equalized image]{\includegraphics{Bilder/agent_equalized.png}}
      \caption{4 Stages of preprocessing images for the CNN}
      \label{fig:4bildchen}
 \end{figure}
