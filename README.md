@@ -301,3 +301,8 @@ wir haben keinen Zuhause, nur Arduinos
 
 - Maximilian hat ihn empfohlen
 - war beim ersten Treffen im Scads.AI dabei
+
+
+# Templates
+
+https://git.informatik.uni-leipzig.de/dbs/teaching_templates/-/tree/main

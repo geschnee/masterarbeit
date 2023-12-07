@@ -1,3 +1,5 @@
+# MIttwoch 29.12.
+
 
 # Vortrag 
 
@@ -12,11 +14,12 @@
     * drei Ergebnisse aus vorherigen papers zeigen
 * Exeperimente ich dann am Ende durchfuehren moechte
 
+
+# Expose
 TODO numerierung der 4 Forschungsfragen
 
 TODO pruefen, ob die Research Goals wirklich messbar sind
 (ist diese Frage beantwortet?)
-
 
 subfrage 1 zum Memory kann ich entfernen und das frame stacking nicht als extra Frage behandeln
 
@@ -96,3 +99,15 @@ zur Anschaulichkeit bei.
 
 bezug zum Scads.AI herstellen um Arenadesign zu begrunden
 Bezug zu Max fuer Motivation zum Roboterdesign und Parcours
+
+
+
+# JetBot
+
+es sieht so aus, als könnte der JetBot resnet-18 verarbeiten (18 Layer Neuronales Netzwerk)
+https://github.com/NVIDIA-AI-IOT/jetracer/blob/master/notebooks/interactive_regression.ipynb
+
+JetBot nimmt Jupyter notebooks:
+https://jetbot.org/master/
+
+man könnte ein Replay Notebook schreiben
