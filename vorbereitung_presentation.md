@@ -111,3 +111,18 @@ JetBot nimmt Jupyter notebooks:
 https://jetbot.org/master/
 
 man könnte ein Replay Notebook schreiben
+
+
+# 07.12.
+
+vor den Research questions muss klar sein, was der Input und der Output ist und dass der Agent mit Reinforcement Learning trainienrt wird
+(passt gut zur Folie autonomous drivign task)
+
+
+Previous Work Sektion
+
+uebersicht ueber die RL algorithmen zeigen, Auswahl des PPOs begruenden
+
+nicht auf Max warten mit den Lichtverhaeltnissen, alles was er nicht angegeben hat kann ich selbst machen wie ich will
+
+Folie zu Data Augmentation?

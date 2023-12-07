@@ -13,8 +13,8 @@ The task and agent are simulated using the Unity game engine, the game engine ha
 
 \begin{figure}
      \centering
-     \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[height=5cm]{Bilder/parcour.png}}\qquad
-     \subfigure[Agent camera view]{\includegraphics{Bilder/agent_input_image2.png}}\\
+     \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[width=0.4\textwidth]{Bilder/parcour.png}}\qquad
+     \subfigure[Agent camera view]{\includegraphics[width=0.4\textwidth]{Bilder/agent_image_from_unity.png}}\\
      \caption{Unity simulation environment and agent camera view}
 \end{figure}
 
@@ -85,6 +85,33 @@ There are a multiple approaches to dealing with delayed rewards. These approache
 N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.
 A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than N-step bootstrapping.
 
+\begin{figure}
+     \[R(s_t,a_t) = c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot VelocityReward(s_t, a_t) + c_3 \cdot EventReward(s_t, a_t)\]
+
+     \[DistanceReward(s_t,a_t) = \Delta distance(agent, nextGoal)\]
+
+     \[VelocityReward(s_t, a_t) = (v \cdot \Delta T) \]
+
+     \[EventReward(s_t, a_t) = \begin{cases}
+               100,           \text{completed the parcour}           \\
+               1,             \text{passed a goal}                   \\
+               -1,            \text{missed a goal}                   \\
+               -1,            \text{collision with wall or obstacle} \\
+               -1,            \text{timeout}                         \\
+          \end{cases}\]
+     \caption{Reward Function}
+\end{figure}
+%% TODO orientation reward?
+
+
+% TODO the algorithm in nstepbootstrapping is different from my implementation, check if it is correct
+\begin{figure}
+     \[BootstrappedReward(s_t,a_t) = R(s_t,a_t) + \gamma R(s_{t+1},a_{t+1}) + \gamma^2 R(s_{t+2},a_{t+2}) + ... + \gamma^n R(s_{t+n},a_{t+n})\]
+     % TODO check if this bootstrapping corresponds to the one in the paper
+     \caption{N-step bootstrapping reward function \autocite{nstepbootstrapping}}
+\end{figure}
+
+% TODO figure for n second bootstrapping?
 
 \subsubsection{Time perception}
 
@@ -96,6 +123,9 @@ In our case the agent needs a history since the next goal could leave the agent'
 % TODO test other memory mechanisms?
 % like for example also feeding the previous time step's hidden layer activation as input
 % that way the agent would know the previous "decision" not just the previous input
+% not enough time, just use the same memory mechanism as in the previous work
+% the memory question is not a goal anymore
+
 
 \subsection{Improvements for Light setting robustness} \label{light_setting_robustness}
 
