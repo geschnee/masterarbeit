@@ -1,29 +1,51 @@
-%{\let\clearpage\relax \chapter{Central Tasks and Research Goals}}
-
-
-%{\let\clearpage\relax \chapter{Central Tasks and Research Goals2}}
-
 \chapter{Research Goals}
 \label{cha:Research Goals}
-%\lipsum \autocite{DBLP:books/sp/HarderR01}
 
-The goal of this thesis is to contribute in the domain of autonomous driving by investigating the efficiency and contributions of different implementation details using reinforcement learning in a simulated environment. The thesis will build on the work of \autocite{maximilian} and review the utilised algorithms and implementation details. Implementation changes will be proposed based on research in the field of reinforcement learning and autonomous driving. The contributions of these implementation details will be evaluated on their own and in combination with each other. 
-
-
-The self driving agent is trained and evaluated on a simulated parcour. Different parcours, lighting settings and motor-power settings are used to evaluate the agent's reliability and generalisation capabilities. The most important evaluation metric is the success rate, a parcour is considered a success when the autonomous driving agent passes all goals without any collisions.
-
-\section*{Train to successfully complete all parcours}
-
-The trained agents from \autocite{maximilian} were not able to reliably complete all the evaluated parcours, especially the parcours of higher difficulty levels. I will investigate the question: Is it possible to train an agent to reliably solve the parcours of all difficulty levels?
-
-The agents \autocite{maximilian} with memory mechanisms performed better for the more difficult parcours, although they were outperformed for the simple parcours. This behaviour is unexpected since memory mechanisms such as frame-stacking have shown to be very useful in reinforcement learning \autocite{human_level_control}. The agents trained in this thesis will also use a memory mechanism and will be compared to agents without memory mechanism to investigate the contributions of the memory mechanism.
+The goal of this thesis is to contribute in the domain of autonomous driving by investigating the use of reinforcement learning to train an autonomous driving agent that is resilient to changes in light conditions. The agent is evaluated on  simulated parcours that consist of a series of goals indicated by two blocks, a parcour is successfully completed if the agents drives through all goals without collisions.
+This thesis builds upon previous work at the ScaDS.AI \autocite{maximilian} and uses the same parcour and task specifications. The agent from previous work was not able to reliably complete parcours under changing light conditions, motivating the research goals of this thesis.
 
 
-\section*{Train end-to-end to handle varying light conditions using CNNs}
+The self driving agent is trained using reinforcement learning in a simulated environment, the training process will include changing light conditions and possibly data augmentation to help the agent generalize.
+Parcours of different difficulties and lighting settings are used to evaluate the agent's reliability and generalisation capabilities. The most important evaluation metric is the success rate, a parcour is considered a success when the autonomous driving agent passes all goals without any collisions.
 
-The preceding work on the parcour employed autonomous driving agents which used a dedicated preprocessing pipeline. The pipeline was programmed to extract the coordinates of the goals/obstacles from the agent's camera. The agents were not able to complete the parcour under changing light conditions. The agents in this thesis will use Convolutional Neural Networks (CNN) to extract the relevant information directly from the camera images. I will investigate the question: Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
 
-The complexity of Convolutional Neural Networks might prevent them from being used in embedded environments. A possible future work is to transfer the trained autonomous driving agents to real life NVIDIA JetBots at the Scads.AI. Therefore the required size and complexity of the CNNs will be investigated. Is it possible to use a CNN which is small enough to be used in the JetBot?
+\section{Question 1 - Is it possible to train an autonomous driving agent consisting of a convolutional neural network with end-to-end reinforcement learning to reliably solve the parcours of all difficulty levels?}
+
+The previous work \autocite{maximilian} showed that it is possible to train an agent using reinforcement learning to solve the evaluation parcours, however the trained agents were not successful in reliably traversing the parcours of higher difficulty levels. Furthermore this work will implement the agent in a fundamentally different way, the agents developed in previous work utilized an extensive preprocessing pipeline to extract the relevant information from the camera images whereas the agents in this thesis will use a convolutional neural network to learn and extract the relevant information themselves.
+
+Due to these differences in implementation and as a prerequisite for question 2 and 3, it is first important to investigate if it is possible to train an agent to reliably solve the parcours of all difficulty levels. This raises question 1:
+Is it possible to train an autonomous driving agent consisting of a convolutional neural network with end-to-end reinforcement learning to reliably solve the parcours of all difficulty levels?
+
+The question will be answered by training agents that have been developed based on related work and analyzing their performance on the evaluation parcours. The evaluation parcours consist of different difficulty levels, the agent's success rate will be primarily used to answer the question.
+
+
+
+\section{Question 2 - Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?}
+
+While question 1 simply investigates if it is possible to train an agent to reliably solve the parcours of all difficulty levels, question 2 investigates if it is possible to train an agent that is robust to changing light conditions in addition to being capable of solving parcours of all difficulty levels. The performance of agents from previous work \autocite{maximilian} declined massively under changing light conditions. THis raises question 2 - Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
+
+The question will be answered by training agents that have been specifically designed to be robust to changing light conditions, the agents will be trained using reinforcement learning in a simulated environment with changing light conditions and possibly further data augmentation to help the agent generalize and learn. The agents will be evaluated on the evaluation parcours used in question 1 with changing light conditions. Similarly the success rate will be primarily used to evaluate and compare the agent's performance. The difference in performance for different light conditions will be used to answer the question, if the performance is similar for all light conditions the agent is considered robust to changing light conditions.
+
+\section{Question 3 - Is it possible to use a neural network that can be transfered to a physical robot?}
+
+One goal of the ongoing research at the ScaDS.AI is to build real life robots for demonstration and research purposes \autocite{merlin_flach}, the robots are based on the NVIDIA JetBot platform. The robots are equiped with a camera, wheels and a small computer. A future goal is to transfer a trained agent onto these robots, however the processing power of these robots might not be sufficient for more complex agents due to their neural networks. This raises question 3 - Is it possible to use a neural network that can be transfered to a physical robot?
+
+
+The question will be answered by investigating the processing power required to run the preprocessing steps and neural networks used in the agents that are developed in this thesis. This will be evaluated empirically by creating replays of the agents in simulations and running these replays on the physical robots. If the robots are able to reproduce the behaviour from the replays, the agents can be considered transferable to the robots.
+
+
+%\section*{Train to successfully complete all parcours}
+
+%The trained agents from \autocite{maximilian} were not able to reliably complete all the evaluated parcours, especially the parcours of higher difficulty levels. I will investigate the question: Is it possible to train an agent to reliably solve the parcours of all difficulty levels?
+
+%The agents \autocite{maximilian} with memory mechanisms performed better for the more difficult parcours, although they were outperformed for the simple parcours. This behaviour is unexpected since memory mechanisms such as frame-stacking have shown to be very useful in reinforcement learning \autocite{human_level_control}. The agents trained in this thesis will also use a memory mechanism and will be compared to agents without memory mechanism to investigate the contributions of the memory mechanism.
+
+
+%\section*{Train end-to-end to handle varying light conditions using CNNs}
+
+%The preceding work on the parcour employed autonomous driving agents which used a dedicated preprocessing pipeline. The pipeline was programmed to extract the coordinates of the goals/obstacles from the agent's camera. The agents were not able to complete the parcour under changing light conditions. The agents in this thesis will use Convolutional Neural Networks (CNN) to extract the relevant information directly from the camera images. I will investigate the question: Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
+
+%The complexity of Convolutional Neural Networks might prevent them from being used in embedded environments. A possible future work is to transfer the trained autonomous driving agents to real life NVIDIA JetBots at the Scads.AI. Therefore the required size and complexity of the CNNs will be investigated. Is it possible to use a CNN which is small enough to be used in the JetBot?
 
 
 % The task of driving through the parcour is motivated in part by the Scads.AI research facility, it would be ideal to be able to transfer the agent from this thesis to a physical arena at the Scads.AI research facility. The Scads.AI premises are often used for exhibitions and events where a physical self driving agent could be used to raise interest in applications of AI and research. %TODO move this to motivation?
