@@ -75,22 +75,23 @@ The goal of this thesis is to answer two questions with a subitem each.
 
 \subsubsection{Reward shaping}
 
+TODO make the Reward function a seperate subsection?
+one subsubsection per xxxReward?
+
+
 Reward shaping is the practise of providing reinforcement learning agents with frequent and accurate rewards. This helps the agent develop the desired behaviour quicker and more reliably since reward signals are less sparse with reward shaping \autocite{drl_for_ad}. This practice was already employed by \autocite{maximilian} by providing the agent with a reward proportional to its speed, this encourages the agent to drive faster and thus hopefully complete the parcour quicker. This thesis will investigate the use of a reward proportional to the difference in distance to the next goal between timesteps, this should encourage the agent to drive towards the next goal and to drive faster in this direction.
 
-
-\subsubsection{Dealing with delayed rewards}
-Delayed rewards can be a big problem in reinforcement learning and make the training process difficult. Delayed rewards are rewards that are not obtained immediately after the responsible action is taken. In our environment an action \(a_n\) (e.g. turning right) may lead to a collision at state \(s_{n+x}\) which results in a negative reward for action \(a_{n+x}\). The RL algorithm might fail learn to avoid the action \(a_n\).
-
-There are a multiple approaches to dealing with delayed rewards. These approaches use the reward at the current timestep and the near future. These approaches result in a more accurate and dense reward signal and can improve the training stability and performance of the agent.
-N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.
-A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than N-step bootstrapping.
+TODO change paragraph to include orientation reward
 
 \begin{figure}
-     \[R(s_t,a_t) = c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot VelocityReward(s_t, a_t) + c_3 \cdot EventReward(s_t, a_t)\]
+     \[R(s_t,a_t) = c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot OrientationReward(s_t,a_t) 
+     + c_3 \cdot VelocityReward(s_t, a_t) + c_4 \cdot EventReward(s_t, a_t)\]
 
-     \[DistanceReward(s_t,a_t) = \Delta distance(agent, nextGoal)\]
+     \[OrientationReward(s_t,a_t) = S_C(NextGoalPosition - AgentPosition, agentDirection) \cdot \Delta T\]
 
-     \[VelocityReward(s_t, a_t) = (v \cdot \Delta T) \]
+     \[DistanceReward(s_t,a_t) = \Delta distance(Agent, NextGoalPosition) \cdot \Delta T\]
+
+     \[VelocityReward(s_t, a_t) = v \cdot \Delta T \]
 
      \[EventReward(s_t, a_t) = \begin{cases}
                100,           \text{completed the parcour}           \\
@@ -99,12 +100,30 @@ A similar approach does not use the reward from the next \(n\) steps but rather 
                -1,            \text{collision with wall or obstacle} \\
                -1,            \text{timeout}                         \\
           \end{cases}\]
-     \caption{Reward Function}
+     \caption{Reward Function, $S_C$ is the cosine similarity}
 \end{figure}
-%% TODO orientation reward?
+% cosine similarity is one for same direction, zero for orthogonal directions and -1 for opposite directions
+
+\begin{figure}
+     \[SmoothedReward(s_t,a_t) = \sum_{i=0}^{n} \gamma^{i} \cdot Reward(s_{t+i}, a_{t+i}) \]
+     \caption{Reward Function that uses the reward of current timestep $t$ and the next $n-1$ timesteps, $\gamma$ is the discount factor (between 0 and 1)}
+\end{figure}
+
+% post: https://stackoverflow.com/questions/77626064/name-of-reward-function-that-utilizes-the-reward-of-the-next-n-steps
+% https://ai.stackexchange.com/
+
+\subsubsection{Dealing with delayed rewards}
+Delayed rewards can be a big problem in reinforcement learning and make the training process difficult. Delayed rewards are rewards that are not obtained immediately after the responsible action is taken. In our environment an action \(a_n\) (e.g. turning right) may lead to a collision at state \(s_{n+x}\) which results in a negative reward for action \(a_{n+x}\). The RL algorithm might fail learn to avoid the action \(a_n\).
+
+There are a multiple approaches to dealing with delayed rewards. These approaches use the reward at the current timestep and the near future. These approaches result in a more accurate and dense reward signal and can improve the training stability and performance of the agent.
+N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.
+A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than N-step bootstrapping.
+
+
 
 
 % TODO the algorithm in nstepbootstrapping is different from my implementation, check if it is correct
+% the nstepbootstrapping in rlbook2020 describes the update targets of the neural network and requires value estimates from (one of) the next n steps
 \begin{figure}
      \[BootstrappedReward(s_t,a_t) = R(s_t,a_t) + \gamma R(s_{t+1},a_{t+1}) + \gamma^2 R(s_{t+2},a_{t+2}) + ... + \gamma^n R(s_{t+n},a_{t+n})\]
      % TODO check if this bootstrapping corresponds to the one in the paper
