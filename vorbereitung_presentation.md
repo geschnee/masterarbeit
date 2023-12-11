@@ -16,9 +16,11 @@
 
 
 # Expose
-TODO numerierung der 4 Forschungsfragen
 
-TODO pruefen, ob die Research Goals wirklich messbar sind
+## erledigt
+numerierung der 4 Forschungsfragen
+
+pruefen, ob die Research Goals wirklich messbar sind
 (ist diese Frage beantwortet?)
 
 subfrage 1 zum Memory kann ich entfernen und das frame stacking nicht als extra Frage behandeln
