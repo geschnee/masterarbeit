@@ -5,8 +5,8 @@ The goal of this thesis is to contribute in the domain of autonomous driving by 
 This thesis builds upon previous work at the ScaDS.AI \autocite{maximilian} and uses the same parcour and task specifications. The agent from previous work was not able to reliably complete parcours under changing light conditions, motivating the research goals of this thesis.
 
 
-The self driving agent is trained using reinforcement learning in a simulated environment, the training process will include changing light conditions and possibly data augmentation to help the agent generalize.
-Parcours of different difficulties and lighting settings are used to evaluate the agent's reliability and generalisation capabilities. The most important evaluation metric is the success rate, a parcour is considered a success when the autonomous driving agent passes all goals without any collisions.
+The self-driving agent is trained using reinforcement learning in a simulated environment, the training process will include changing light conditions and possibly data augmentation to help the agent generalize.
+Parcours of different difficulties and lighting settings are used to evaluate the agent's reliability and generalisation capabilities. The most important evaluation metric is the success rate. A parcour is considered a success when the autonomous driving agent passes all goals without any collisions.
 
 
 \begin{figure}
@@ -40,19 +40,3 @@ One goal of the ongoing research at the ScaDS.AI is to build real life robots fo
 
 The question will be answered by investigating the processing power required to run the preprocessing steps and neural networks used in the agents that are developed in this thesis. This will be evaluated empirically by creating replays of the agents in simulations and running these replays on the physical robots. If the robots are able to reproduce the behaviour from the replays, the agents can be considered transferable to the robots.
 
-
-%\section*{Train to successfully complete all parcours}
-
-%The trained agents from \autocite{maximilian} were not able to reliably complete all the evaluated parcours, especially the parcours of higher difficulty levels. I will investigate the question: Is it possible to train an agent to reliably solve the parcours of all difficulty levels?
-
-%The agents \autocite{maximilian} with memory mechanisms performed better for the more difficult parcours, although they were outperformed for the simple parcours. This behaviour is unexpected since memory mechanisms such as frame-stacking have shown to be very useful in reinforcement learning \autocite{human_level_control}. The agents trained in this thesis will also use a memory mechanism and will be compared to agents without memory mechanism to investigate the contributions of the memory mechanism.
-
-
-%\section*{Train end-to-end to handle varying light conditions using CNNs}
-
-%The preceding work on the parcour employed autonomous driving agents which used a dedicated preprocessing pipeline. The pipeline was programmed to extract the coordinates of the goals/obstacles from the agent's camera. The agents were not able to complete the parcour under changing light conditions. The agents in this thesis will use Convolutional Neural Networks (CNN) to extract the relevant information directly from the camera images. I will investigate the question: Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
-
-%The complexity of Convolutional Neural Networks might prevent them from being used in embedded environments. A possible future work is to transfer the trained autonomous driving agents to real life NVIDIA JetBots at the Scads.AI. Therefore the required size and complexity of the CNNs will be investigated. Is it possible to use a CNN which is small enough to be used in the JetBot?
-
-
-% The task of driving through the parcour is motivated in part by the Scads.AI research facility, it would be ideal to be able to transfer the agent from this thesis to a physical arena at the Scads.AI research facility. The Scads.AI premises are often used for exhibitions and events where a physical self driving agent could be used to raise interest in applications of AI and research. %TODO move this to motivation?
