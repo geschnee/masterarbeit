@@ -124,8 +124,8 @@ This frame stacking will also be used to enhance the agent's input since the nex
 
 \subsection{Convolutional Neural Networks}
 
-The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis uses convolutional neural networks instead of an object detection pipeline. Combined with an adapted training process, this should make the agent more robust to varying light settings and improve the performance of the agent.
-Using convolutional networks to process images is a common practise in the field of reinforcement learning, due to the ability of these networks to adapt. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all the information provided by the object detection pipeline was considered to be relevant by the neural network, this could be mitigated by training the CNN end-to-end.
+The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis uses convolutional neural networks instead of a hand crafted object detection pipeline. Combined with an adapted training process, this should make the agent more robust to varying light settings and improve the performance of the agent.
+Convolutional networks are common practise in the field of reinforcement learning, due to the ability of these networks to adapt and process images. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all the information provided by the object detection pipeline was considered to be relevant by the neural network.
 As a starting point for experimentation the CNN architecture will be the same as \autocite{human_level_control} which proved succesful for simple control tasks.
 
 % we use the default CnnPolicy network, is it the same as the one described in Atari?
@@ -136,21 +136,14 @@ As a starting point for experimentation the CNN architecture will be the same as
 % (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
 
 
-\subsection{Feature reduction / preprocessing}
+\subsection{Feature reduction and preprocessing}
 
-There are several preprocessing approaches that can be used to prepare an image for processing by a convolutional network. The goal of these approaches is to reduce the feature space to increase processing speed, they can also help encourage the network to generalize. The following steps were taken in the foundational \autocite{atari} paper. These techniques will be used due to the similar complexity of our task and many atari games.
-
-\begin{description}
-     \item[Downsampling] reduces size of input space
-     \item[converting to greyscale] reduces size of input space and potentially removes irrelevant information
-     \item[Rescaling pixel values to between 0 and 1] can help the neural network learn quicker % see https://machinelearningmastery.com/how-to-improve-neural-network-stability-and-modeling-performance-with-data-scaling/
-\end{description}
-
+There are several preprocessing approaches that can be used to prepare an image for processing by a convolutional network. In this thesis downsampling, greyscaling and rescaling steps are applied to the images before they are processed by the convolutional neural network. The goal of downsampling and greyscaling is to reduce the input space size, both were used in the foundational Atari paper \autocite{atari}. This results in increased processing speed and can reduce the chance of overfitting of the network. The greyscaled images in \ref{fig:4bildchen} show that the color information is not very important, the closest blocks are still clearly visible. Reducing the input space size also helps the PPO algorithm since more data entries fit in memory, this allows for more efficient training. Pixel values are rescaled to between 0 and 1, this can help the neural network learn quicker \autocite{jason}.
 
 \subsection{Histogram Equalization}
 
-The previous work this thesis builds upon used the HSV colour space to extract the differently coloured objects. Colours in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the objects. In theory the utilization of this colour space should make the object detection resilient to changes in brightness since this information does not affect the hue value. However this proved to not be true in practice as shown by \autocite{maximilian}.
-Convolutional neural network typically use the RGB colour space or a greyscale colour space. A histogram equalization of the input images could play a big role in making the agent more resilient to changes in illumination, with which the agent by \autocite{maximilian} struggled with. Image d) in \ref{fig:4bildchen} shows the effect of histogram equalization on an image, the image looks worse for identifying objects. This suggests the equalization might not be necessary/useful, it is to be investigated during the implementation/experimentation phase.
+The previous work this thesis builds upon used the HSV colour space to extract the differently coloured objects. Colours in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the blue and red goal posts. In theory the utilization of this colour space should make the object detection resilient to changes in brightness since this information does not affect the hue value. However this proved to not be true in practice as shown by \autocite{maximilian}.
+Convolutional neural network typically use the RGB colour space or a greyscale colour space. Image transformations such as brightness and contrast changes can be applied to images before they are processed by the CNN. A histogram equalization of the input images could play a big role in making the agent more resilient to changes in illumination. Image d) in \ref{fig:4bildchen} shows the effect of histogram equalization on an image, however the image looks worse for identifying the goal posts since the shadows became much darker. This suggests the equalization might not be necessary/useful, this equalization and other preprocessing steps will be investigated during the implementation/experimentation phase.
 
 
 %* histogram equalization / enhance contrast (preprocessing) https://stackoverflow.com/questions/39308030/how-do-i-increase-the-contrast-of-an-image-in-python-opencv
@@ -172,36 +165,38 @@ Convolutional neural network typically use the RGB colour space or a greyscale c
 
 
 \subsection*{Training Parcours}
-The PPO Reinforcement Learning algorithm requires the agent to be placed in a simulation environment similar to the evaluation environment to achieve good results. The agent will be placed in an arena with goal objects during training. In previous work \autocite{maximilian} two different training regimes were used, Single-Goal-Training and Full-Map-Training. In Single-Goal-Training the training was stopped after completing the first goal or upon collision. In Full-Map-Training the training was stopped after completing the whole map or upon collision. The reasoning behind Single-Goal-Training is that the agent will encounter a bigger variety of states during training since it will start at different positions in the map. However the Full-Map-Training scenario is closer to the evaluation scenario since the agent has to complete multiple goals in succession during evaluation.
+The PPO Reinforcement Learning algorithm requires the agent to be placed in a simulation environment similar to the evaluation environment to achieve good results. The agent will be placed in an arena with goal objects during training. In previous work \autocite{maximilian} the goal objects were spawned semi-random with a minimum and maximum distance from the next goal. Two different training regimes were used, in Single-Goal-Training the episodes were stopped after completing the first goal or upon collision. In Full-Map-Training the episodes were stopped after completing the whole map or upon collision. The reasoning behind Single-Goal-Training is that the agent will encounter a bigger variety of states during training since it will start at different positions in the map. However the Full-Map-Training scenario is closer to the evaluation scenario since the agent has to complete multiple goals in succession during evaluation.
 Single-Goal-Training performed worse than Full-Map-Training in the previous work \autocite{maximilian} for all evaluation parcours except for the difficult one.
 
-A third possible regime would be Full-Map-Training with randomized starting positions, this combines both approaches. The Single-Goal-Training is not strictly worse or better than Full-Map-Training. Therefore is not clear what training regime to chose for this thesis, therefore SGT, FMT and FMT with randomized starting positions will be compared during the experimentation phase.
-% randomized starting positions also means start at random goals
-
-\subsection*{Training Light Settings}
-Since the agent utilizes a Convolutional Neural Network to be resilient towards changing light conditions it is also necessary to train the agent with varying light conditions, otherwise the adaptability of the CNN would not be fully utilized. This way the agent will be able to learn to generalize to different light conditions. The light conditions will be randomized for each training parcour.
-Training with fixed light settings could also provide interesting insights when comparing the results to the results of training with varying light settings. If there is enough time the agent will be trained with fixed light settings as well. The comparison would show if the varying light settings during training helps for the generalization to different light settings.
-
+In this thesis these two approaches will be experimented with in addition to another approach which I will call Fixed-Training, the most succesful approach will then be used for the remainder of the thesis. In Fixed-Training the agent will be trained on the same parcours that are later used for the evaluation, this is standard practise in the domain of Reinforcement Learning \autocite{rlbook2020}. In Fixed-Training a random parcour evaluation parcour is chosen to train the agent on in each episode.
 
 \begin{figure}
      \centering
-     \subfigure[Standard Lighting Agent POV]{\includegraphics[width=0.4\textwidth]{Bilder/light_setting_pov_standard.png}}\qquad
-     \subfigure[Standard Lighting Arena]{\includegraphics[width=0.5\textwidth]{Bilder/light_setting_arena_standard.png}}
-     \subfigure[Reduced Lighting Agent POV]{\includegraphics[width=0.4\textwidth]{Bilder/light_setting_pov_reduced_lighting.png}}\qquad
-     \subfigure[Reduced Lighting Arena]{\includegraphics[width=0.5\textwidth]{Bilder/light_setting_arena_reduced_lighting.png}}
-     \subfigure[Increased Lighting Agent POV]{\includegraphics[width=0.4\textwidth]{Bilder/light_setting_pov_increased_lighting.png}}\qquad
-     \subfigure[Increased Lighting Arena]{\includegraphics[width=0.5\textwidth]{Bilder/light_setting_arena_increased_lighting.png}}
-
-     \caption{Agent Camera POV and Arena Screenshots of the different light settings} \label{fig:1}
+     \subfigure[Single-Goal-Training]{\includegraphics[width=0.3\textwidth]{Bilder/training_regime_sgt.png}}\qquad
+     \subfigure[Full-Map-Training]{\includegraphics[width=0.4\textwidth]{Bilder/training_regime_fmt.png}}
+     \subfigure[Fixed-Training]{\includegraphics[width=0.3\textwidth]{Bilder/training_regime_fixed.png}}\qquad
+     \caption{Training regimes} 
+     \label{fig:training_regimes}
 \end{figure}
+
+% TODO we could also train it on the evaluation parcours, this would be the most similar to the evaluation scenario
+% This makes most sense since the agent will be evaluated on the evaluation parcours
+
+
+\subsection*{Training Light Settings}
+Since the agent utilizes a Convolutional Neural Network to be resilient towards changing light conditions it is also necessary to train the agent with varying light conditions, otherwise the adaptability of the CNN would not be fully utilized. This way the agent will be able to learn to generalize to different light conditions. The light conditions will be randomized for each training parcour similar to the light conditions during evaluation.
+Training with fixed light settings could also provide interesting insights when comparing the results to the results of training with varying light settings. This comparison would show if the varying light settings during training help in generalizing to different light settings.
+
 
 % TODO light_setting_pov_reduced_lighting_no_preprocessing from image printer shows that the colors are not clear in reduced lighting, this justifies the use of greyscaling
 
 
 % TODO do we need an image equalization if the network is trained on varying light conditions?
+% Image printer needs to show this
 
 \subsection*{Data Augmentation}
-Convolutional Neural Networks require a lot of data to learn and generalize. Data augmentation is a technique to increase the amount of data available during training by applying transformations to the collected data. Collected data can be used to produce many more training examples by applying transformations such as rotation, translation, scaling, flipping and colour changes. In addition to providing a more diverse set of training data, this saves a lot of time since the new data points are not collected in simulation. \autocite{conditional_imitation_learning} employed a diverse set of data augmentation for their imitation learning approach that used a CNN.
+
+Convolutional Neural Networks require a lot of data to learn and generalize. Data augmentation is a technique to increase the amount training data by applying transformations to the collected data such as rotation, translation, scaling, flipping and colour changes. In addition to providing a more diverse set of training data, this saves a lot of time since the new data points are not collected in simulation. \autocite{conditional_imitation_learning} employed a diverse set of data augmentation for their imitation learning approach that used a CNN.
 During the training process the collected images will be augmented by applying random transformations to them. The transformations change the image similarly to how different environment conditions (e.g. lighting, camera quality and fog) might change the image. It is not yet decided which transformations will be used, possible candidates are changes in contrast, brightness and tone, as well as filters like Gaussian blur, Gaussian noise, salt-and-pepper noise.
 Geometric transformations such as translations and rotations are not used since our control commands are not invariant to these transformations.
 
