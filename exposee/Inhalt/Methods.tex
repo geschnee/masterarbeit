@@ -1,109 +1,78 @@
 \chapter{Methods}
 \label{cha:Methods}
 
-
-
 \section{Task Description}
 
 In this section I will be describing the task and the simulation environment as these two aspects are the foundation of this thesis and will not change over the course of the project.
-The task is to develop an agent using reinforcement learning that is able to complete a parcour in a simulated environment without collisions. The agent has to traverse the parcour by passing through a number of goals indicated by pairs of either red or blue blocks without collisions. This problem belongs to the class of single player continuous state and action space problems. At each timestep the agent uses a neural network to process an image from the environment and produce two actions. The two actions are the acceleration values of the left and right wheel, these acceleration values are applied to the wheels until a new action is selected.% The timesteps do not have a fixed duration, a new timestep is started as soon as the last one is finished. The amount of timesteps per minute will be measured? This is like FPS?
-
-The task and agent are simulated using the Unity game engine, the game engine handles the rendering of the environment, collisions, agent movement and reward functions.
-
+The task is to develop an agent using reinforcement learning that is able to complete a parcour in a simulated environment without collisions. The agent has to traverse the parcour by passing through a number of goals indicated by pairs of either red or blue blocks without collisions. This problem belongs to the class of single player continuous state and action space problems. The observation space of the agent consists of an image that is taken from its front facing camera. At each timestep the agent uses a neural network to process the image and produce two actions. The two actions are the acceleration values of the left and right wheel, these acceleration values are applied to the wheels until a new action is selected.
+The task and agent are simulated using the Unity engine \ref{fig:unity}, the engine handles the rendering of the environment, collisions, agent movement and reward functions.
+% The timesteps do not have a fixed duration, a new timestep is started as soon as the last one is finished. The amount of timesteps per minute will be measured? This is like FPS?
 
 \begin{figure}
      \centering
      \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[width=0.4\textwidth]{Bilder/parcour.png}}\qquad
      \subfigure[Agent camera view]{\includegraphics[width=0.4\textwidth]{Bilder/agent_image_from_unity.png}}\\
      \caption{Unity simulation environment and agent camera view}
+     \label{fig:unity}
 \end{figure}
-
-
-\iffalse
-     \begin{figure}[h!]
-          \centering
-          \includegraphics[height=7cm]{Bilder/parcour.png}\\[2.5ex]
-          \caption{Example image of the agent at the start of a parcour with 3 goals in Unity}
-          \label{task}
-     \end{figure}
-     \begin{figure}[h!]
-          \centering
-          \includegraphics[height=7cm]{Bilder/agent_input_image.png}\\[2.5ex]
-          \caption{Example image that will be processed by the agent's convolution neural network.}
-          \label{input_image}
-     \end{figure}
-\fi
 
 % mention the similarity/simplicity of the task
 
 
 \section{Reinforcement learning algorithm and frameworks}
 
-As outlined in the related works section many different RL algorithms can be used to solve single player continuous state and action space problems. The PPO algorithms is most commonly used for problems of this class and has already been successfully used in the investigated task \autocite{maximilian}. The MuZero \autocite{alphagoimprovementmuzero} could also be used, however this algorithm does require a lot more compute resources during training and inference.
-In this thesis the PPO algorithm will be used.
+As outlined in the related works section many different RL algorithms can be used to solve single player continuous state and action space problems. The PPO algorithm is most commonly used for problems of this class and has already been successfully used in the investigated task \autocite{maximilian}. In this thesis the PPO algorithm will be used as discussed in Related Work.
 
-There are multiple approaches to training an agent in the Unity simulation environment as highlighted in the related works section, it is not yet decided which approach will be chosen, therefore I will quickly describe the possible scenarios and highlight their advantages and disavdantages.
+In this thesis the PPO algorithm from the stable-baselines3 library \autocite{sb3} will be used. The library is based on the PyTorch framework and provides APIs for training and evaluating reinforcement learning agents. It provides logging and visualization, it can also be extended for example to modify the training and evaluation algorithm. RL algorithms from stable-baselines3 are applied on Gymnasium environments \autocite{gymnasium}, as mentioned before the Unity simmulation is integrated in a Gymnasium environment. The communication between Unity and the Gymnasium environment is realized using the Pieceful Pie library \autocite{peacefulpie}. The PyTorch framework is used to implement the convolutional neural network, see \ref{fig:unitycommunication} for summary of the Unity-Python interaction.
 
-\subsection*{Unity and ML-Agents}
-
-Reinforcement learning agents can be trained directly in the Unity simulation environment using the ML-Agents framework \autocite{mlagents}. This approach has the advantage of being very simple to implement and use, since the agent and simulation are in the same framework. The biggest disadvantage of this approach is that it might be difficult to implement some of the implementation details that might be used in this thesis such as the proposed changes for dealing with delayed rewards.
-The PPO algorithm by \autocite{mlagents} was used in \autocite{maximilian} to successfully train the agent on the investigated task.
-
-\subsection*{Unity and separate reinforcement learning frameworks}
-
-There are many reinforcement learning frameworks publicly available that can be used to train agents in simulated environments, such as the OpenAI's baselines \autocite{sb3} and Google's dopamine \autocite{dopamine}. These frameworks often support the Gymnasium API \autocite{gymnasium}, wrapping the Unity simulation environment in a Gymnasium environment would allow for easy use of these frameworks. This approach has the advantage of being able to use the many features of these frameworks and makes it easy to change the training algorithms which might be necessary for the investigated implementation details. The disadvantage of this approach is that it might be difficult to wrap the Unity simulation environment in a Gymnasium environment, there already exist frameworks to help with this \autocite{peacefulpie}.
-
+\begin{figure}
+     \centering
+     \includegraphics[width=0.8\textwidth]{Bilder/unity_communication.png}
+     \caption{Unity and Python communication}
+     \label{fig:unitycommunication}
+\end{figure}
 
 % maybe mention the similarity/simplicity of the task here to show PPO is good
 
+\section{Reinforcement Learning Algorithm details}
 
-\section{Investigated implementation details}
-
-The goal of this thesis is to answer two questions with a subitem each.
-\begin{enumerate}
-     \item Is it possible to train an agent to reliably solve the parcours of all difficulty levels?
-           \begin{itemize}
-                \item Are memory mechanisms necessary in achieving this?
-           \end{itemize}
-     \item Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
-           \begin{itemize}
-                \item Is it possible to use a CNN which is small enough to be used in the JetBot?
-           \end{itemize}
-\end{enumerate}
-
-\subsection{Improvements for training the agent}
-
-\subsubsection{Reward shaping}
-
-TODO make the Reward function a seperate subsection?
-one subsubsection per xxxReward?
+\subsection{Reward function}
 % drl_for_ad says reward shaping is good
 
-Reward shaping is the practise of providing reinforcement learning agents with frequent and accurate rewards. This helps the agent develop the desired behaviour quicker and more reliably since reward signals are less sparse with reward shaping \autocite{drl_for_ad}. This practice was already employed by \autocite{maximilian} by providing the agent with a reward proportional to its speed, this encourages the agent to drive faster and thus hopefully complete the parcour quicker. This thesis will investigate the use of a reward proportional to the difference in distance to the next goal between timesteps, this should encourage the agent to drive towards the next goal and to drive faster in this direction.
+The design of the reward function is crucial for the success of any reinforcement learning algorithm and agent. The reward function should encourage the desired behaviour, in our case the agent should drive through all goals without collisions as quick as possible. The previous work by \autocite{maximilian} awarded a reward of 100 for completing the parcours, a reward of 1 for passing a goal and a reward of -1 for missing a goal, colliding with a wall/obstacle and timeouts. This should encourage the agent to not make any collisions and to pass through all goals, see EventReward \ref{fig:reward_function}. Furthermore a reward proportional to the agent's velocity at each step was awarded to encourage speed and thus quick parcour completions, see VelocityReward \ref{fig:reward_function}. 
 
-TODO change paragraph to include orientation reward
+The combination of the Event- and VelocityReward includes everything needed to encourage the desired agent behaviour, however the agents might fail to learn to navigate the parcour since the EventReward is very sparse. Reward shaping is the practise of providing reinforcement learning agents with frequent and accurate rewards. This helps the agent develop the desired behaviour quicker and more reliably since reward signals are less sparse and less delayed \autocite{drl_for_ad}. The VelocityReward can be considered as reward shaping since it provides the agent with a reward at each timestep.
+
+In this thesis the reward function will be further extended with a DistanceReward and OrientationReward, see \ref{fig:reward_function}. The DistanceReward is proportional to the difference in distance between the agent and the next goal during a timestep, this should encourage the agent to drive towards the next goal. The OrientationReward is proportional to the cosine similarity between the agent's direction and the direction towards the next goal, this should encourage the agent to drive in the direction of the next goal. The partial rewards are combined using a weighted sum, the weights will be determined during the experimentation phase. Setting a weight to zero will disable the corresponding reward shaping component.
+
 
 \begin{figure}
-     \[R(s_t,a_t) = c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot OrientationReward(s_t,a_t)
-          + c_3 \cdot VelocityReward(s_t, a_t) + c_4 \cdot EventReward(s_t, a_t)\]
-
-     \[OrientationReward(s_t,a_t) = S_C(NextGoalPosition - AgentPosition, agentDirection) \cdot \Delta T\]
-
-     \[DistanceReward(s_t,a_t) = \Delta distance(Agent, NextGoalPosition) \cdot \Delta T\]
-
-     \[VelocityReward(s_t, a_t) = v \cdot \Delta T \]
-
-     \[EventReward(s_t, a_t) = \begin{cases}
+     \centering
+     \begin{align}
+          R(s_t,a_t) &= c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot OrientationReward(s_t,a_t) \nonumber \\
+          &  + c_3 \cdot VelocityReward(s_t, a_t) + c_4 \cdot EventReward(s_t, a_t) \nonumber \\
+          OrientationReward(s_t,a_t) &= S_C(NextGoalPosition - AgentPosition, agentDirection) \cdot \Delta T \nonumber \\
+          DistanceReward(s_t,a_t) &= \Delta distance(Agent, NextGoalPosition) \cdot \Delta T \nonumber \\
+          VelocityReward(s_t, a_t) &= v \cdot \Delta T \nonumber \\
+          EventReward(s_t, a_t) &= \begin{cases}
                100,           \text{completed the parcour}           \\
                1,             \text{passed a goal}                   \\
                -1,            \text{missed a goal}                   \\
                -1,            \text{collision with wall or obstacle} \\
                -1,            \text{timeout}                         \\
-          \end{cases}\]
-     \caption{Reward Function, $S_C$ is the cosine similarity}
+               0,             \text{otherwise}                       \\
+          \end{cases} \nonumber
+     \end{align}
+     \caption{Complete reward function R with all its components}
+     \begin{tabular}{r@{: }l r@{: }l}
+     $S_C$ & cosine similarity & $c_i$ & weights\\
+     $s_t$& state t & $a_t$& action in state t 
+     \end{tabular}
+     \label{fig:reward_function}
 \end{figure}
 % cosine similarity is one for same direction, zero for orthogonal directions and -1 for opposite directions
 
+\iffalse
 \begin{figure}
      \[SmoothedReward(s_t,a_t) = \sum_{i=0}^{n} \gamma^{i} \cdot Reward(s_{t+i}, a_{t+i}) \]
      \caption{Reward Function that uses the reward of current timestep $t$ and the next $n-1$ timesteps, $\gamma$ is the discount factor (between 0 and 1)}
@@ -112,15 +81,18 @@ TODO change paragraph to include orientation reward
 % post: https://stackoverflow.com/questions/77626064/name-of-reward-function-that-utilizes-the-reward-of-the-next-n-steps
 % https://ai.stackexchange.com/
 
+
+Mein Ansatz zu n-step bootstrapping macht wenig Sinn, da die RL algorithmen bereits diese Art von Future Reward lernen
+Siehe AI Stackexchange Frage https://ai.stackexchange.com/questions/43068/what-is-the-name-of-the-reward-function-that-utilizes-the-rewards-of-the-next-n
+
+Es könnte Sinn machen zu beschreiben, wie das Environment diskretisiert wird und die Reward funktion mit dieser diskretisierten Step Funktion interagiert
+
 \subsubsection{Dealing with delayed rewards}
 Delayed rewards can be a big problem in reinforcement learning and make the training process difficult. Delayed rewards are rewards that are not obtained immediately after the responsible action is taken. In our environment an action \(a_n\) (e.g. turning right) may lead to a collision at state \(s_{n+x}\) which results in a negative reward for action \(a_{n+x}\). The RL algorithm might fail learn to avoid the action \(a_n\).
 
 There are a multiple approaches to dealing with delayed rewards. These approaches use the reward at the current timestep and the near future. These approaches result in a more accurate and dense reward signal and can improve the training stability and performance of the agent.
 N-step bootstrapping uses the rewards at the current step and the next \(n\) steps \autocite{nstepbootstrapping}.
 A similar approach does not use the reward from the next \(n\) steps but rather the cumulative reward encountered in the next \(n\) seconds \autocite{trackmania}. Due to the continuous nature of the environment this approach might be more suitable than N-step bootstrapping.
-
-
-
 
 % TODO the algorithm in nstepbootstrapping is different from my implementation, check if it is correct
 % the nstepbootstrapping in rlbook2020 describes the update targets of the neural network and requires value estimates from (one of) the next n steps
@@ -129,30 +101,32 @@ A similar approach does not use the reward from the next \(n\) steps but rather 
      % TODO check if this bootstrapping corresponds to the one in the paper
      \caption{N-step bootstrapping reward function \autocite{nstepbootstrapping}}
 \end{figure}
+\fi
 
-% TODO figure for n second bootstrapping?
 
-\subsubsection{Time perception}
+\subsection{Frame stacking}
 
 Two configurations of the agent by \autocite{maximilian} used a memory to enhance the agent's input, the memory consisted of the input of the last few steps of the agent. This technique of stacking the history has been widely used in RL for continuous \autocite{atari} and discrete action spaces \autocite{alphago}. This allows the agent to perceive object movement, time and velocities \autocite{atari}.
-In our case the agent needs a history since the next goal could leave the agent's current field of vision.
+This frame stacking will also be used to enhance the agent's input since the next goal could leave the agent's current field of vision.
+
+% TODO image of frame stacking?
 
 %However since the investigated environment does not have fixed timesteps this approach might not be as effective. The time elapsed between two steps can vary due to many factors such as varying compute resources. It could prove useful to provide the model with the input of the last few steps and in addition the elapsed time between these steps. % these few sentences only make sense if the varying time is dicussed in the first part of the Methods section
 
-% TODO test other memory mechanisms?
+% test other memory mechanisms?
 % like for example also feeding the previous time step's hidden layer activation as input
 % that way the agent would know the previous "decision" not just the previous input
 % not enough time, just use the same memory mechanism as in the previous work
 % the memory question is not a goal anymore
 
 
-\subsection{Improvements for Light setting robustness} \label{light_setting_robustness}
+\section{Implementation Details for Light setting robustness} \label{light_setting_robustness}
 
-\subsubsection{Convolutional Neural Networks}
+\subsection{Convolutional Neural Networks}
 
-The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis will investigate using convolutional neural networks instead of an object detection pipeline, this should make the agent more robust to varying light settings and improve the performance of the agent.
+The works by \autocite{merlin_flach} and \autocite{maximilian} showed that the agent's performance greatly depended on the quality of the input preprocessing pipeline. This object detection pipeline had difficulties detecting objects under varying light settings. This thesis uses convolutional neural networks instead of an object detection pipeline. Combined with an adapted training process, this should make the agent more robust to varying light settings and improve the performance of the agent.
 Using convolutional networks to process images is a common practise in the field of reinforcement learning, due to the ability of these networks to adapt. The convolutional neural network could potentially learn to identify relevant information in images more reliably than the previously used image detection pipeline. The research by \autocite{merlin_flach} showed that not all the information provided by the object detection pipeline was considered to be relevant by the neural network, this could be mitigated by training the CNN end-to-end.
-As a starting point for experimentation the CNN architecture will be the same as \autocite{human_level_control}.
+As a starting point for experimentation the CNN architecture will be the same as \autocite{human_level_control} which proved succesful for simple control tasks.
 
 % we use the default CnnPolicy network, is it the same as the one described in Atari?
 % architecture: https://github.com/DLR-RM/stable-baselines3/blob/d671402c9373391f44d8a2ad11deed615e0f4bae/stable_baselines3/common/torch_layers.py#L89-L106
@@ -162,7 +136,7 @@ As a starting point for experimentation the CNN architecture will be the same as
 % (more robustness?) (previous input was shit (sim2real paper wegen x, y, width, height input problem)) (previous system higly depended on bounding box detection)
 
 
-\subsubsection{Feature reduction / preprocessing}
+\subsection{Feature reduction / preprocessing}
 
 There are several preprocessing approaches that can be used to prepare an image for processing by a convolutional network. The goal of these approaches is to reduce the feature space to increase processing speed, they can also help encourage the network to generalize. The following steps were taken in the foundational \autocite{atari} paper. These techniques will be used due to the similar complexity of our task and many atari games.
 
@@ -173,7 +147,7 @@ There are several preprocessing approaches that can be used to prepare an image 
 \end{description}
 
 
-\subsubsection{Histogram Equalization}
+\subsection{Histogram Equalization}
 
 The previous work this thesis builds upon used the HSV colour space to extract the differently coloured objects. Colours in this space consist of three values, one for the hue, saturation and brightness. The hue value was used for extracting the objects. In theory the utilization of this colour space should make the object detection resilient to changes in brightness since this information does not affect the hue value. However this proved to not be true in practice as shown by \autocite{maximilian}.
 Convolutional neural network typically use the RGB colour space or a greyscale colour space. A histogram equalization of the input images could play a big role in making the agent more resilient to changes in illumination, with which the agent by \autocite{maximilian} struggled with. Image d) in \ref{fig:4bildchen} shows the effect of histogram equalization on an image, the image looks worse for identifying objects. This suggests the equalization might not be necessary/useful, it is to be investigated during the implementation/experimentation phase.
@@ -220,6 +194,8 @@ Training with fixed light settings could also provide interesting insights when 
 
      \caption{Agent Camera POV and Arena Screenshots of the different light settings} \label{fig:1}
 \end{figure}
+
+% TODO light_setting_pov_reduced_lighting_no_preprocessing from image printer shows that the colors are not clear in reduced lighting, this justifies the use of greyscaling
 
 
 % TODO do we need an image equalization if the network is trained on varying light conditions?
