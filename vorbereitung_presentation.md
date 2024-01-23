@@ -1,4 +1,4 @@
-# MIttwoch 29.12.
+# Mittwoch 29.12.
 
 
 # Vortrag 
