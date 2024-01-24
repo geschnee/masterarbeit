@@ -74,33 +74,54 @@ Ergbenisse Zwischenzeit:
 - mehr Logging Metriken in Tensorboard
 - Ausgliederung in Config Datei
 
-- Zeit zwischen Schritten ist sehr gross, vielleicht deswegen nicht gut lernfaehig
+- Zeit zwischen Schritten ist sehr gross, vielleicht deswegen nicht gut lernfähig
 
 
 # 16.01.2024
 
+## learn something
 - zwischenstufe aus Fixed und Random Spawn
-- Agent mit geringer zufaelliger Rotation an festem Platz mit Orientierungsreward um zu lernen auf das erste Tor zu fahren
+- Agent mit geringer zufälliger Rotation an festem Platz mit Orientierungsreward um zu lernen auf das erste Tor zu fahren
 
-- Training auf einfachem Scenario mit fixiertem Spawnpoint und aber (weniger) zufaelliger Rotation
+- Training auf einfachem Scenario mit fixiertem Spawnpoint und aber (weniger) zufälliger Rotation
     - Agent soll erstmal lernen durch das erste Tor zu fahren
     - Orientation Reward
 
+### Ergebnisse
+
+- neuer Parameter in Config: env_kwargs.spawn_point
+    - Fixed, OrientationRandom, OrientationVeryRandom and FullyRandom
+
+## Step time
 - Zeit zwischen Schritten untersuchen, warum sind die Zeiten sehr lang?
     - time/fps Metrik?
     - mean_episode_length
     - geringe mean_episode_length --> Agent kann nicht reagieren/lernen
     - weniger Environments
 
+### Ergebnisse
 
+- kein Performance Unterschied zwischen Editor und Windows standalone festgestellt (auf Laptop)
+- Editor ist schneller als Windows standalone auf dem Home PC (percall time 0.02 in Editor versus 0.04 in Windows standalone für unity_comms.py:129(rpc_call))
+
+
+- Problem war der Parallelitätsgrad TODO aussage checken
+
+## Endevents
 - keine Beendung der Episode bei Kollisionen
 - Abbruch nur bei Timeout und wenn das Ziel erreicht wurde
-    - Agent kann theoretisch von der Map fallen (Waende muessen hoeher sein)
+    - Agent kann theoretisch von der Map fallen
 
-- Unterschied zwischen Roboter in Simulation und Realitaet
+### Ergebnisse
+- wurde umgesetzt
+- Wände wurden erhöht, damit der Agent nicht von der Arena fallen kann
+
+
+## Sim Reality Diff
+- Unterschied zwischen Roboter in Simulation und Realität
     - Roboter Kamera Sichtfeld
     - Roboter Lenkwinkel statt Geschwindigkeitsunterschiede
-    - Roboter Variante mit festen Raedern + Kugel erstellen
+    - Roboter Variante mit festen Rädern + Kugel erstellen
 
 
 
