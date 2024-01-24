@@ -102,7 +102,7 @@ Ergbenisse Zwischenzeit:
 ### Ergebnisse
 
 - kein Performance Unterschied zwischen Editor und Windows standalone festgestellt (auf Laptop)
-- Editor ist schneller als Windows standalone auf dem Home PC (percall time 0.02 in Editor versus 0.04 in Windows standalone für unity_comms.py:129(rpc_call))
+- Editor ist schneller als Windows standalone auf dem Home PC (percall time 0.02 in Editor versus 0.05 in Windows standalone für unity_comms.py:129(rpc_call))
 
 
 - Problem war der Parallelitätsgrad TODO aussage checken
