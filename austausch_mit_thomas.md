@@ -103,9 +103,15 @@ Ergbenisse Zwischenzeit:
 
 - kein Performance Unterschied zwischen Editor und Windows standalone festgestellt (auf Laptop)
 - Editor ist schneller als Windows standalone auf dem Home PC (percall time 0.02 in Editor versus 0.05 in Windows standalone für unity_comms.py:129(rpc_call))
+- Home PC schneller als Laptop
+
+- Problem war der Parallelitätsgrad
+    - Laptop in Editor mit n_env 50 percall time 0.08 vs n_env 10 percall time 0.04
 
 
-- Problem war der Parallelitätsgrad TODO aussage checken
+- Constante Timesteplaenge wurde implementiert TODO
+    - definiert in cfg.env_kwargs.step_time
+    - keine Physik in der Arena nach Ablauf der Zeit bis naechste Aktion zugewiesen ist
 
 ## Endevents
 - keine Beendung der Episode bei Kollisionen
