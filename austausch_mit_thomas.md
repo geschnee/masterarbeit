@@ -91,6 +91,10 @@ Ergbenisse Zwischenzeit:
 
 - neuer Parameter in Config: env_kwargs.spawn_point
     - Fixed, OrientationRandom, OrientationVeryRandom and FullyRandom
+- eval_medium/success_rate von 95% mit spawn OrientationVeryRandom:
+{'comment': 'now trying again with fixed spawn pos but fully 45 Degree random spawn orientation, can it still reach success rate of 1 for easy parcour?', 'n_envs': 10, 'num_evals_per_difficulty': 20, 'n_epochs': 5, 'log_interval': 5, 'batch_size': 64, 'n_steps': 64, 'copy_model_from': False, 'env_kwargs': {'jetbot': 'DifferentialJetBot', 'spawn_point': 'OrientationVeryRandom', 'single_goal': False, 'frame_stacking': 3, 'image_preprocessing': {'grayscale': True, 'equalize': True, 'contrast_increase': 'TODO', 'normalize_images': False}, 'coefficients': {'distanceCoefficient': 0.5, 'orientationCoefficient': 0.0, 'velocityCoefficient': 0.0, 'eventCoefficient': 1.0}, 'trainingMapType': 'randomEvalEasy', 'width': 500, 'height': 168}}
+- print_states_after_reset.py shows that for OrientationVeryRandom the first goal in some medium and hard parcours is not fully in the camera field after reset
+- print_states_after_reset.py shows that for OrientationRandom the first goal in some hard parcours is not fully in the camera field after reset
 
 ## Step time
 - Zeit zwischen Schritten untersuchen, warum sind die Zeiten sehr lang?
@@ -109,8 +113,8 @@ Ergbenisse Zwischenzeit:
     - Laptop in Editor mit n_env 50 percall time 0.08 vs n_env 10 percall time 0.04
 
 
-- Constante Timesteplaenge wurde implementiert TODO
-    - definiert in cfg.env_kwargs.step_time
+- Constante Timesteplaenge wurde implementiert, es muss aber noch getestet/trainiert werden
+    - definiert in cfg.env_kwargs.fixedTimestepsLength
     - keine Physik in der Arena nach Ablauf der Zeit bis naechste Aktion zugewiesen ist
 
 ## Endevents
@@ -129,5 +133,34 @@ Ergbenisse Zwischenzeit:
     - Roboter Lenkwinkel statt Geschwindigkeitsunterschiede
     - Roboter Variante mit festen Rädern + Kugel erstellen
 
+### Ergebnisse
+
+- DifferentialJetBot gebaut
+    - bessere Performance als der vorherige JetBot
+- Reverse Controller in car-following_carla_dresden seht interessant aber definitiv out of scope für diese Arbeit
 
 
+
+
+
+
+
+
+
+
+
+# 31.01.2024
+
+
+
+
+
+
+
+
+
+
+nächste TODOS:
+
+- DifferentialJetBot mit FixedSpawn und randomEval map testen
+- fixedLength testen
