@@ -147,20 +147,21 @@ Ergbenisse Zwischenzeit:
 
 
 
-
-
 # 31.01.2024
 
-
-
-
-
-
-
-
+Hauptpunkt
+- Grafik fuer trainingsaufbau/Algorithmus schreiben (collect, train eval Loop)
+- Terminologien festlegen in den Grafiken
 
 
 nächste TODOS:
 
+- Bewertungen mit mehr Episoden testen (nicht nur 20)
+- Videos fuer gute durchlaufe aufnehmen
+- untersuchen warum die Performance bei spaeteren Iterationen nachlaesst
+    - zu wenig data collection
+    - Stabilitaet
 - DifferentialJetBot mit FixedSpawn und randomEval map testen
+- StandardJetBot nochmal testen
+    - wenn der nicht so gut ist, dann immer DifferentialJetBot verwenden
 - fixedLength testen
