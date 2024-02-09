@@ -158,10 +158,18 @@ nächste TODOS:
 
 - Bewertungen mit mehr Episoden testen (nicht nur 20)
 - Videos fuer gute durchlaufe aufnehmen
+    - https://gist.github.com/DashW/74d726293c0d3aeb53f4
 - untersuchen warum die Performance bei spaeteren Iterationen nachlaesst
     - zu wenig data collection
+        - fast perfekte Performance für easy und medium Setting, totaler Absturz für hard Setting ab einem gewissen Punkt 08-08-2024/10....
+        - {'comment': 'Trying with more n_steps, does the performance still drop off after a while? does it drop off later?', 'n_envs': 10, 'num_evals_per_difficulty': 20, 'n_epochs': 5, 'log_interval': 5, 'batch_size': 64, 'n_steps': 256, 'copy_model_from': False, 'env_kwargs': {'jetbot': 'StandardJetBot', 'spawn_point': 'OrientationRandom', 'frame_stacking': 10, 'image_preprocessing': {'grayscale': True, 'equalize': True, 'contrast_increase': 'TODO', 'normalize_images': False}, 'coefficients': {'distanceCoefficient': 0.5, 'orientationCoefficient': 0.0, 'velocityCoefficient': 0.0, 'eventCoefficient': 1.0}, 'trainingMapType': 'randomEval', 'fixedTimestepsLength': False, 'width': 500, 'height': 168}}
+
+
+
     - Stabilitaet
 - DifferentialJetBot mit FixedSpawn und randomEval map testen
 - StandardJetBot nochmal testen
     - wenn der nicht so gut ist, dann immer DifferentialJetBot verwenden
+    - Run 2024-02-04\11-56-53\tmp\PPO_1 vom Desktop PC zeigt der StandardJetBot kann auch gute Ergebnisse erzielen
+    - {'comment': 'Trying with StandardJetBot again, can it reach the performance of the DifferentialJetBot with the same settings?', 'n_envs': 10, 'num_evals_per_difficulty': 20, 'n_epochs': 5, 'log_interval': 5, 'batch_size': 64, 'n_steps': 64, 'copy_model_from': False, 'env_kwargs': {'jetbot': 'StandardJetBot', 'spawn_point': 'OrientationRandom', 'frame_stacking': 10, 'image_preprocessing': {'grayscale': True, 'equalize': True, 'contrast_increase': 'TODO', 'normalize_images': False}, 'coefficients': {'distanceCoefficient': 0.5, 'orientationCoefficient': 0.0, 'velocityCoefficient': 0.0, 'eventCoefficient': 1.0}, 'trainingMapType': 'randomEval', 'fixedTimestepsLength': False, 'width': 500, 'height': 168}}
 - fixedLength testen
