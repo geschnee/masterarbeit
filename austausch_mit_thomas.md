@@ -165,3 +165,11 @@ nächste TODOS:
 - StandardJetBot nochmal testen
     - wenn der nicht so gut ist, dann immer DifferentialJetBot verwenden
 - fixedLength testen
+
+
+# 14.02.2024
+
+- Clinicum Digitale 2024 in Dresden
+    - Lehrgang für Medizin und Informatik
+    - 18.03.2024 bis 27.03.2024 statt.
+    - https://digitalhealth.tu-dresden.de/career-education/students/clinicum-digitale/ 
