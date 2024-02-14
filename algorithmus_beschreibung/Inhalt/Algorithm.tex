@@ -112,7 +112,7 @@ RolloutBuffer \GETS \CALL{RolloutBuffer}{rollout\_buffer\_size}\\
 Model \GETS \CALL{Model}{model\_parameters}\\
 Optimizer \GETS \CALL{Optimizer}{optimizer\_parameters}\\
 
-
+best\_success\_rate \GETS 0\\
 num\_timesteps \GETS 0\\
 iteration \GETS 0\\
 \WHILE num\_timesteps < total\_timesteps \DO 

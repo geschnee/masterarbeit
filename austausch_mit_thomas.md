@@ -181,3 +181,9 @@ nächste TODOS:
 - Wort Game aus Codebase und Algorithmus beschreibung entfernen
     - Sollte stattdessen Episode sein https://en.wikipedia.org/wiki/Proximal_Policy_Optimization
     - nochmal mit Barto Buch gegenprüfen
+
+- Licht mit zufälliger Intensität
+- Reproduzierbarkeit der Ergebnisse
+- Demo modus
+- nur noch mit DifferentialJetBot weiterarbeiten
+- Bewertung mit Fixierter Position und zufälliger Orientierung (Vergleich)
