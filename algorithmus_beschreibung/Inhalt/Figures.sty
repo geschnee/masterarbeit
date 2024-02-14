@@ -1,0 +1,104 @@
+\chapter{Figures}
+\label{cha:Figures}
+
+\begin{figure}
+     \centering
+     \subfigure[Example image of the agent at the start of a parcour with 3 goals in Unity]{\includegraphics[width=0.4\textwidth]{Bilder/parcour.png}}\qquad
+     \subfigure[Agent camera view]{\includegraphics[width=0.4\textwidth]{Bilder/agent_image_from_unity.png}}\\
+     \caption{Unity simulation environment and agent camera view}
+     \label{fig:unity}
+\end{figure}
+
+
+
+\begin{figure}
+     \centering
+     \includegraphics[width=0.8\textwidth]{Bilder/unity_communication.png}
+     \caption{Unity and Python communication}
+     \label{fig:unitycommunication}
+\end{figure}
+
+% maybe mention the similarity/simplicity of the task here to show PPO is good
+
+
+\begin{figure}
+     \centering
+     \begin{align}
+          R(s_t,a_t) &= c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot OrientationReward(s_t,a_t) \nonumber \\
+          &  + c_3 \cdot VelocityReward(s_t, a_t) + c_4 \cdot EventReward(s_t, a_t) \nonumber \\
+          DistanceReward(s_t,a_t) &= \Delta distance(Agent, NextGoalPosition) \cdot \Delta T \nonumber \\
+          OrientationReward(s_t,a_t) &= S_C(NextGoalPosition - AgentPosition, agentDirection) \cdot \Delta T \nonumber \\
+          VelocityReward(s_t, a_t) &= v \cdot \Delta T \nonumber \\
+          EventReward(s_t, a_t) &= \begin{cases}
+               100,           \text{completed the parcour}           \\
+               1,             \text{passed a goal}                   \\
+               -1,            \text{missed a goal}                   \\
+               -1,            \text{collision with wall or obstacle} \\
+               -1,            \text{timeout}                         \\
+               0,             \text{otherwise}                       \\
+          \end{cases} \nonumber
+     \end{align}
+     \caption{Complete reward function R with all its components}
+     \begin{tabular}{r@{: }l r@{: }l}
+     $S_C$ & cosine similarity & $c_i$ & weights\\
+     $s_t$& state t & $a_t$& action in state t 
+     \end{tabular}
+     \label{fig:reward_function}
+\end{figure}
+% cosine similarity is one for same direction, zero for orthogonal directions and -1 for opposite directions
+
+\iffalse
+\begin{figure}
+     \[SmoothedReward(s_t,a_t) = \sum_{i=0}^{n} \gamma^{i} \cdot Reward(s_{t+i}, a_{t+i}) \]
+     \caption{Reward Function that uses the reward of current timestep $t$ and the next $n-1$ timesteps, $\gamma$ is the discount factor (between 0 and 1)}
+\end{figure}
+
+% post: https://stackoverflow.com/questions/77626064/name-of-reward-function-that-utilizes-the-reward-of-the-next-n-steps
+% https://ai.stackexchange.com/
+
+
+
+% TODO the algorithm in nstepbootstrapping is different from my implementation, check if it is correct
+% the nstepbootstrapping in rlbook2020 describes the update targets of the neural network and requires value estimates from (one of) the next n steps
+\begin{figure}
+     \[BootstrappedReward(s_t,a_t) = R(s_t,a_t) + \gamma R(s_{t+1},a_{t+1}) + \gamma^2 R(s_{t+2},a_{t+2}) + ... + \gamma^n R(s_{t+n},a_{t+n})\]
+     % TODO check if this bootstrapping corresponds to the one in the paper
+     \caption{N-step bootstrapping reward function \autocite{nstepbootstrapping}}
+\end{figure}
+\fi
+
+
+\begin{figure}
+     \centering
+     \subfigure[Original Image]{\includegraphics[width=0.5\textwidth]{Bilder/agent_image_from_unity.png}}\qquad
+     \subfigure[Downsampled image]{\includegraphics[width=0.25\textwidth]{Bilder/agent_downsampled.png}}
+     \subfigure[greyscale]{\includegraphics[width=0.25\textwidth]{Bilder/agent_grey.png}}\qquad
+     \subfigure[histogram equalized image]{\includegraphics[width=0.25\textwidth]{Bilder/agent_equalized.png}}
+     \caption{4 Stages of preprocessing images for the CNN}
+     \label{fig:4bildchen}
+\end{figure}
+
+\begin{figure}
+     \centering
+     \subfigure[Single-Goal-Training]{\includegraphics[width=0.3\textwidth]{Bilder/training_regime_sgt.png}}
+     \subfigure[Full-Map-Training]{\includegraphics[width=0.3\textwidth]{Bilder/training_regime_fmt.png}}
+     \subfigure[Fixed-Training (hard parcour)]{\includegraphics[width=0.3\textwidth]{Bilder/training_regime_fixed_hard.png}}
+     \caption{Training regimes} 
+     \label{fig:training_regimes}
+\end{figure}
+
+\begin{figure}
+     \centering
+     \subfigure[Original image]{\includegraphics[width=0.3\textwidth]{Bilder/data_entry_original.png}}
+     \subfigure[Gaussian Noise $\mu=0$ $\sigma=5$]{\includegraphics[width=0.3\textwidth]{Bilder/data_entry_augmented_gaussian_sigma_5.png}}
+     \subfigure[salt-and-pepper noise]{\includegraphics[width=0.3\textwidth]{Bilder/data_entry_augmented_salt_and_pepper.png}}
+     \caption{Data augmentation examples}
+     \label{fig:data_augmentation}
+\end{figure}
+
+% TODO find another paper with data augmentaton
+
+
+
+% TODO wenn ", this" oder ", the" oder ", they" vorkommt ist es meist ein Run-on sentence, man sollte die Sätze aufteilen
+% entweder mit einem Punkt oder mit einem Komma und einem Konjunktion (and, but, or, so, yet, which, therefore)

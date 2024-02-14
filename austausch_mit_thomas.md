@@ -163,9 +163,6 @@ nächste TODOS:
     - zu wenig data collection
         - fast perfekte Performance für easy und medium Setting, totaler Absturz für hard Setting ab einem gewissen Punkt 08-08-2024/10....
         - {'comment': 'Trying with more n_steps, does the performance still drop off after a while? does it drop off later?', 'n_envs': 10, 'num_evals_per_difficulty': 20, 'n_epochs': 5, 'log_interval': 5, 'batch_size': 64, 'n_steps': 256, 'copy_model_from': False, 'env_kwargs': {'jetbot': 'StandardJetBot', 'spawn_point': 'OrientationRandom', 'frame_stacking': 10, 'image_preprocessing': {'grayscale': True, 'equalize': True, 'contrast_increase': 'TODO', 'normalize_images': False}, 'coefficients': {'distanceCoefficient': 0.5, 'orientationCoefficient': 0.0, 'velocityCoefficient': 0.0, 'eventCoefficient': 1.0}, 'trainingMapType': 'randomEval', 'fixedTimestepsLength': False, 'width': 500, 'height': 168}}
-
-
-
     - Stabilitaet
 - DifferentialJetBot mit FixedSpawn und randomEval map testen
 - StandardJetBot nochmal testen
@@ -181,3 +178,6 @@ nächste TODOS:
     - Lehrgang für Medizin und Informatik
     - 18.03.2024 bis 27.03.2024 statt.
     - https://digitalhealth.tu-dresden.de/career-education/students/clinicum-digitale/ 
+- Wort Game aus Codebase und Algorithmus beschreibung entfernen
+    - Sollte stattdessen Episode sein https://en.wikipedia.org/wiki/Proximal_Policy_Optimization
+    - nochmal mit Barto Buch gegenprüfen
