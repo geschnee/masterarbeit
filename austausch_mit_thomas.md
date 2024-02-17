@@ -187,3 +187,6 @@ nächste TODOS:
 - Demo modus
 - nur noch mit DifferentialJetBot weiterarbeiten
 - Bewertung mit Fixierter Position und zufälliger Orientierung (Vergleich)
+
+
+zusätzlich?: kleine Indikatorobjekte oben an den toren anbringen wenn erfolgreich / nicht erfolgreich durchfahren?
