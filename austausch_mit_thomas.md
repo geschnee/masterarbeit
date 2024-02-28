@@ -200,16 +200,33 @@ Ergebnisse:
 - Licht in Config aufgenommen
 - erweiterte Evals für Licht Settings low, standard und bright
     - benötigt (3x) mehr Zeit
-    - Licht settings sind durch Licht Intensitäten definiert (2.5, 5 und 7.5)
+    - Licht settings sind durch Licht Intensitäten (2.5, 5 und 7.5) und Skybox definiert
+- FixedTimestep length umgesetzt
+
 
 # 28.02.2024
 
 - Wie sollten die Skyboxen aussehen?
     - Derzeit blauer Horizont in verschiedenen Helligkeiten
         - durch exposure Wert ist der Horizont heller als der Himmel
+        - TODO horizont entfernen, "diffuses" list statt horizont
+        - Hinweise auf Lichtverhältnisse in der Arena aus den Vorgaengerpapern lesen
     - vielleicht sollte lieber die Exposure gleich bleiben und der Ground + Sky Tint angepasst werden
 - Welche Startposition sollte im Eval verwendet werden?
     - OrientatonRandom (bisher verwendet)
     - Fixed (Maximilian)
+        - bei OrientationRandom bleiben --> Fortschritt in der Policy Robustness 
 
+- fixed Timestep length oder nicht --> in Wissenschaft pruefen was genutzt wird
+    - fixedTimestep beschraenkt die Qualitaet der Policy
+    - fixedTimestep False und n_env 1 fuehrt zu einer Policy die nur durch die Rechenleistung limitiert ist
+        - testen --> was waeren in dem Fall die FPS
 
+- Licht_setting in Training wie in der Evaluation (ein Setting zufaellig waehlen)
+    - ist damit naeher an den Evaluierungen
+
+- Hyper-V-Manager pruefen
+    - Hyper-V-Manager wird fuer die Rechner am Scads verwendet
+    - kann ich dazu ein Image vorbereiten (mit Windows und Unity)
+
+- Repo public schalten und Link schicken
