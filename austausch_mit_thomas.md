@@ -189,4 +189,27 @@ nächste TODOS:
 - Bewertung mit Fixierter Position und zufälliger Orientierung (Vergleich)
 
 
-zusätzlich?: kleine Indikatorobjekte oben an den toren anbringen wenn erfolgreich / nicht erfolgreich durchfahren?
+Ergebnisse:
+- Videos (Gifs) werden für Evalläufe erstellt
+    - Gifs aus Agentenperspektive (ohne Preprocessing)
+    - Gifs als Arenaüberblick
+    - kleine Indikatorobjekte oben an den toren angebracht
+        - nicht sichtbar für den Agent
+        - grün wenn Tor in der Mitte durchfahren
+        - schwarz wenn Tor verpasst
+- Licht in Config aufgenommen
+- erweiterte Evals für Licht Settings low, standard und bright
+    - benötigt (3x) mehr Zeit
+    - Licht settings sind durch Licht Intensitäten definiert (2.5, 5 und 7.5)
+
+# 28.02.2024
+
+- Wie sollten die Skyboxen aussehen?
+    - Derzeit blauer Horizont in verschiedenen Helligkeiten
+        - durch exposure Wert ist der Horizont heller als der Himmel
+    - vielleicht sollte lieber die Exposure gleich bleiben und der Ground + Sky Tint angepasst werden
+- Welche Startposition sollte im Eval verwendet werden?
+    - OrientatonRandom (bisher verwendet)
+    - Fixed (Maximilian)
+
+
