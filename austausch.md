@@ -210,6 +210,7 @@ Ergebnisse:
     - Derzeit blauer Horizont in verschiedenen Helligkeiten
         - durch exposure Wert ist der Horizont heller als der Himmel
         - TODO horizont entfernen, "diffuses" list statt horizont
+            - https://www.youtube.com/watch?v=fM0G-_jnSYY Einfach leichten Farbverlauf mit Paint.net erstellen
         - Hinweise auf Lichtverhältnisse in der Arena aus den Vorgaengerpapern lesen
     - vielleicht sollte lieber die Exposure gleich bleiben und der Ground + Sky Tint angepasst werden
 - Welche Startposition sollte im Eval verwendet werden?
