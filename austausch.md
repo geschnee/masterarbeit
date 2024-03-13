@@ -292,7 +292,42 @@ wie kann man das vermeiden?
 
 # 13.08.2024
 
+Performance fuer hoehere Schwirigkeiten waren niedriger als fuer die einfachen Schwierigkeiten
+- einmal trainineren fuer jede Schwierigkeit alleine
+- das zeigt, ob der Agent theoretisch in der Lage ist diese Schwierigkeit zu bewaeltigen
+Andere Moeglichkeiten:
+- Moeglichkeit: in der Observation mitliefern welche Schwierigkeit der Parkour gerade hat (z.B. extra Channel im Bild)
+
+
+Curriculum Learning anschauen
+
+## Licht
+
 - Training + Eval mit unterschiedlichen lichtverhältnissen durchführen
+   - verschiedene Preprocessing Schritte
+
+
+## unlimited timestep length
+
+- single env nochmal testen mit faktor 10 auf die collect rollout steps Anzahl (gleich viele Daten pro Collect rollout sammeln wie in 10-env-erfolgreich-cfg)
+- single env Algorithmus lief noch nicht lange genug
+
+## Unity Python Communikation
+
+- Unity Python kommunikation verbessern
+    - andere Library/Ansatz verwenden um die Bilder zu uebertragen
+        - Performance vergleichen und dokumentieren
+    - ChatGPT fragen weil es die Library Dokus kennt
+    - andere Libraries nutzen die schneller sind?
+
+
+## Licht Invarianz
+
+Bildverarbeitung mit OpenCV, vielleicht sind dort Ansaetze fuer Lichtinvarianz
+
+
+
+
 
 
 
