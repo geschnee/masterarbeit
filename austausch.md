@@ -209,25 +209,95 @@ Ergebnisse:
 - Wie sollten die Skyboxen aussehen?
     - Derzeit blauer Horizont in verschiedenen Helligkeiten
         - durch exposure Wert ist der Horizont heller als der Himmel
-        - TODO horizont entfernen, "diffuses" list statt horizont
+        - TODO horizont entfernen, "diffuses" licht statt horizont
             - https://www.youtube.com/watch?v=fM0G-_jnSYY Einfach leichten Farbverlauf mit Paint.net erstellen
         - Hinweise auf Lichtverhältnisse in der Arena aus den Vorgaengerpapern lesen
     - vielleicht sollte lieber die Exposure gleich bleiben und der Ground + Sky Tint angepasst werden
+
 - Welche Startposition sollte im Eval verwendet werden?
     - OrientatonRandom (bisher verwendet)
     - Fixed (Maximilian)
         - bei OrientationRandom bleiben --> Fortschritt in der Policy Robustness 
 
-- fixed Timestep length oder nicht --> in Wissenschaft pruefen was genutzt wird
+- fixed Timestep length oder nicht
     - fixedTimestep beschraenkt die Qualitaet der Policy
     - fixedTimestep False und n_env 1 fuehrt zu einer Policy die nur durch die Rechenleistung limitiert ist
         - testen --> was waeren in dem Fall die FPS
+    - in Wissenschaft pruefen was genutzt wird
+        - https://proceedings.mlr.press/v80/lee18b/lee18b.pdf
+        - https://www.youtube.com/watch?v=kWHSH2HgbNQ
+        - MCTS for continuous games: https://proceedings.mlr.press/v80/lee18b/lee18b.pdf
+        - Reinforcement Learning Methods for Continuous-Time Markov Decision Problems
+            - NIPS-1994-reinforcement-learning-methods-for-continuous-time-markov-decision-problems-Paper.pdf
+            - sie erweitern die Konzepte für Continuous time (mit unterschiedlich langen timesteps)
+            - wenn timesteps die gleiche Länge (1) haben, sind die Erweiterungen equivalent zu den standard Gleichungen
+        -  Doya, K.: Temporal difference learning in continuous time and space. In Advances in
+Neural Information Processing Systems 8
+        - Kushner: pringer-Verlag, Berlin. Kushner, H. J., Dupuis, P. (1992). Numerical Methods for Stochastic Control Problems in Continuous Time
+        - Bertsekas und Tsitsiklis: Neuro-Dynamic Programming
+        - RL Book 2020 "a stochastic optimal path problem"
+        - Atari paper hat 50 millionen Frames im Training analysiert
 
 - Licht_setting in Training wie in der Evaluation (ein Setting zufaellig waehlen)
     - ist damit naeher an den Evaluierungen
+    - ist erledigt
 
 - Hyper-V-Manager pruefen
     - Hyper-V-Manager wird fuer die Rechner am Scads verwendet
     - kann ich dazu ein Image vorbereiten (mit Windows und Unity)
+        - diese Funktion ist auf dem Rechner deaktiviert laut Johannes Kreis
 
 - Repo public schalten und Link schicken
+    - ist erledigt
+
+## Ergebnisse:
+
+### Skybox
+
+Skyboxen sind angepasst
+
+
+### Fixed oder unlimited timesteps
+- beides möglich in Research
+- Fixed ist üblicher und passt von der Theorie perfekt zur genutzten PPO-Implementierung
+    - unlimited müsste Formeln erweitern laut NIPS-1994-reinforcement-learning-methods-for-continuous-time-markov-decision-problems-Paper.pdf
+
+- Ergebnis unlimited policy mit einem Env (in theorie die beste Policy weil unlimited und keine Parallelität):
+    - instabiles training
+    - ![instabiles Training single env](./single_env_instabiles_training.jpg)
+    - geringe Anzahl an gesammelten Episoden pro collect_rollouts call
+
+    - realtime fps sind nicht höher als bei 10envs 
+    - gelb ist 10env, andere Single ![single vs 10 env (gelb) fps](./single_env_fps_gelb-ist-10-env.jpg)
+
+
+### Training
+
+#### Initialisierung
+- Trainingserfolg ist stark abhängig von der Initialisierung
+
+![alle gleiche Configs und Code](./training_progress.PNG)
+
+#### Schwierigkeit
+- SuccessRate im Medium und Hard Setting ist deutlich niedriger als im Easy Setting
+
+wie kann man das vermeiden?
+- mehr medium und hard im Training zeigen (verhältnismäßig)
+
+### Licht Invarianz
+
+- ich suche nach Preprocessing Schritten um die Policy resistenter zu machen
+
+
+
+# 13.08.2024
+
+- Training + Eval mit unterschiedlichen lichtverhältnissen durchführen
+
+
+
+Links die noch zu lesen sind:
+https://datascience.stackexchange.com/questions/22796/convolutional-network-for-classification-extremely-sensitive-to-lighting
+https://ieeexplore.ieee.org/document/8885098
+https://www.nature.com/articles/s41598-023-31532-9
+https://www.google.com/search?q=light+invariant+convolutional+neural+network&sca_esv=224fa05bca59979e&sca_upv=1&sxsrf=ACQVn0_48uHNj8n4H8vfAWItbWJlLleBAw%3A1709902643683&ei=MwvrZYL5KPHqi-gPw-uwoAI&oq=light+invariant+convol&gs_lp=Egxnd3Mtd2l6LXNlcnAiFmxpZ2h0IGludmFyaWFudCBjb252b2wqAggAMgUQIRigATIFECEYoAEyBRAhGKABMgUQIRifBTIFECEYnwUyBRAhGJ8FMgUQIRifBTIFECEYnwUyBRAhGJ8FMgUQIRifBUjtMVAAWMwncAB4AJABAZgBlQOgAfIjqgEKMC4xMS44LjIuMbgBA8gBAPgBAZgCFaACwiHCAgQQIxgnwgIKECMYgAQYigUYJ8ICChAAGIAEGIoFGEPCAgsQLhiABBixAxiDAcICCxAAGIAEGLEDGIMBwgILEC4YgAQYxwEY0QPCAggQABiABBixA8ICEBAAGIAEGIoFGEMYsQMYgwHCAgoQABiABBgUGIcCwgIOEAAYgAQYigUYsQMYgwHCAg4QLhiABBixAxjHARjRA8ICEBAuGIAEGBQYhwIYxwEY0QPCAg0QABiABBiKBRixAxgKwgIFEAAYgATCAgUQLhiABMICGhAuGIAEGMcBGNEDGJcFGNwEGN4EGOAE2AEBwgIIEAAYgAQYywHCAgoQABiABBjLARgKwgIGEAAYFhgewgIJEAAYgAQYDRgTwgIIEAAYFhgeGBPCAgoQABgeGA0YDxgTwgIKEAAYFhgeGA8YE8ICDBAAGBYYHhgPGBMYCsICCBAAGBYYHhgPwgIKEAAYFhgeGA8YCsICBxAhGAoYoAGYAwC6BgYIARABGBSSBwgwLjExLjguMqAHla0B&sclient=gws-wiz-serp

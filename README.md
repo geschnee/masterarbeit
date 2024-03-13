@@ -304,3 +304,11 @@ wir haben keinen Zuhause, nur Arduinos
 # Templates
 
 https://git.informatik.uni-leipzig.de/dbs/teaching_templates/-/tree/main
+
+
+
+# drawing neural networks:
+
+https://www.kaggle.com/discussions/getting-started/253300
+
+https://alexlenail.me/NN-SVG/AlexNet.html
