@@ -290,7 +290,7 @@ wie kann man das vermeiden?
 
 
 
-# 13.08.2024
+# 13.03.2024
 
 Performance fuer höhere Schwierigkeiten waren niedriger als für die einfachen Schwierigkeiten
 - einmal trainineren für jede Schwierigkeit alleine
@@ -332,13 +332,102 @@ Curriculum Learning anschauen
       678    0.039    0.000  122.010    0.180 my_on_policy_algorithm.py:852(get_obs_bundled_calls)
       678    0.004    0.000   56.448    0.083 carsimGymEnv.py:211(unityGetObservationAllEnvs)
 
-get_obs_single_calls sendet für jedes Env einen Request nach Observation
-get_obs_bundled_calls sendet einen Request für die Observations aller Envs
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   single calls:
+        4    0.426    0.106 2670.812  667.703 my_on_policy_algorithm.py:184(collect_rollouts)
+     2048    0.011    0.000 1333.410    0.651 my_on_policy_algorithm.py:920(step_wrapper)
+    20740    0.242    0.000  874.083    0.042 carsimGymEnv.py:244(unityGetObservation)
+
+
+    bundled calls:
+        4    0.464    0.116 1905.969  476.492 my_on_policy_algorithm.py:184(collect_rollouts)
+     2048    0.656    0.000  849.769    0.415 my_on_policy_algorithm.py:920(step_wrapper)
+     2048    0.022    0.000  557.992    0.272 carsimGymEnv.py:247(unityGetObservationAllEnvs)
+
+single calls sendet für jedes Env einen Request nach Observation
+bundled calls sendet einen Request für die Observations aller Envs
 
 
 ## Licht Invarianz
 
 Bildverarbeitung mit OpenCV, vielleicht sind dort Ansaetze fuer Lichtinvarianz
+
+
+# 02.04.2024
+
+## Unlimited Step Length
+
+Training mit unlimited policy single env wurde mehrmals durchgeführt. (mit 10x collect_rollouts steps)
+Unerklärlicherweise ist die Performance schlechter als mit 10 envs, trotz gemeinsamer Hyperparameter.
+Der JetBot dreht sich dauerhaft im Kreis.
+
+
+## Unity Python Communication
+
+- deutliche Zeitersparung durch gebündelte Requests
+- weiteres TODOs fuer Geschwindigkeitsverbesserung
+    - eigene Warpper Klasse für mein env schreiben, damit es voll mit sb3 integriert werden kann
+    - (configgesteuerte) inferFromObservation mit Obs direkt aus Unity oder cached Obs (cached wuerde die Laufzeit etwa halbieren)
+- Unity-Python-Communication nimmt etwa die Haelfte der Dauer der Step Method ein, der Rest ist Preprocessing, ...
+    - mehr Analyse noetig
+
+
+profiling:
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+      679    0.114    0.000  221.423    0.326 my_on_policy_algorithm.py:833(get_obs_single_calls)
+     6870    0.054    0.000  156.157    0.023 carsimGymEnv.py:208(unityGetObservation)
+      678    0.039    0.000  122.010    0.180 my_on_policy_algorithm.py:852(get_obs_bundled_calls)
+      678    0.004    0.000   56.448    0.083 carsimGymEnv.py:211(unityGetObservationAllEnvs)
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   single calls:
+        4    0.426    0.106 2670.812  667.703 my_on_policy_algorithm.py:184(collect_rollouts)
+     2048    0.011    0.000 1333.410    0.651 my_on_policy_algorithm.py:920(step_wrapper)
+    20740    0.242    0.000  874.083    0.042 carsimGymEnv.py:244(unityGetObservation)
+
+    bundled calls:
+        4    0.464    0.116 1905.969  476.492 my_on_policy_algorithm.py:184(collect_rollouts)
+     2048    0.656    0.000  849.769    0.415 my_on_policy_algorithm.py:920(step_wrapper)
+     2048    0.022    0.000  557.992    0.272 carsimGymEnv.py:247(unityGetObservationAllEnvs)
+
+single calls sendet für jedes Env einen Request nach Observation
+bundled calls sendet einen Request für die Observations aller Envs
+
+
+
+## spezifiscche Policies testen
+
+konkretes TODO, wie im letzten Treffen besprochen, die einzelnen Schwierigkeiten+Lichtverhaeltnisse separat trainieren und evaluieren:
+
+Performance fuer höhere Schwierigkeiten waren niedriger als für die einfachen Schwierigkeiten
+- einmal trainineren für jede Schwierigkeit alleine
+    - das zeigt, ob der Agent theoretisch in der Lage ist diese Schwierigkeit zu bewältigen (höhere success rate als im gemischten Training)
+Andere Möglichkeiten:
+- in der Observation mitliefern welche Schwierigkeit der Parkour gerade hat (z.B. via extra Channel im Bild)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
