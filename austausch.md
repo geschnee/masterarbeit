@@ -431,11 +431,12 @@ Andere Möglichkeiten:
 
 
 
+## TODOs
 
+- beste Reward kombination von vorher nehmen und spezifische Policies ausführen
 
-
-
-
+- seed für Neuronales Netz initialisierung setzen
+    - fuehrt das zu gleichen Ergebnissen/Verhalten bei mehreren Durchlaeufen?
 
 
 
