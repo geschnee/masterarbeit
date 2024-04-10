@@ -366,7 +366,6 @@ Der JetBot dreht sich dauerhaft im Kreis.
 
 - deutliche Zeitersparung durch gebündelte Requests
 - weiteres TODOs fuer Geschwindigkeitsverbesserung
-    - eigene Warpper Klasse für mein env schreiben, damit es voll mit sb3 integriert werden kann
     - (configgesteuerte) inferFromObservation mit Obs direkt aus Unity oder cached Obs (cached wuerde die Laufzeit etwa halbieren)
 - Unity-Python-Communication nimmt etwa die Haelfte der Dauer der Step Method ein, der Rest ist Preprocessing, ...
     - mehr Analyse noetig
@@ -409,10 +408,26 @@ Andere Möglichkeiten:
 
 
 
+# 10.04.2024
+
+## spezifische Reward functions
+
+- erwartetes mit erlerntem Verhalten experimentell verglichen
+    - siehe Tabelle in algorithmus.pdf
+- distance reward alleine ist sehr gut
+- distance reward alleine kann aber auch fehlschlagen:
+    - erlerntes Verhalten: 
+        - Drehung um circa 180 grad
+        - Rückwärtsgang
+    - Verbesserung des JetBots geplant (Berechnung der Distanz/Position des JetBots von einem besonderen Punkt mittig vorne)
+
+## spezifische Policies
+
+- getestet mit distance reward alleine --> Problem siehe oben
+- lichtunterschiede spielen nur eine kleine Rolle ?
 
 
-
-
+## code angepasst um grafiken aus geloggten Metriken erstellen zu können
 
 
 
