@@ -439,13 +439,31 @@ Andere Möglichkeiten:
     - fuehrt das zu gleichen Ergebnissen/Verhalten bei mehreren Durchlaeufen?
 
 
+# 24.04.2024
+
+## distance reward verbesserung
+
+- die Verbesserung führt nicht dazu, dass der Agent in easy traning immer lernt geradeaus zu fahren
+- in manchen Trainingsläufen (14.04.2024 11-07-42) dreht er sich noch 180 grad und fährt rückwärts
 
 
+## Seed
+
+- Seed definiert in Cfg
+- stable_baselines Methode für Seed setzen genutzt
+- gleicher Seed führt zu gleichen Randomzahlen auf Desktop und virtuellem PC für python und unity (geprüft)
+    - spawn Rotation
+    - MapVariation
+- runs sind bei stable-baselines-3 prinzipiell nur consistent auf den gleichen Rechnern: https://stable-baselines3.readthedocs.io/en/master/guide/algos.html#reproducibility
 
 
+- führt nicht zu identischen Läufen
+    - 2 Läufe auf verschiedenen Rechnern führen zu unterschiedlichen Lernkurven
+    - 2 Läufe auf dem gleichen Rechner führen zu unterschiedlichen Lernkurven
+    ![Training Run Virtual PC seeded](./training_reproduction_seed_virtual_pc.PNG)
 
 
-
+## 
 
 
 
