@@ -1,0 +1,40 @@
+\chapter{preprocessing Steps}
+\label{cha:preprocessing Steps}
+
+% image_printer.py erstellt die Bilder für die einzelnen Schritte/Grafiken
+
+
+
+\newcommand{\unityImg}[1]{\makecell{\includegraphics[width=.2\linewidth]{Bilder/preprocessingSteps/fixedSpawnPoint_hardBlueFirstLeft_#1_image_from_unity.png}}}
+\newcommand{\downsampledImg}[1]{\includegraphics[width=.2\linewidth]{Bilder/preprocessingSteps/fixedSpawnPoint_hardBlueFirstLeft_#1_downsampled.png}}
+\newcommand{\greyscaleImg}[1]{\includegraphics[width=.2\linewidth]{Bilder/preprocessingSteps/fixedSpawnPoint_hardBlueFirstLeft_#1_greyscale.png}}
+\newcommand{\equalizedImg}[1]{\includegraphics[width=.2\linewidth]{Bilder/preprocessingSteps/fixedSpawnPoint_hardBlueFirstLeft_#1_equalized.png}}
+\newcommand{\finalImg}[1]{\makecell{\includegraphics[width=.2\linewidth]{Bilder/preprocessingSteps/fixedSpawnPoint_hardBlueFirstLeft_#1.png}}}
+
+
+\begin{table}
+
+    \caption{preprocessing steps applied to images from the agent camera at the different light settings. The steps are applied from top to bottom.}
+    \begin{center}
+        \begin{tabular}{|| c || c | c | c ||}
+            \hline
+            light Setting     & Bright                             & Standard                             & Dark                             \\ [0.5ex]
+            \hline\hline
+            Image from Unity  & \makecell{\unityImg{bright}}       & \makecell{\unityImg{standard}}       & \makecell{\unityImg{dark}}       \\
+            \hline
+            Downsampled       & \makecell{\downsampledImg{bright}} & \makecell{\downsampledImg{standard}} & \makecell{\downsampledImg{dark}} \\
+            \hline
+            Greyscale         & \makecell{\greyscaleImg{bright}}   & \makecell{\greyscaleImg{standard}}   & \makecell{\greyscaleImg{dark}}   \\
+            \hline
+            Equalized         & \makecell{\equalizedImg{bright}}   & \makecell{\equalizedImg{standard}}   & \makecell{\equalizedImg{dark}}   \\
+            \hline
+            Final Input Image & \makecell{\finalImg{bright}}       & \makecell{\finalImg{standard}}       & \makecell{\finalImg{dark}}       \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \label{table:preprocessing_steps}
+\end{table}
+
+
+see \ref{table:preprocessing_steps} for a list of all preprocessing steps being applied to the images.
+
