@@ -443,15 +443,19 @@ Andere Möglichkeiten:
 
 ## distance reward verbesserung
 
-- die Verbesserung führt nicht dazu, dass der Agent in easy traning immer lernt geradeaus zu fahren
+- die Verbesserung führt nicht dazu, dass der Agent in easy training immer lernt geradeaus zu fahren
 - in manchen Trainingsläufen (14.04.2024 11-07-42) dreht er sich noch 180 grad und fährt rückwärts
 
+## Velocity Reward
+
+- Velocity Reward wurde bisher nur gegeben, wenn der Reward positiv war
+- Bug im Code
 
 ## Seed
 
 - Seed definiert in Cfg
 - stable_baselines Methode für Seed setzen genutzt
-- gleicher Seed führt zu gleichen Randomzahlen auf Desktop und virtuellem PC für python und unity (geprüft)
+- gleicher Seed führt zu gleichen Randomzahlen auf Desktop und virtuellem PC für Python und Unity (geprüft)
     - spawn Rotation
     - MapVariation
 - runs sind bei stable-baselines-3 prinzipiell nur consistent auf den gleichen Rechnern: https://stable-baselines3.readthedocs.io/en/master/guide/algos.html#reproducibility
@@ -463,7 +467,55 @@ Andere Möglichkeiten:
     ![Training Run Virtual PC seeded](./training_reproduction_seed_virtual_pc.PNG)
 
 
-## 
+## Trainingsläufe
+
+### Rerun mit bisher besten Configs
+
+Desktop PC 19.04.2024
+- distance + Event Reward
+- Agent dreht sich 180 Grad und fährt rückwärts
+
+
+## Event Reward
+
+- high eventCoefficient in comparison to other coefficients leads to a cautious policy without collisions, no movement towards goals
+    - e.g. turning on the spot
+- initial strongly negative event reward (collisions), then quick policy change to no collisions (only negative reward is timeout reward)
+![quick policy change](./prescale_event_reward-event_reward_punishes_movement_due_to_collisions.jpg)
+
+
+I am currently testing if ignoring collisions' negative rewards helps.
+This finally shows some real learning (early testing):
+![Ignoring negatie event rewards might help](./ignore-negative-event-reward_learning.PNG)
+
+
+
+There are a few changes that we could do:
+- split event reward into event reward and collision reward
+    - this introduces a new scaling problem between the two rewards
+- register collisions with objects only once (ignore subsequent collisions)
+    - a single collision would no longer dominate every positive reward
+- reset episode upon collision (as it was before and in Maximilian paper) (long time ago)
+    - paradigm shift
+
+This problem is mentioned in Maximilian Master Thesis Table 6.1:
+Punishments stop the agents from making progress --> Lowering punishments
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
