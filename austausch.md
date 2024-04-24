@@ -441,16 +441,6 @@ Andere Möglichkeiten:
 
 # 24.04.2024
 
-## distance reward verbesserung
-
-- die Verbesserung führt nicht dazu, dass der Agent in easy training immer lernt geradeaus zu fahren
-- in manchen Trainingsläufen (14.04.2024 11-07-42) dreht er sich noch 180 grad und fährt rückwärts
-
-## Velocity Reward
-
-- Velocity Reward wurde bisher nur gegeben, wenn der Reward positiv war
-- Bug im Code
-
 ## Seed
 
 - Seed definiert in Cfg
@@ -458,6 +448,8 @@ Andere Möglichkeiten:
 - gleicher Seed führt zu gleichen Randomzahlen auf Desktop und virtuellem PC für Python und Unity (geprüft)
     - spawn Rotation
     - MapVariation
+    - Samples Ziehen aus den Trainingsdaten
+    - Neuronales Netzwerk Initialisierung
 - runs sind bei stable-baselines-3 prinzipiell nur consistent auf den gleichen Rechnern: https://stable-baselines3.readthedocs.io/en/master/guide/algos.html#reproducibility
 
 
@@ -466,6 +458,15 @@ Andere Möglichkeiten:
     - 2 Läufe auf dem gleichen Rechner führen zu unterschiedlichen Lernkurven
     ![Training Run Virtual PC seeded](./training_reproduction_seed_virtual_pc.PNG)
 
+### Ursache finden
+
+- konzeptionell nicht möglich, dass das Training identisch ist? (aufgrund von RL Paradigma)
+- nicht möglich, aufgrund von Unity? (GameEngine kann frames unterschiedlich berechnen/verarbeiten)
+- doch möglich, aber noch nicht implementiert?
+    - kann man Unity deterministic machen?
+
+wichtiges Thema für nächsten Termin
+TODO
 
 ## Trainingsläufe
 
@@ -495,16 +496,32 @@ There are a few changes that we could do:
     - this introduces a new scaling problem between the two rewards
 - register collisions with objects only once (ignore subsequent collisions)
     - a single collision would no longer dominate every positive reward
+    - once-per-timestep or once-per-episode ?
 - reset episode upon collision (as it was before and in Maximilian paper) (long time ago)
     - paradigm shift
 
 This problem is mentioned in Maximilian Master Thesis Table 6.1:
 Punishments stop the agents from making progress --> Lowering punishments
 
+### experimentell testen welche Lösung am besten ist
+
+TODO 
++ doku für das Paper
++ Messungen für die Arbeit
 
 
+Hypothese die dauerhaften Trigger der Collision führen zu einem zu starken negativen Reward, der den Agenten davon abhält zu lernen bzw. sich zu bewegen.
 
 
+## distance reward verbesserung
+
+- die Verbesserung führt nicht dazu, dass der Agent in easy training immer lernt geradeaus zu fahren
+- in manchen Trainingsläufen (14.04.2024 11-07-42) dreht er sich noch 180 grad und fährt rückwärts
+
+## Velocity Reward
+
+- Velocity Reward wurde bisher nur gegeben, wenn der Reward positiv war
+- Bug im Code
 
 
 
