@@ -468,6 +468,20 @@ Andere Möglichkeiten:
 wichtiges Thema für nächsten Termin
 TODO
 
+Antwort RL Paradigma:
+...
+
+Antwort Unity:
+- Unity kann mit viel Arbeit deterministisch gemacht werden
+    - https://forum.unity.com/threads/how-we-did-deterministic-time-loops-in-unity.1259454/
+    - fixedTimestpelength in Unity 
+    - jedes Pixel muss deterministisch sein
+    - frame perfect
+- Alternative: beschraenkte Reproduzierbarkeit
+    - Seed fuer Neuronales Netzwerk initialisierung (wie im RL Buch)
+    - reproduzierbares Fahrverhalten (identisches trainiertes netzwerk + itentische Spawnposition + identische Map) fuehrt zu dem gleichen Ergebnis (success rate, collision rate, Fahrspur) (testen natuerlich mit fixedTimestepLength und vielen Laeufen in Unity)
+
+
 ## Trainingsläufe
 
 ### Rerun mit bisher besten Configs
