@@ -264,11 +264,11 @@ Skyboxen sind angepasst
 
 - Ergebnis unlimited policy mit einem Env (in theorie die beste Policy weil unlimited und keine Parallelität):
     - instabiles training
-    - ![instabiles Training single env](./single_env_instabiles_training.jpg)
+    - ![instabiles Training single env](./austausch_images/single_env_instabiles_training.jpg)
     - geringe Anzahl an gesammelten Episoden pro collect_rollouts call
 
     - realtime fps sind nicht höher als bei 10envs 
-    - gelb ist 10env, andere Single ![single vs 10 env (gelb) fps](./single_env_fps_gelb-ist-10-env.jpg)
+    - gelb ist 10env, andere Single ![single vs 10 env (gelb) fps](./austausch_images/single_env_fps_gelb-ist-10-env.jpg)
 
 
 ### Training
@@ -276,7 +276,7 @@ Skyboxen sind angepasst
 #### Initialisierung
 - Trainingserfolg ist stark abhängig von der Initialisierung
 
-![alle gleiche Configs und Code](./training_progress.PNG)
+![alle gleiche Configs und Code](./austausch_images/training_progress.PNG)
 
 #### Schwierigkeit
 - SuccessRate im Medium und Hard Setting ist deutlich niedriger als im Easy Setting
@@ -441,6 +441,16 @@ Andere Möglichkeiten:
 
 # 24.04.2024
 
+## distance reward verbesserung
+
+- die Verbesserung führt nicht dazu, dass der Agent in easy training immer lernt geradeaus zu fahren
+- in manchen Trainingsläufen (14.04.2024 11-07-42) dreht er sich noch 180 grad und fährt rückwärts
+
+## Velocity Reward
+
+- Velocity Reward wurde bisher nur gegeben, wenn der Reward positiv war
+- Bug im Code
+
 ## Seed
 
 - Seed definiert in Cfg
@@ -456,7 +466,7 @@ Andere Möglichkeiten:
 - führt nicht zu identischen Läufen
     - 2 Läufe auf verschiedenen Rechnern führen zu unterschiedlichen Lernkurven
     - 2 Läufe auf dem gleichen Rechner führen zu unterschiedlichen Lernkurven
-    ![Training Run Virtual PC seeded](./training_reproduction_seed_virtual_pc.PNG)
+    ![Training Run Virtual PC seeded](./austausch_images/training_reproduction_seed_virtual_pc.PNG)
 
 ### Ursache finden
 
@@ -465,11 +475,18 @@ Andere Möglichkeiten:
 - doch möglich, aber noch nicht implementiert?
     - kann man Unity deterministic machen?
 
-wichtiges Thema für nächsten Termin
-TODO
+wichtiges Thema für nächsten Termin 02.05.2024:
 
 Antwort RL Paradigma:
-...
+- Situation mit Unity ähnelt Robotik:
+    - Example of Non-determinism: Robotics
+        – Noisy sensors and effectors
+        – Appropriate to model actions and rewards as nondeterministic
+        - https://cedar.buffalo.edu/~srihari/CSE574/Chap15/15.4-NondeterministicQ.pdf Q-learning for non-deterministic
+- SuttonBarto Definition von finite MDP kann auf das unity-nondeterminismus-Problem angewendet werden
+    - PPO passend
+    - Bild ![RLbook chapter 3](sutton_barto_unity_determinism_mdp.PNG)
+- ich bin mir ziemlich sicher, dass ich mal ein Paper gelesen habe, welches das Training mit einem Config-Setting mehrmals durchgeführt hat und den besten Run genommen hat
 
 Antwort Unity:
 - Unity kann mit viel Arbeit deterministisch gemacht werden
@@ -496,12 +513,12 @@ Desktop PC 19.04.2024
 - high eventCoefficient in comparison to other coefficients leads to a cautious policy without collisions, no movement towards goals
     - e.g. turning on the spot
 - initial strongly negative event reward (collisions), then quick policy change to no collisions (only negative reward is timeout reward)
-![quick policy change](./prescale_event_reward-event_reward_punishes_movement_due_to_collisions.jpg)
+![quick policy change](./austausch_images/prescale_event_reward-event_reward_punishes_movement_due_to_collisions.jpg)
 
 
 I am currently testing if ignoring collisions' negative rewards helps.
 This finally shows some real learning (early testing):
-![Ignoring negatie event rewards might help](./ignore-negative-event-reward_learning.PNG)
+![Ignoring negatie event rewards might help](./austausch_images/ignore-negative-event-reward_learning.PNG)
 
 
 
@@ -513,6 +530,7 @@ There are a few changes that we could do:
     - once-per-timestep or once-per-episode ?
 - reset episode upon collision (as it was before and in Maximilian paper) (long time ago)
     - paradigm shift
+    - more attempted episodes due to early reset, might be more efficient, give better training data
 
 This problem is mentioned in Maximilian Master Thesis Table 6.1:
 Punishments stop the agents from making progress --> Lowering punishments
@@ -526,17 +544,10 @@ TODO
 
 Hypothese die dauerhaften Trigger der Collision führen zu einem zu starken negativen Reward, der den Agenten davon abhält zu lernen bzw. sich zu bewegen.
 
+teste derzeit oncePerTimestep und resetUpoCollision
 
-## distance reward verbesserung
 
-- die Verbesserung führt nicht dazu, dass der Agent in easy training immer lernt geradeaus zu fahren
-- in manchen Trainingsläufen (14.04.2024 11-07-42) dreht er sich noch 180 grad und fährt rückwärts
-
-## Velocity Reward
-
-- Velocity Reward wurde bisher nur gegeben, wenn der Reward positiv war
-- Bug im Code
-
+# 02.05.2024
 
 
 
