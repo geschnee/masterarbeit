@@ -499,6 +499,9 @@ Antwort Unity:
     - reproduzierbares Fahrverhalten (identisches trainiertes netzwerk + itentische Spawnposition + identische Map) fuehrt zu dem gleichen Ergebnis (success rate, collision rate, Fahrspur) (testen natuerlich mit fixedTimestepLength und vielen Laeufen in Unity)
 
 
+
+
+
 ## Trainingsläufe
 
 ### Rerun mit bisher besten Configs
@@ -549,13 +552,19 @@ teste derzeit oncePerTimestep und resetUpoCollision
 
 # 02.05.2024
 
+## deterministic sampling oder nicht fuer die eval-Laeufe
+
+- sinnvol zu testen oder nicht?
+- Atari paper nutzt nicht deterministisches sampling
+
+## Event Reward
+
+- positive event reward erhoehen
 
 
+## scenarios mit unterschiedlichen configs testen und die beste finden
 
-
-
-
-
+- Begründungen fuer die Configs dokumentieren
 
 
 
