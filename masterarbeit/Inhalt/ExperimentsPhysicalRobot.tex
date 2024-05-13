@@ -1,0 +1,23 @@
+%\chapter{Methods}
+%\label{cha:Methods}
+%\lipsum \autocite{DBLP:books/sp/HarderR01}
+
+\section{Investigating the feasibility of transfering the policy to a physical robot.}
+
+Previous sections describe how a policy was developed that can be used to control an agent in a simulated environment. This section describes how I will investigate the feasibility of transfering the developed policy onto physical devices. The simulated agent was modeled after a Nvidia JetBot. The Nvidia JetBot is a small robot that is equipped with a camera, a processing unit and two motors that can be controlled independently. 
+The Nvidia Jetbot is designed to be able to execute AI software. However the limited computational power of the JetBot raises the question whether the developed policy can be transfered to the JetBot. 
+
+The developed policy takes a camera image from the front of the agent as input and applies preprocessing steps to the image. The preprocessed image is then processed by a convolutional neural network that outputs two acceleration values, one for each motor. The acceleration values are applied to the motors for a fixed amount of time. While the agent is moving, the camera image is constantly updated and the policy is applied to the new image. It is crucial that the agent's policy can be computed quick enough to be able act in real time. 
+
+\subsection{effects of insufficiently slow policy computation}
+If the jetbot is not able to compute the developed policy in the required time, there are two options that do not require changes to the developed/trained policy. The first option is to stop the motors until the policy is computed and then apply the acceleration values. This would make the jetbot movement overall slower and less smooth.
+The second option is to apply the last computed acceleration values to the motors until the new policy is computed. This could result in a degradation of the jetbot's performance since the actions would be less accurate.
+The two options are shown with visual representations in \ref{fig:slow_policy_computation}.
+
+
+
+
+% TODO figure \ref{fig:slow_policy_computation}
+% 3 columns, 1. intended behaviour, 2. stop motors, 3. apply last computed acceleration values
+% show difference in movement
+

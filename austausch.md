@@ -549,6 +549,9 @@ Hypothese die dauerhaften Trigger der Collision führen zu einem zu starken nega
 
 teste derzeit oncePerTimestep und resetUpoCollision
 
+#### resetUponCollision ist nicht gut
+
+TODO dokumentieren
 
 # 02.05.2024
 
@@ -557,10 +560,29 @@ teste derzeit oncePerTimestep und resetUpoCollision
 - sinnvol zu testen oder nicht?
 - Atari paper nutzt nicht deterministisches sampling
 
+wurde getestet, non deter ist im Durchschnitt etwas besser
+
+## fresh obs better than nonfresh obs
+
+### models trained on nonfresh obs
+
+fresh obs are better than non-fresh obs
+
+### models trained on fresh obs
+
+TODO feasible (time?)
+
+
+
 ## Event Reward
 
 - positive event reward erhoehen
 
+### Event Reward only funktioniert nun?
+
+TODO answer
+
+nein
 
 ## scenarios mit unterschiedlichen configs testen und die beste finden
 
@@ -568,6 +590,31 @@ teste derzeit oncePerTimestep und resetUpoCollision
 
 
 
+## Episode Record and Replay 
+
+- wurde umgesetzt
+- fresh_obs Regime
+- Game Recordings bestehen aus
+    - Bildern von der Agent Camera (Unity)
+    - PolicyModel Outputs
+        - actions
+        - values
+        - log_probs 
+
+# nächstes Treffen 15.05.2024 14Uhr
+
+
+
+
+
+## weitere Testideen
+
+### policy timestepLength generalization 
+
+- the policy is trained in simulation with a fixed timestepLength (0.3s)
+- what happens to a developed policy if the timestepLength is changed (without retraining)
+    - does the policy's performance degrade? (success_rate)
+    - does it only degrade when the timestepLength is increased? <<--- I would suspect that
 
 
 
