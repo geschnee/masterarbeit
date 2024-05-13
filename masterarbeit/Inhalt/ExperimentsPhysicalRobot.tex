@@ -15,9 +15,38 @@ The second option is to apply the last computed acceleration values to the motor
 The two options are shown with visual representations in \ref{fig:slow_policy_computation}.
 
 
+% gif splitter
+% https://ezgif.com/split
 
 
-% TODO figure \ref{fig:slow_policy_computation}
-% 3 columns, 1. intended behaviour, 2. stop motors, 3. apply last computed acceleration values
-% show difference in movement
+
+\newcommand{\spc}[2]{\subfigure[#1]{\includegraphics[width=0.2\textwidth]{Bilder/slow_policy_computation/#2.png}}}
+%\newcommand{\spc}[2]{\begin{subfigure}{.5\textwidth}\centering\includegraphics[width=0.2\textwidth]{Bilder/slow_policy_computation/#2.png}\caption*{#1}\end{subfigure}}
+% trying to remove a), b) ... https://tex.stackexchange.com/questions/165508/remove-a-b-from-subfigure-numbering-but-keep-the-subfigure-caption
+
+\begin{figure}
+    
+    \begin{center}
+    \begin{tabular}{|| c | c | c ||} 
+        \hline
+        Policy computation in time & \makecell{Option 1: \\ Wait} & \makecell{Option 2:\\ Apply previous outputs}  \\ [0.5ex] 
+        \hline\hline
+        \spc{Start}{start} &  \spc{Start}{start} & \spc{Start}{start} \\ 
+        \hline
+        \spc{Agent turns right}{agent_turns_right} & \spc{Agent turns right}{agent_turns_right} & \spc{Agent turns right}{agent_turns_right} \\
+        \hline
+        \spc{Agent stops turning and goes strait}{agent_turns_left} & \spc{Agent waits}{agent_turns_right} & \spc{Agent continues to turn}{agent_fails_to_turn_left} \\
+        \hline
+        \spc{Agent continues}{agent_continues_properly}  & \spc{Agent stops turning and goes strait}{agent_turns_left} & \spc{Agent crashes}{agent_crashes} \\
+        \hline
+        \makecell{Agent moves properly.}  & \makecell{Agent overall speed is reduced.} & \makecell{Agent behaviour is changed.} \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \caption{Effects of slow policy computation on the performance.}
+    \label{fig:slow_policy_computation}
+\end{figure}
+
+
+
 
