@@ -562,32 +562,33 @@ TODO dokumentieren
 
 wurde getestet, non deter ist im Durchschnitt etwas besser
 
-## fresh obs better than nonfresh obs
-
-### models trained on nonfresh obs
-
-fresh obs are better than non-fresh obs
-
-### models trained on fresh obs
-
-TODO feasible (time?)
-
-
 
 ## Event Reward
 
-- positive event reward erhoehen
+- positive event reward wurde im Vergleich zur collisionPenalty erhöht
 
 ### Event Reward only funktioniert nun?
 
-TODO answer
+- eventReward alleine hat nur geringe + instabile Lernerfolge gezeigt
+- viel langsameres Lernen als distanceReward
+- unterschiedliche collisionModes wurden getestet
 
-nein
+Folge:
+eventReward alleine wird nicht genutzt
 
 ## scenarios mit unterschiedlichen configs testen und die beste finden
 
 - Begründungen fuer die Configs dokumentieren
 
+### beste Config siehe cfg/ppo_isolated_training_base.yaml
+
+- uses distanceReward exclusively
+- combining other rewards did not show as good results as distance reward alone
+- was tested on medium and hard tracks
+
+![distanceReward only eval1](./quick_show_hard_standard_distanceReward_eval.PNG)
+![distanceReward only eval2](./quick_show_hard_standard_distanceReward_eval2.PNG)
+![distanceReward only eval3](./quick_show_hard_standard_distanceReward_eval3.PNG)
 
 
 ## Episode Record and Replay 
@@ -603,8 +604,15 @@ nein
 
 # nächstes Treffen 15.05.2024 14Uhr
 
+## data augmentation problem
+
+Im Expose wurde beschrieben, dass Data augmentation gemacht wird.
+Das wurde bis jetzt nicht umgesetzt und wird auch nicht mehr passieren. (Zeitlimit)
 
 
+## benötige einen Zugang auf den JetBot zum testen der replays
+
+- Philipp auf Slack angeschrieben
 
 
 ## weitere Testideen
@@ -615,6 +623,7 @@ nein
 - what happens to a developed policy if the timestepLength is changed (without retraining)
     - does the policy's performance degrade? (success_rate)
     - does it only degrade when the timestepLength is increased? <<--- I would suspect that
+    - does the policy improve when the timestepLength is reduced (or unlimited mode is used)
 
 
 
