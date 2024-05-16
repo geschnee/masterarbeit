@@ -555,6 +555,11 @@ TODO dokumentieren
 
 # 02.05.2024
 
+## eval Track + spawnOrientation Kombinationen werden errechnet
+
+- macht die ebvals alle vergleichbar (solange die gleichen eval param genutzt werden)
+
+
 ## deterministic sampling oder nicht fuer die eval-Laeufe
 
 - sinnvol zu testen oder nicht?
@@ -562,6 +567,7 @@ TODO dokumentieren
 
 wurde getestet, non deter ist im Durchschnitt etwas besser
 
+--> sampling der Aktionen auf Basis der Output Verteilung des Neuronalen Netzes 
 
 ## Event Reward
 
@@ -600,7 +606,9 @@ eventReward alleine wird nicht genutzt
     - PolicyModel Outputs
         - actions
         - values
-        - log_probs 
+        - log_probs
+- Zeiten der policy Berechnung werden aufgezeichnet
+
 
 # nächstes Treffen 15.05.2024 14Uhr
 
@@ -609,10 +617,25 @@ eventReward alleine wird nicht genutzt
 Im Expose wurde beschrieben, dass Data augmentation gemacht wird.
 Das wurde bis jetzt nicht umgesetzt und wird auch nicht mehr passieren. (Zeitlimit)
 
+- war im Prinzip nicht notwendig
+
+Dieses Problem kann im Ausblick mit beschrieben werden.
+- Robustheit der Policy, ...
+
 
 ## benötige einen Zugang auf den JetBot zum testen der replays
 
+
+
 - Philipp auf Slack angeschrieben
+    - hat nichts mehr mit dem jetBot zu tun
+
+Thomas anschreiben
+
+PRIORITÄT
+
+
+# im CHat naerchsten termin vereinbaren
 
 
 ## weitere Testideen
