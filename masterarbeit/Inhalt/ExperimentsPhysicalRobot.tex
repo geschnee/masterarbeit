@@ -58,6 +58,7 @@ camera images and the acceleration values that the policy outputs while the agen
 The replay of a step consists of all the processing to obtain new acceleration values from a camera image. This is the image preprocessing and memory mechanism as specified by the $image\_preprocessing$ and $frame\_stacking$ environment parameters. Together with the neural network inference. 
 Multiple games of all difficulty and light settings are recorded to have a diverse set of data to replay. The recording and replay of an episode are shown in pseudocode \ref{pseudocode:record_episode} and \ref{pseudocode:replay_episode}.
 
+
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Record Episode}{ }
 \COMMENT{Record episode}\\
