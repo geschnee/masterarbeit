@@ -103,15 +103,32 @@ combinations.\CALL{append}{(tracks[i], rotations[i])}\\
 
 \subsection{Deterministic check}
 
-deter or non-deter better
+The PPO policy produces an action distribution when given an input observation. The action distribution is sampled to obtain an action for the agent to execute in the environment. The distribution can be sampled deterministically or non-deterministically. Deterministic sampling returns the most likely action, indicated by the mean of the distribution. Non-deterministic sampling returns a sample from the distribution according to the distribution's probabilities. This results in different output actions for the same observations. The PPO policy uses non-deterministic sampling during training to explore the action space. 
+
+While the exploration caused by non-deterministic sampling is beneficial during training, it could be detrimental during evaluation. This exploration could lead the agent to take actions that are not optimal for the given observation and result in a lower $success\_rate$. Non-deterministic sampling can also be used during evaluation to reduce overfitting. This has been used in the Atari paper \autocite{atari} and the human-level control paper \autocite{human_level_control}. The environments examined in these papers are deterministic with identical starting states. Therefore a deterministic policy would result in identical results for the individual evaluation episodes.
+Due to the difference in environment properties between the JetBot environment and the Atari environment, it is not clear if deterministic or non-deterministic sampling is better for the JetBot environment. The deterministic check evaluates the agent with deterministic and non-deterministic sampling to determine if the agent's performance is affected by the sampling method. 
+The better sampling method is determined experimentally. It is then used for all agent evaluations.
+
+% atari.pdf and human_level_control.pdf uses epsilon greedy during evals (their environment is deterministic, thus using a deterministic policy would result in the same results for every episode)
+
+
+% default we use non deterministic, as that has shown (slightly) better results and is also used by atari paper
+
+
 
 \subsection{identical start condition}
+
+
+
 
 see if the policy is consistent when it is run multiple times with the same start condition
 
 
 
 \subsection{Fresh obs vs non-fresh obs}
+
+
+
 
 % ## fresh obs better than nonfresh obs
  
@@ -129,7 +146,6 @@ see if the policy is consistent when it is run multiple times with the same star
 policy timestepLength generalization 
 
 what happens to a model trained on fixedTimestepsLength when it is evaluated with a shorter/longer/unrestricted fixedTimestepsLength
-
 
 
 \subsection{JetBot generalization}

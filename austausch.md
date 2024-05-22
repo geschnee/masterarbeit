@@ -609,6 +609,9 @@ eventReward alleine wird nicht genutzt
         - log_probs
 - Zeiten der policy Berechnung werden aufgezeichnet
 
+- Replay Berechnung der Outputs kann leicht abweichen aufgrund von devices
+    - Reproduzierbarkeit ist für nondeterministic sampling der Actions von den Distributions nicht möglich (Laptop nutzt CPU, Desktop nutzt Cuda) (man könnte CPU erzwingen, dann wäre es auch bei nondeter identisch (mit Seed setzen))
+    - bei deterministic sampling kein Problem
 
 # nächstes Treffen 15.05.2024 14Uhr
 
@@ -647,6 +650,31 @@ PRIORITÄT
     - does the policy's performance degrade? (success_rate)
     - does it only degrade when the timestepLength is increased? <<--- I would suspect that
     - does the policy improve when the timestepLength is reduced (or unlimited mode is used)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
