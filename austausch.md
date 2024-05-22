@@ -557,7 +557,7 @@ TODO dokumentieren
 
 ## eval Track + spawnOrientation Kombinationen werden errechnet
 
-- macht die ebvals alle vergleichbar (solange die gleichen eval param genutzt werden)
+- macht die evals alle vergleichbar (solange die gleichen eval param genutzt werden)
 
 
 ## deterministic sampling oder nicht fuer die eval-Laeufe
@@ -602,6 +602,7 @@ eventReward alleine wird nicht genutzt
 - wurde umgesetzt
 - fresh_obs Regime
 - Game Recordings bestehen aus
+    - trainierte Model
     - Bildern von der Agent Camera (Unity)
     - PolicyModel Outputs
         - actions
@@ -613,7 +614,7 @@ eventReward alleine wird nicht genutzt
     - Reproduzierbarkeit ist für nondeterministic sampling der Actions von den Distributions nicht möglich (Laptop nutzt CPU, Desktop nutzt Cuda) (man könnte CPU erzwingen, dann wäre es auch bei nondeter identisch (mit Seed setzen))
     - bei deterministic sampling kein Problem
 
-# nächstes Treffen 15.05.2024 14Uhr
+# 15.05.2024 14Uhr
 
 ## data augmentation problem
 
@@ -638,7 +639,7 @@ Thomas anschreiben
 PRIORITÄT
 
 
-# im CHat naerchsten termin vereinbaren
+# im Chat naerchsten termin vereinbaren
 
 
 ## weitere Testideen
@@ -655,13 +656,31 @@ PRIORITÄT
 
 # 22.05.2024
 
+## distance Reward war der "beste Reward"
+
+- andere Rewardsignale werden beschrieben und dokumentiert, wie ich zum alleinigen DistanceReward gekommen bin
+
+
+
 ## JetBot tests
 
+- Aufsetzen der JetBot Umgebung soll mit in der MA dokumentiert werden
+    - Ergebnisse der Tests in die Arbeit
+    - Testsetup und Installation wahrscheinlich in Anhang
+
+jb an Strom anschließen + maus + tastatur + display --> funktioniert:
+
+Login
+User: jetbot
+password: jetbot
 
 
+# 12.06.2024
+
+## jetBot tests Ergebnis
 
 
-
+## fast fertiges Masterarbeitdokument mitbringen
 
 
 
