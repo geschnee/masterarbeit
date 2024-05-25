@@ -11,6 +11,9 @@
 
 \PROCEDURE{CollectData}{}
 num\_steps \GETS 0\\
+num\_episodes \GETS 0\\
+num\_succesful\_episodes \GETS 0\\
+
 RolloutBuffer.\CALL{Reset}{}\\
 Env.\CALL{Reset}{}\\
 \WHILE RolloutBuffer\CALL{NotFull}{} \DO
@@ -21,9 +24,20 @@ reward \GETS Env.\CALL{Step}{action}\\
 num\_steps \GETS num\_steps + 1\\
 \CALL{AddToRolloutBuffer}{obs, action, reward}\\
 \IF Env.\CALL{IsFinished}{} \THEN
+num\_episodes \GETS num\_episodes + 1\\
+\IF Env.\CALL{FinishedSuccessfully}{} \THEN
+num\_succesful\_episodes \GETS num\_succesful\_episodes + 1\\
 Env.\CALL{Reset}{}\\
 \END\\
 \RETURN{num\_steps}
+
+
+
+\IF total\_success\_rate >= best\_success\_rate \THEN
+\BEGIN
+best\_success\_rate \GETS total\_success\_rate\\
+Model.\CALL{SaveToFile}{}\\
+\END
 \ENDPROCEDURE
 
 \end{pseudocode}
@@ -45,7 +59,7 @@ amount\_of\_batches \GETS \frac{rollout\_buffer\_size}{batch\_size}\\
 \FOR i \GETS 0 \TO n\_epochs \DO
 \BEGIN
 RolloutBuffer.\CALL{Shuffle}{}\\
-\FOR i \GETS m \TO amount\_of\_batches \DO
+\FOR m \GETS 0 \TO amount\_of\_batches \DO
 \BEGIN
 batch \GETS RolloutBuffer.\CALL{GetBatch}{m}\\
 loss \GETS \CALL{ComputeLoss}{batch}\\
@@ -93,11 +107,7 @@ medium\_success\_rate = \CALL{EvalModelTrack}{n\_episodes=num\_evals\_per\_diffi
 hard\_success\_rate = \CALL{EvalModelTrack}{n\_episodes=num\_evals\_per\_difficulty, \\difficulty=''hard''}\\
 \\
 total\_success\_rate = (easy\_success\_rate + medium\_success\_rate + hard\_success\_rate) / 3\\
-\IF total\_success\_rate > best\_success\_rate \THEN
-\BEGIN
-best\_success\_rate \GETS total\_success\_rate\\
-Model.\CALL{SaveToFile}{}\\
-\END
+
 \ENDPROCEDURE
 \end{pseudocode}
 

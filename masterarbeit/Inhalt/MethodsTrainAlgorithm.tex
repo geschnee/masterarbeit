@@ -1,0 +1,149 @@
+\section{Training Algorithm}
+
+% mention the best_model during collect_rollouts
+% mention this is because the real full eval is expensive
+
+% move the pseudocode to the appendix? this would look much better
+
+The neural network training process consists of a simple training loop. In each iteration, the algorithm collects data from the environment. The data is stored in a replay buffer. After collecting the data, the model is trained on the data in the replay buffer. The training process is repeated until a certain number of timesteps has been collected.  
+In most reinforcement learning algorithms, the trained model's performance is evaluated at short intervals. The frequent evaluations serve as a way to monitor the model's performance during training and measure progress. It is not guaranteed in reinforcement learning that a model improves during each model update. Therefore frequent evaluations also help in finding the best version of the model.  
+In this training algorithm there is no dedicated evaluation process at short intervals. Instead the episodes from the data collection step are used to evaluate the model at every iteration of the training loop. This saves computational resources compared to a full evaluation of the model.
+
+\renewcommand{\thepseudonum}{\roman{pseudonum}}
+\begin{pseudocode}{TrainNetwork}{ }
+\label{train_network}
+\COMMENT{Main Training Algorithm}\\
+
+\MAIN
+Env \GETS \CALL{Environment}{environment\_parameters}\\
+RolloutBuffer \GETS \CALL{RolloutBuffer}{rollout\_buffer\_size}\\
+Model \GETS \CALL{Model}{model\_parameters}\\
+Optimizer \GETS \CALL{Optimizer}{optimizer\_parameters}\\
+
+num\_timesteps \GETS 0\\
+\WHILE num\_timesteps < total\_timesteps \DO 
+\BEGIN 
+num\_collected\_steps \GETS \CALL{CollectData}{}\\
+num\_timesteps \GETS num\_timesteps + num\_collected\_steps\\
+\CALL{TrainModel}{}\\
+\END\\
+\ENDMAIN
+\end{pseudocode}
+
+\subsection{Collect Data}
+
+The data collection process is a simple loop that collects a fixed amount of samples from the environment. The reinforcement learning algorithm Proximal Policy Optimization requires that the samples are collected on-policy. The policy itself is used to chose actions during the data collection. The data is stored in a replay buffer for use by the training algorithm.
+
+The data collection algorithm resets the environment according to the parameters trainingMapType, trainingLightSetting and spawn\_point \ref{training_settings}. The observation is used to prompt the model for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
+
+The data collection process is also used to evaluate the model. The success rate of the collected episodes is used to determine the best model. The model is saved to disk if the success rate of the collected episodes improved.
+
+Further statistics about the collected episodes are logged to tensorboard to monitor the training process. Example metrics are the goal\_completion\_rate, first\_goal\_completion\_rate, second\_goal\_completion\_rate and third\_goal\_completion\_rate, as well as the collected weighted rewards.
+
+% figure training settings trainingMapType and trainingLightSetting
+
+\begin{figure}
+    
+    \begin{center}
+    \begin{tabular}{|| c | p{0.25\linewidth} | p{0.4\linewidth} ||} 
+        \hline
+        Parameter name & Options & Explanation  \\ [0.5ex] 
+        \hline\hline
+        \multirow{4}{*}{trainingMapType} & randomEvalEasy & Selects a random easy track. \\\cline{2-3}
+        & randomEvalMedium & Selects a random medium track. \\\cline{2-3}
+        & randomEvalHard & Selects a random hard track. \\\cline{2-3}
+        & randomEval & Selects a random track from all difficulties. 20\% easy, 40\% medium, 40\% hard \\
+        \hline
+        \multirow{4}{*}{trainingLightSetting} & random & Selects a random light setting from bright, standard and dark. \\\cline{2-3}
+        & bright & Bright illumination. \\\cline{2-3}
+        & standard & Standard illumination. \\\cline{2-3}
+        & dark & Dark illumination. \\
+        \hline
+        \multirow{4}{*}{spawn\_point} & Fixed & Spawn JetBot with fixed coordinates and orientation. \\\cline{2-3}
+        & OrientationRandom & Spawn JetBot with fixed coordinates and random orientation (-15 to 15 degrees). \\\cline{2-3}
+        & OrientationVeryRandom & Spawn JetBot with fixed coordinates and random orientation (-45 to 45 degrees). \\\cline{2-3}
+        & FullyRandom & Spawn JetBot with random coordinates and random orientation (-45 to 45 degrees) \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \caption{Environment parameters for training. TODO should we explain these parameters earlier in the env description?}
+    \label{fig:training_settings}
+\end{figure}
+
+
+
+\renewcommand{\thepseudonum}{\roman{pseudonum}}
+\begin{pseudocode}{Collect Data}{ }
+\COMMENT{Fill RolloutBuffer with samples obtained by current model}\\
+
+\PROCEDURE{CollectData}{trainingMapType, trainingLightSetting}
+num\_steps \GETS 0\\
+num\_episodes \GETS 0\\
+num\_succesful\_episodes \GETS 0\\
+
+RolloutBuffer.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
+Env.\CALL{Reset}{}\\
+\WHILE RolloutBuffer.\CALL{NotFull}{} \DO
+\BEGIN
+obs \GETS Env.\CALL{GetObservation}{}\\
+action \GETS Model.\CALL{GetAction}{obs}\\
+reward \GETS Env.\CALL{Step}{action}\\
+num\_steps \GETS num\_steps + 1\\
+\CALL{AddToRolloutBuffer}{obs, action, reward}\\
+\IF Env.\CALL{IsFinished}{} \THEN
+\BEGIN
+num\_episodes \GETS num\_episodes + 1\\
+\IF Env.\CALL{FinishedSuccessfully}{} \THEN
+\BEGIN
+num\_succesful\_episodes \GETS num\_succesful\_episodes + 1\\
+\END\\
+Env.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
+\END\\
+\END\\
+
+rollout\_success\_rate \GETS \frac{num\_succesful\_episodes}{num\_episodes}\\
+
+\IF rollout\_success\_rate >= best\_rollout\_success\_rate \THEN
+\BEGIN
+best\_success\_rate \GETS rollout\_success\_rate\\
+Model.\CALL{SaveToFile}{}\\
+\END\\
+
+
+\RETURN{num\_steps}
+\ENDPROCEDURE
+\end{pseudocode}
+
+\subsection{Train Model}
+
+The model training part of the algorithm is very conventional and follows the standard implementation of PPO training. The model is trained on the collected data for a fixed number of epochs. In each epoch the replay buffer is sampled to create batches of data. The loss is computed for each batch. The gradient of the weights with respect to the loss is computed using backpropagation. The optimizer is then used to update the model parameters using the gradients.
+
+The entire data from the replay buffer is sampled in every epoch. This ensure that the data is used efficiently. The data is shuffled before creating the batches. This ensures that the samples are less correlated and the model updates are more stable.
+
+
+
+
+\renewcommand{\thepseudonum}{\roman{pseudonum}}
+\begin{pseudocode}{Train Model}{ }
+\COMMENT{Sample from replay buffer and update the model based on the loss}\\
+
+\PROCEDURE{TrainModel}{}
+amount\_of\_batches \GETS \frac{rollout\_buffer\_size}{batch\_size}\\
+\FOR i \GETS 0 \TO n\_epochs \DO
+\BEGIN
+RolloutBuffer.\CALL{Shuffle}{}\\
+RolloutBuffer.\CALL{CreateBatches}{batch\_size}\\
+\FOR m \GETS 0 \TO amount\_of\_batches \DO
+\BEGIN
+batch \GETS RolloutBuffer.\CALL{GetBatch}{m}\\
+loss \GETS \CALL{ComputeLoss}{batch}\\
+Model.\CALL{Backpropagate}{loss}\\
+Optimizer.\CALL{Step}{}\\
+\END\\
+\END
+\ENDPROCEDURE
+
+\end{pseudocode}
+
+
+
