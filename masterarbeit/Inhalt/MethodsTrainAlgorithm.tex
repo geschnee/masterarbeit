@@ -34,7 +34,7 @@ num\_timesteps \GETS num\_timesteps + num\_collected\_steps\\
 
 The data collection process is a simple loop that collects a fixed amount of samples from the environment. The reinforcement learning algorithm Proximal Policy Optimization requires that the samples are collected on-policy. The policy itself is used to chose actions during the data collection. The data is stored in a replay buffer for use by the training algorithm.
 
-The data collection algorithm resets the environment according to the parameters trainingMapType, trainingLightSetting and spawn\_point \ref{training_settings}. The observation is used to prompt the model for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
+The data collection algorithm resets the environment according to the parameters trainingMapType, trainingLightSetting and spawn\_point \ref{fig:training_settings}. The observation is used to prompt the model for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
 
 The data collection process is also used to evaluate the model. The success rate of the collected episodes is used to determine the best model. The model is saved to disk if the success rate of the collected episodes improved.
 

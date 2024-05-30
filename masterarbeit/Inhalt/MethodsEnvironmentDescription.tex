@@ -1,0 +1,354 @@
+%\chapter{Environment Description}
+%\label{cha:env_description}
+
+\section{Environment Simulation}
+\label{sec:env_simulation}
+
+The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \autocite{peacefulpie} library. 
+The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments should be simulated in parallel. The environments are simuated in the same Unity instance. The seperation between the Unity engine and the Python algorithm requires JsonRPC calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine can be reduced by bundling the calls for all environments in one JsonRPC call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
+
+The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. This saves time by reducing the amount of JsonRPC calls. In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. Essentially the returned observation is delayed by one step or $fixedTimestepsLength seconds$. A shorter $fixedTimestepsLength$ results in smaller changes of the environment during the step transitions. In this case the delay of observations has less of an impact on the accuracy of the observations.
+Experiemnts show that the policy can learn to deal with this delay.
+
+Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter is set to true, the policy will request a new observation from Unity via another JsonRPC call before predicting the next action. This can be useful if the policy is sensitive to the delayed observations. However this increases the amount of JsonRPC calls and can slow down the training process.
+
+
+% TODO explain the non-blocking approach of step calls here (and how the observations returned by step are delayed)
+% including the use_fresh_obs flag
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Bilder/unity_communication.png}
+    \caption{Communication between Python and Unity}
+    \label{fig:communication_python_unity}
+\end{figure} % TODO remake the image
+
+
+
+
+
+\section{Arena Description}
+
+
+This section describes the simulated environment and agent in detail. The environment is a 3D simulation of a physical arena at the ScaDS.AI research facility. The simulated arena consists of a rectangular platform with enclosing walls. Simulated light sources illuminate the platform from above.
+The goal of our agent is to complete tracks in the arena by traversing the track's goals in order. Each goal consists of 2 cuboid pillars of the same colour. The pillars are coloured red or blue. The goals' colours alternate in the track. The distance between the pillars is fixed and the same for all goals. The positions of the goals depends on the episode's track. The tracks are grouped by the difficulty settings easy, medium and hard. An invisible finish line is positioned closely behind the last goal for each track.
+
+The tracks in the easy setting contain 3 goals that are positioned on the arena's center line with even distances between them. The medium setting contains 3 goals that are shifted on the center line towards the arena's walls. The hard setting contains 3 goals that are shifted on the center line towards the arena's walls, resulting in a zig-zag pattern. The zig-zag pattern is the most challenging for the agent to navigate, as it requires the agent to turn sharply to pass the goals. One track from each difficulty setting is shown in figure \ref{fig:track_difficulty_settings}. The tracks in each setting are structurally very similar to each other. They differ in goal coloring and the orientation of the shift from the center line.
+
+
+\begin{figure}
+    \centering
+    \subfigure[Easy]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/evaluation_easy.png}}\qquad
+    \subfigure[Medium]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/evaluation_medium.png}}\qquad
+    \subfigure[Hard]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/evaluation_hard.png}}\\
+    \caption{Example evaluation tracks for each difficulty setting.}
+    \label{fig:track_difficulty_settings}
+\end{figure}
+% the images are generated with image_printer.py
+
+
+There are three light settings for the environment: bright, standard and dark. The different light settings are implemented by varying the light intensities of the arena's light sources and changing the horizon in the agent's camera.
+
+\begin{figure}
+    \centering
+    \subfigure[Arena Bright]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_bright_arena.png}}\qquad
+    \subfigure[Arena Standard]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_standard_arena.png}}\qquad
+    \subfigure[Arena Dark]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_dark_arena.png}}\\
+    \subfigure[Agent Bright]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_bright_pov_no_preprocessing.png}}\qquad
+    \subfigure[Agent Standard]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_standard_pov_no_preprocessing.png}}\qquad
+    \subfigure[Agent Dark]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_dark_pov_no_preprocessing.png}}\\
+    \caption{Arena and agent camera at different light settings.}
+    \label{fig:track_light_settings}
+\end{figure}
+
+The initial position of the agent at the start of an episode is fixed. The starting position is identical for all tracks. The inital orientation is defined by the environment parameter $spawnOrientation$. The parameter specifies the range of rotations around the z-axis.There are three options for the spawnOrientation parameter: Fixed, Random and VeryRandom. For the Fixed option the agent is spawned with an orientation of 0 degrees. In the Random option the agent is spawned with an orientation between -15 and 15 degrees. In the VeryRandom option the agent is spawned with a random orientation between -45 and 45 degrees.
+During the training process an orientation from the range is sampled for each episode. In the evaluation process the agent is spawned with unique orientations from the range, see \ref{sec:eval_model_track}. 
+The ranges for the spawnOrientation parameter influence the difficulty of completing the tracks. Depending on the spawn rotation and the selected track it might not be possible to see the entire first goal from the starting position. This is shown in \ref{fig:spawn_orientation}. 
+
+\newcommand{\spawnOrientation}[1]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/#1.png}}
+\begin{figure}
+    \centering
+    \subfigure[Arena $0^{\circ}$ ]{\spawnOrientation{spawnOrientation_Fixed_max}}\qquad
+    \subfigure[Arena $15^{\circ}$ ]{\spawnOrientation{spawnOrientation_Random_max}}\qquad
+    \subfigure[Arena $45^{\circ}$ ]{\spawnOrientation{spawnOrientation_VeryRandom_max}}\\
+    \subfigure[Agent POV $0^{\circ}$]{\spawnOrientation{spawnOrientation_Fixed_max_pov}}\qquad
+    \subfigure[Agent POV $15^{\circ}$]{\spawnOrientation{spawnOrientation_Random_max_pov}}\qquad
+    \subfigure[Agent POV $45^{\circ}$]{\spawnOrientation{spawnOrientation_VeryRandom_max_pov}}\qquad
+    \caption{Example Spawn Orientations and agent camera views for a hard track}
+    \label{fig:spawn_orientation}
+\end{figure} % the figure shows that the first goal is not always visible from the starting position, very nice
+
+
+
+\section{Agent Description}
+
+The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives an acceleration value for the left and right wheel from the Python algorithm. The values range from -1 to 1 and control the agent's wheels and movement. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
+There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The FourWheelJetBot has 2 steering driving wheels at the front and two non-driving wheels in the back. The DifferentialJetBot steers by applying different torques to the two front wheels. The FourWheelJetBot steers by turning the front wheels in the desired direction and applyig equal torques to both wheels.
+The FourWheelJetBot was used in the work by \autocite{maximilian}. The DifferentialJetBot was developed to match the physical NVIDIA JetBot more closely. The two JetBot designs are shown in figure \ref{fig:jetbots}.
+
+
+\begin{figure}
+    \centering
+    \subfigure[Nvidia JetBot Photo]{\includegraphics[width=0.3\textwidth]{Bilder/JetBotImages/NvidiaJetBot.jpeg}}\qquad
+    \subfigure[DifferentialJetBot]{\includegraphics[width=0.3\textwidth]{Bilder/JetBotImages/DifferentialJetBot.PNG}}\qquad
+    \subfigure[FourWheelJetBot]{\includegraphics[width=0.3\textwidth]{Bilder/JetBotImages/FourWheelJetBot.PNG}}\qquad
+    \caption{Original Nvidia JetBot and simulated JetBot Designs}
+    \label{fig:jetbots}
+\end{figure} % TODO angle the wheels of the FourWheelJetBot in the image
+
+
+\section{Episode Design}
+
+An episode represents one attempt of the agent at solving a track in the environment. Each episode consists of a series of steps starting from the initial position. The agent interacts with the environment in each step. The environment is simulated in Unity during each step. This includes things like agent movement, collision detection and reward calculation.
+
+\subsection{Step duration}
+The duration of each step is defined by the environment settings. There are two destinct modes for the step durations. The first mode is the fixed timestep mode. In this mode the duration of each step is fixed and defined by the environment parameter $fixedTimestepsLength$. The second mode is the variable timestep mode. In this mode each step lasts until the environment receives the next action from the agent.
+
+\subsubsection{Fixed Duration}
+
+The duration of each step is fixed in this mode. In each step the Unity environment receives an action from the policy. The environment simulation is started and the action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step and environment simulation is terminated when the fixed duration has passed. The duration is defined by $fixedTimestepsLength$ in seconds. The Unity environment then waits until the next step or environment reset. The unity environment does not accept new step commands when the current step is not terminated.
+An episode with fixed duration steps is shown in the upper part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits for new steps to start. The figure also shows that the waiting time is not consistent.
+
+The fixed mode has many advantages. The fixed duration of the steps results in consistency of the step transitions. Given identical step durations and environment state, it is well defined how the agent will move in any step. The environment state after completing a step is well defined.
+Furthermore the performance of the policy does not depend on the processing speed of the device. In case of slower policy computation, the unity environment pauses the simulation and waits for the next step command.
+
+% TODO show an example of different step durations ? 
+% show how the distance that the agent travels changes
+
+% TODO explain the two modes in more detail
+% advantages and disadvantages of both modes
+
+
+\subsubsection{Variable Duration}
+
+The duration of each step is variable in this mode. The environment simulation is started when the first step is received. In each step the Unity environment receives an action from the policy. The step's action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step is terminated when a new step is received from the policy. The new step is started instantly, there is no waiting time between steps. 
+The duration of the steps is not fixed, it can change from step to step. It depends on the policy's computation and message transmission time. The environment simulation is not paused during the policy's computation time. 
+An episode with variable duration steps is shown in the lower part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits only for the first step. The figure also shows that the step sizes may change from step to step.
+
+The biggest advantage and disadvantage this mode is that the step duration depends on the policy's computation and message transmission time. If the policy is computed fast, the average duration of the steps will be shorter. Shorter steps allow for more precise movements. Shorter durations for steps can result in a more capable policy.
+A disadvantage is that the step duration can change due to a changed policy computation time. The policy computation time will be different on other devices or when there is additional load on the processing unit.
+Changes in step duration might break a trained policy, as the policy has learned to expect a certain environment change for the steps. This environment change might be different for steps with different durations. 
+Example: The agent might decide to turn right, expecting to be able to stop the turning within 0.2seconds. If the next step is computed too slow the agent might not be able to stop the turning in time. The agent might then crash into a wall.
+
+
+\usetikzlibrary{decorations.pathreplacing}
+% how to build the graphs: https://tex.stackexchange.com/questions/436259/timeline-in-latex
+\definecolor{myLightGray}{RGB}{191,191,191}
+\definecolor{myGray}{RGB}{160,160,160}
+\definecolor{myDarkGray}{RGB}{144,144,144}
+\definecolor{myDarkRed}{RGB}{167,114,115}
+\definecolor{myRed}{RGB}{255,58,70}
+\definecolor{myGreen}{RGB}{0,255,71}
+\definecolor{myBlue}{RGB}{0,191,255}
+\newcommand\offset{-3}
+
+\begin{figure}[!h]
+\centering
+\begin{tikzpicture}[%
+    every node/.style={
+        font=\scriptsize,
+        % Better alignment, see https://tex.stackexchange.com/questions/315075
+        text height=1ex,
+        text depth=.25ex,
+    },
+]
+
+\node[anchor=south] at (4.25,1) {\large Fixed length time steps};
+
+% draw horizontal line   
+\draw[->] (0,0) -- (8.5,0);
+
+% draw vertical lines
+% {0,1,3,3.5,5.5,6.2,8.2}
+\foreach \x in {0,3,5.5,8.2}{
+    \draw (\x cm,0.15) -- (\x cm,0);
+} 
+\foreach \x in {1,3.5,6.2}{
+    \draw[red] (\x cm,0.15) -- (\x cm,0); % was 3 pt and 0 pt before
+}
+% displayed fixedTimestepsLength is 2
+
+% place axis labels
+\node[anchor=north] at (0,0) {episode start};
+\node[anchor=north] at (2,0) {$t_0$};
+\node[anchor=north] at (4.5,0) {$t_1$};
+\node[anchor=north] at (7.2,0) {$t_2$};
+\node[anchor=west] at (8.5,0) {realtime};
+
+% draw scale above
+
+\fill[myLightGray] (1,0.25) rectangle (3,0.4); % step
+\fill[myLightGray] (3.5,0.25) rectangle (5.5,0.4);
+\fill[myLightGray] (6.2,0.25) rectangle (8.2,0.4);
+
+\fill[myBlue] (0,-0.4) rectangle (1,-0.55); % wait
+\fill[myBlue] (3,-0.4) rectangle (3.5,-0.55); % wait
+\fill[myBlue] (5.5,-0.4) rectangle (6.2,-0.55); % wait
+\draw[myBlue,dashed,thick,-latex] (8.2,-0.475) -- (8.5,-0.475);
+
+% draw curly braces and add their labels
+\draw[decorate,decoration={brace,amplitude=5pt}] (3.5,0.45) -- (5.5,0.45)
+    node[anchor=south,midway,above=4pt] {Step};
+\draw[decorate,decoration={brace,mirror,amplitude=5pt}] (0,-0.6) -- (1,-0.6)
+    node[anchor=north,midway,below=4pt] {Waiting for Step command};
+
+% second part
+\node[anchor=south] at (4.25, 1 + \offset) {\large Variable length time steps};
+% draw horizontal line   
+\draw[->] (0,\offset) -- (8.5,\offset);
+
+% draw vertical lines
+% {0,1.5,3,5.6,7.6}
+\foreach \x in {0}{
+    \draw (\x cm,0.15 + \offset) -- (\x cm,0 + \offset); % was 3 pt and 0 pt before
+}
+
+% draw vertical lines for new step commands red
+\foreach \x in {1.5,3,5.6,7.6}{
+    \draw[red] (\x cm,0.15 + \offset) -- (\x cm,0 + \offset); % was 3 pt and 0 pt before
+}
+
+% place axis labels
+\node[anchor=north] at (0,0+ \offset) {episode start};
+\node[anchor=north] at (2.25,0+ \offset) {$t_0$};
+\node[anchor=north] at (4.3,+ \offset) {$t_1$};
+\node[anchor=north] at (6.6,0+ \offset) {$t_2$};
+\node[anchor=north] at (8.05,0+ \offset) {$t_3$};
+\node[anchor=west] at (8.5,0+ \offset) {realtime};
+
+% draw scale above
+\fill[myLightGray] (1.5,0.25+ \offset) rectangle (3,0.4+ \offset); % step 0
+\fill[myDarkGray] (3,0.25+ \offset) rectangle (5.6,0.4+ \offset);
+\fill[myLightGray] (5.6,0.25+ \offset) rectangle (7.6,0.4+ \offset);
+\draw[myDarkGray,dashed,thick,-latex] (7.6,0.325+ \offset) -- (8.5,0.325+ \offset);
+
+\fill[myBlue] (0,-0.4+ \offset) rectangle (1.5,-0.55+ \offset); % wait for initial
+
+% draw curly braces and add their labels
+\draw[decorate,decoration={brace,amplitude=5pt}] (3,0.45 + \offset) -- (5.6,0.45 + \offset)
+    node[anchor=south,midway,above=4pt] {Step};
+\draw[decorate,decoration={brace,mirror,amplitude=5pt}] (0,-0.6 + \offset) -- (1.5,-0.6 + \offset)
+    node[anchor=north,midway,below=4pt] {Waiting for Step command};
+\end{tikzpicture}
+\begin{tabular}{r@{: }l}
+    grey & steps, simulation \\
+    blue & waiting for step start, no simulation \\ 
+    red & new step command from policy
+\end{tabular}
+\caption{Timeline of steps in Unity for fixed and variable duration}
+\label{fig:unity_timeline_steps_duration}
+\end{figure}
+
+
+
+
+\subsection{Episode Termination}
+\label{time_limit}The episodes are terminated based on the agent's interactions with the environment. Episodes are terminated when the agent reaches the finish line or a timeout is reached. The timeout is defined by a fixed timelimit of 20 seconds which is increased by further 20 seconds for each passed goal. The timelimit is necessary to terminate episodes where the agent does not reach the finish line, due to the policy's learned behaviour or collisions. 
+
+Collisions of the agent with the goal posts and the arena walls are detected by the environment. The environment parameter $collisionMode$ defines how the agent's collisions are handled. The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}.
+
+
+\begin{figure}
+    
+    \begin{center}
+    \begin{tabular}{|| p{0.2\linewidth} | p{0.35\linewidth} | p{0.35\linewidth} ||} 
+        \hline
+        collisionMode & \makecell{Behaviour upon Collision} & Reasoning \\ [0.5ex] 
+        \hline\hline
+        unrestricted & Negative reward is given for each frame with collision.  This can result in multiple penalties given during a single step. & Default behaviour \\ 
+        \hline
+        oncePerTimestep & Negative reward for collisions is given only once per step. & Limits the negative reward caused by a collision in a step. \\
+        \hline
+        oncePerEpisode & Negative reward for collision is only given once  per episode per object. & Limits the negative reward caused by ongoing collisions. \\
+        \hline
+        terminate  & Episode is terminated instantly. & The early termination could speed up the neural network training. \\
+        \hline
+        ignore  & Collisions are ignored, no negative reward is given. & The agent might learn to avoid collisions based on other rewards. \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \caption{Collision Modes}
+    \label{fig:collision_modes}
+\end{figure}
+
+
+
+% time-limit, episode termination, step-function, Collisions, rewards
+
+% time limit explain here
+
+% success is now defined as passing all three goals  (without necessarily reaching the finish line)
+% this was done as the agent sometimes learns to move back and forth in front of the finish line
+
+
+\section{Reward Function}
+
+The reward function is a function that maps state-action pairs to a scalar reward. The reward function assigns rewards to the agent based on its actions in the environment. The reinforcement learning algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the reinforcement learning process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
+
+The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour \ref{fig:eventReward_function}. The event reward function is evaluated in each step. In case the agent passes a goal or reaches the finish line during the step a positive reward is awarded. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The maximum amount of reward obtainable from this function per episode is $num_goals * goal_reward + parcour_reward = 3 * 1 + 100 = 103$. An agent that maximises the eventReward function will complete the track without collisions. In theory the event Reward should be enough to train an agent that traverses the tracks successfully without collisions.
+
+
+% TODO check numbers
+\begin{figure}
+    \centering
+    \begin{align}
+         EventReward(s_t, a_t) &= \begin{cases}
+              100,           \text{completed the parcour}           \\
+              1,             \text{passed a goal}                   \\
+              -1,            \text{missed a goal}                   \\
+              -1,            \text{collision with wall or obstacle} \\
+              -1,            \text{timeout}                         \\
+              0,             \text{otherwise}                       \\
+         \end{cases} \nonumber
+    \end{align}
+    \caption{Event Reward function}
+    \begin{tabular}{r@{: }l r@{: }l}
+    $s_t$& state t & $a_t$& action in state t 
+    \end{tabular}
+    \label{fig:eventReward_function}
+\end{figure}
+
+The eventReward function provides the agent with a reward signal that is closely aligned with the desired behaviour. However the eventRewards are only awarded in very few steps. In the optimal episode there are only 4 steps where the reward is non-zero. Three steps where the agent passes a goal and one step where the agent reaches the finish line. The eventReward function is a sparse reward function. Sparse rewards can make it difficult for the agent to learn the desired behaviour. In the case of the eventReward, the agent might never learn to drive towards a goal since there are no rewards that encourage that behaviour. The agent would rely on random exploration alone to discover the positive reward associated with successfully driving through a goal.
+Additional reward functions were developed to help the agent learn to complete the tracks. The additional reward functions are dense reward functions. They assign non-zero rewards in most steps. This is comparable to encouraging route following behaviour with a trail of candy versus a big cake at the end of the route. 
+The first dense reward function is the velocityReward. It was already developed in previous work \autocite{maximilian} to encourage the agent to drive at full speed. The velocityReward function assigns a reward proportional to the agent's velocity. The reward from driving forward might also help at discovering other rewards, e.g. the positive reward for passing a goal awared by eventReward function. 
+The second dense reward function is the orientationReward. The orientationReward function assigns a reward based on the agent's orientation. The reward is proportional to the cosine similarity between the agent's orientation and the direction towards the next goal. The orientationReward function encourages the agent to face the next goal. Together with other rewards this could lead to the agent driving through the next goal.
+The third and last dense reward function is the distanceReward function. The distanceReward function assigns a reward proportional to the difference in distance between the agent and the next goal. The distanceReward is positive if the agent gets closer to the next goal during a step transition. The distance to the next goal is measured from the midpoint between the two goal posts. The distanceReward function encourages higher driving velocity, as higher velocities result in bigger distance differences and thus rewards. The distanceReward function also encourages the agent to drive strait towards the next goal, as this results in the biggest distance differences. In theory the agent should be able to learn to complete the tracks successfully from the distanceReward alone.
+
+% TODO dicuss the diasdvantage of dense reward functions
+% TODO discuss the issue of the dense rewards being opinionated?
+% distanceReward encourages the agent to pass the goal through the middle. that is not necessary for the desired behaviour.
+% it is also not the most  optimal line driving through the middle of the goal posts
+% but this might not translate to the agent's behaviour
+
+The four individual reward functions can be combined in many ways to give the agent dense and meaningful rewards. In previous work the eventReward was combined with the velocityReward to train the agent. In this work we combine the individual reward functions in the composite reward function \ref{fig:reward_functions}. The composite reward function applies scalar weights to the individual reward functions and returns this weighted sum of rewards to the agent. It is crucial to select an appropriate combination of weights for the individual reward functions during training. The weights determine the importance of the individual reward functions and can influence the learned behaviour. If the velocityReward is weighted too high the agent might learn to drive at full speed in circles without ever reaching the finish line. It is also to note that setting a specific reward function's weight to zero essentially removes that reward function.
+
+\begin{figure}
+    \centering
+    \begin{align}
+         R(s_t,a_t) &= c_1 \cdot DistanceReward(s_t,a_t) + c_2 \cdot OrientationReward(s_t,a_t) \nonumber \\
+         &  + c_3 \cdot VelocityReward(s_t, a_t) + c_4 \cdot EventReward(s_t, a_t) \nonumber \\
+         DistanceReward(s_t,a_t) &= \Delta distance(Agent, NextGoalPosition) \cdot \Delta T \nonumber \\
+         OrientationReward(s_t,a_t) &= S_C(NextGoalPosition - AgentPosition, agentDirection) \cdot \Delta T \nonumber \\
+         VelocityReward(s_t, a_t) &= v \cdot \Delta T \nonumber \\
+         EventReward(s_t, a_t) &= \begin{cases}
+              100,           \text{completed the parcour}           \\
+              1,             \text{passed a goal}                   \\
+              -1,            \text{missed a goal}                   \\
+              -1,            \text{collision with wall or obstacle} \\
+              -1,            \text{timeout}                         \\
+              0,             \text{otherwise}                       \\
+         \end{cases} \nonumber
+    \end{align}
+    \caption{Complete reward function R with all its components}
+    \begin{tabular}{r@{: }l r@{: }l}
+    $S_C$ & cosine similarity & $c_i$ & weights\\
+    $s_t$& state t & $a_t$& action in state t 
+    \end{tabular}
+    \label{fig:reward_functions}
+\end{figure}
+% cosine similarity is one for same direction, zero for orthogonal directions and -1 for opposite directions
+
+
+
+
+

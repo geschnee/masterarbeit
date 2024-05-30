@@ -12,8 +12,8 @@
 \documentclass[
 	11pt,					% Schriftgröße
 	DIV=10,
-	%ngerman,				% für Umlaute, Silbentrennung etc.
-	english,
+	ngerman,				% für Umlaute, Silbentrennung etc.
+	%english,
 	a4paper,				% Papierformat
 	oneside,				% einseitiges Dokument
 	titlepage,				% es wird eine Titelseite verwendet
@@ -103,11 +103,18 @@
 
 \include{Inhalt/RelatedWork}
 
-\include{Inhalt/EnvironmentDescription}
+
+
 
 \include{Inhalt/Methods}
+\include{Inhalt/MethodsEnvironmentDescription}
+
 \include{Inhalt/MethodsPolicyDescription}
+
 \include{Inhalt/MethodsTrainAlgorithm}
+
+\include{Inhalt/MethodsRewardFunctionsCapabilityCheck}
+
 
 
 \include{Inhalt/Experiments}
@@ -122,6 +129,7 @@
 \include{Inhalt/Conclusion}
 
 
+
 % Literaturverzeichnis -----------------------------------------------------
 %		Das Literaturverzeichnis wird aus der Datenbank erstellt.
 %		Die genaue Verwendung von biblatex wird hier jedoch nicht erklärt.
@@ -129,6 +137,8 @@
 %						https://de.overleaf.com/learn/latex/Articles/Getting_started_with_BibLaTeX
 % --------------------------------------------------------------------------
 
+
+% Mit Overleaf compilieren, falls es Probleme gibt mit der Bibliographie
 
 \printbibliography
 

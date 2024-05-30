@@ -8,7 +8,7 @@ The Nvidia Jetbot is designed to be able to execute AI software. However the lim
 
 The developed policy takes a camera image from the front of the agent as input and applies preprocessing steps to the image. The preprocessed image is then processed by a convolutional neural network that outputs two acceleration values, one for each motor. The acceleration values are applied to the motors for a fixed amount of time. While the agent is moving, the camera image is constantly updated and the policy is applied to the new image. It is crucial that the agent's policy can be computed quick enough to be able act in real time. 
 
-\subsection{effects of insufficiently slow policy computation}
+\subsection*{Effects of insufficiently slow policy computation}
 If the jetbot is not able to compute the developed policy in the required time, there are two options that do not require changes to the developed/trained policy. The first option is to stop the motors until the policy is computed and then apply the acceleration values. This would make the jetbot movement overall slower and less smooth.
 The second option is to apply the last computed acceleration values to the motors until the new policy is computed. This could result in a degradation of the jetbot's performance since the actions would be less accurate.
 The two options are shown with visual representations in \ref{fig:slow_policy_computation}.
@@ -16,7 +16,6 @@ The two options are shown with visual representations in \ref{fig:slow_policy_co
 
 % gif splitter
 % https://ezgif.com/split
-
 
 
 \newcommand{\spc}[2]{\subfigure[#1]{\includegraphics[width=0.2\textwidth]{Bilder/slow_policy_computation/#2.png}}}
@@ -58,76 +57,7 @@ The replay of a step consists of all the processing to obtain new acceleration v
 Multiple games of all difficulty and light settings are recorded to have a diverse set of data to replay. The recording and replay of an episode are shown in pseudocode \ref{pseudocode:record_episode} and \ref{pseudocode:replay_episode}.
 
 
-\renewcommand{\thepseudonum}{\roman{pseudonum}}
-\begin{pseudocode}{Record Episode}{ }
-\COMMENT{Record episode}\\
 
-\PROCEDURE{record\_episode}{policy, env, directory}
-
-env.\CALL{RESET}{}\\
-
-sampled\_actions \GETS [] \\
-infer\_obsstrings \GETS [] \\
-step\_obsstrings \GETS [] \\
-
-done \GETS \FALSE\\
-
-\WHILE ! done \DO
-\BEGIN
-obs, obsstring \GETS env.\CALL{GetObservation}{}\\
-action \GETS policy.\CALL{Infer}{obs}\\
-
-step\_obsstring, done \GETS env.\CALL{step}{action}\\
-
-infer\_obsstrings.\CALL{append}{obsstring}\\
-step\_obsstrings.\CALL{append}{step\_obsstring}\\
-sampled\_actions.\CALL{append}{action}\\
-\END\\
-
-\FOR i \GETS 0 \TO len(step\_obsstrings) \DO
-    \CALL{SaveToFile}{step\_obsstrings[i], directory + "/step\_image" + i + ".png"}\\
-\FOR i \GETS 0 \TO len(infer\_obsstrings) \DO
-    \CALL{SaveToFile}{infer\_obsstrings[i], directory + "/infer\_image" + i + ".png"}\\
-\FOR i \GETS 0 \TO len(sampled\_actions) \DO
-    \CALL{SaveToFile}{sampled\_actions[i], directory + "/sampled\_action" + i + ".npy"}\\
-
-
-\ENDPROCEDURE
-\label{pseudocode:record_episode}
-\end{pseudocode}
-
-\renewcommand{\thepseudonum}{\roman{pseudonum}}
-\begin{pseudocode}{Replay Episode}{ }
-\COMMENT{Replay episode and record processing + inference time}\\
-
-\PROCEDURE{replay\_episode}{ policy, env, directory}
-
-recorded\_episode\_length \GETS \CALL{LoadRecordedEpisodeLength}{directory}\\
-recorded\_actions \GETS \CALL{LoadRecordedActions}{directory}\\
-infer\_obs\_unity\_images \GETS \CALL{LoadInferImages}{directory}\\
-step\_obs\_unity\_images \GETS \CALL{LoadStepImages}{directory}\\
-
-reproduce\_times \GETS [] \\
-
-replay\_time\_start \GETS \CALL{TIME}{}\\
-
-\FOR i \GETS 0 \TO recorded\_episode\_length \DO
-\BEGIN
-obs \GETS \CALL{ProcessImage}{env, infer\_obs\_unity\_images[i]}\\
-action \GETS policy.\CALL{Infer}{obs}\\
-reproduce\_times.\CALL{append}{\CALL{TIME}{} - replay\_time\_start}\\
-
-\CALL{AssertEqual}{action, recorded\_actions[i]}\\
-
-replay\_time\_start \GETS \CALL{TIME}{}\\
-
-\CALL{ProcessImage}{env, step\_obs\_unity\_images[i]}\\
-\END\\
-\RETURN{reproduce\_times}
-\ENDPROCEDURE
-
-\label{pseudocode:replay_episode}
-\end{pseudocode}
 
 
 % we always record in the use_fresh_obs mode
