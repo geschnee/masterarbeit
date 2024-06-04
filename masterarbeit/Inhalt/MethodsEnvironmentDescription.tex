@@ -81,9 +81,13 @@ The ranges for the spawnOrientation parameter influence the difficulty of comple
 
 
 \section{Agent Description}
+\label{cha:agent_description}
 
-The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives an acceleration value for the left and right wheel from the Python algorithm. The values range from -1 to 1 and control the agent's wheels and movement. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
-There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The FourWheelJetBot has 2 steering driving wheels at the front and two non-driving wheels in the back. The DifferentialJetBot steers by applying different torques to the two front wheels. The FourWheelJetBot steers by turning the front wheels in the desired direction and applyig equal torques to both wheels.
+The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives a $leftAcceleration$ and $rightAcceleration$ value from the Python algorithm. The values range from -1 to 1 and control the agent's wheels and movement. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
+
+There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The FourWheelJetBot has 2 steering driving wheels at the front and two non-driving wheels in the back. The DifferentialJetBot steers by applying different torques to the two front wheels. The two acceleration values are multiplied by a constant factor and applied to the two wheels independently.
+
+The FourWheelJetBot steers by turning the front wheels in the desired direction and applyig equal torques to both wheels. The steering angle is computed from the difference in the two acceleration values. The torque is computed by multiplying the mean of the two acceleration values with a constant factor.
 The FourWheelJetBot was used in the work by \autocite{maximilian}. The DifferentialJetBot was developed to match the physical NVIDIA JetBot more closely. The two JetBot designs are shown in figure \ref{fig:jetbots}.
 
 

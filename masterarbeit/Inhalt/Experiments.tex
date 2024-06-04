@@ -125,7 +125,7 @@ what happens to a model trained on fixedTimestepsLength when it is evaluated wit
 
 \subsection{JetBot generalization}
 
-There are two versions of the agent in simulation. The DifferentialJetBot has two front wheels that are accelerated independently for steering. The FourWheelJetBot angles its front wheels for steering. The differences can result in different agent movement for the same acceleration inputs. One specific version of the agent is used during training, the agent movement has an influence on the developed policy.
+There are two versions of the agent in simulation. The DifferentialJetBot has two front wheels that are accelerated independently for steering. The FourWheelJetBot angles its two front wheels for steering. The differences can result in different agent movement for the same acceleration inputs. One specific version of the agent is used during training, the agent movement has an influence on the developed policy.
 A policy trained on the DifferentialJetBot might not generalize well to the FourWheelJetBot and vice versa. The JetBot generalization test evaluates the trained policy on both JetBot versions to determine if the policy generalizes well. The test evaluates the agent on the different difficulty levels following the evaluation algorithm described in \ref{sec:eval_model_track}.
 
 
