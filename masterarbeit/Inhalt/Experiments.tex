@@ -40,7 +40,7 @@ The evaluation algorithm initializes $n\_eval\_episodes$ environments with the s
 
 The agent is evaluated on every combination of light and difficulty settings. The $success\_rate$ metric is collected for each combination of light and difficulty settings separately. The collected $success\_rates$ are then averaged to produce aggregate $success\_rates$ for each light setting and difficulty setting. The 3 light and difficulty settings result in a total of 9 evaluated combinations and $success\_rates$. A total of 7 aggregate $success\_rates$ are computed, 3 for each light setting and 3 for each difficulty setting. The final aggregate is the $total\_success\_rate$, the average of all 9 collected $success\_rates$. 
 The $total\_success\_rate$ is used to determine the overall best agent and model.
-
+All collected and aggregate $success\_rates$ are shown in \ref{table:success_rates_system}.
 
 \begin{table}
 \begin{center}
@@ -64,9 +64,7 @@ The $total\_success\_rate$ is used to determine the overall best agent and model
 \end{table}
 
 
-
-
-\subsection{Deterministic check}
+\section{Deterministic check}
 
 The PPO policy produces an action distribution when given an input observation. The action distribution is sampled to obtain an action for the agent to execute in the environment. The distribution can be sampled deterministically or non-deterministically. Deterministic sampling returns the most likely action, indicated by the mean of the distribution. Non-deterministic sampling returns a sample from the distribution according to the distribution's probabilities. This results in different output actions for the same observations. The PPO policy uses non-deterministic sampling during training to explore the action space. 
 
@@ -81,7 +79,7 @@ The better sampling method is determined experimentally. It is then used for all
 
 
 
-\subsection{Identical start condition Test}
+\section{Identical start condition Test}
 
 % TODO the policy is also non-determinsitic during the eval runs, so the purpose of this test is a bit different (first paragraph)
 The environment is simulated in Untiy and was described in \ref{cha:env_description} to not be fully deterministic. This means identical actions in identical environments could result in different outcomes. These changes are small, such as changes to a few pixels in the agent camera. However these small changes might result in different agent actions. These actions further influence the environment and following actions. This means that episodes with identical starting conditions could result in different outcomes. This could be problematic when evaluating the agent, as the agent's performance could be influenced by the environment's randomness. 
@@ -93,7 +91,7 @@ The episode results are characterized by the endEvent, collision and the three g
 
 
 
-\subsection{Fresh Observation Test}
+\section{Fresh Observation Test}
 
 In the standard reinforcement learning algorithms each step transition results in a new observation that represents the environment's new state. Calls to the Unity environment and the step transitions in the environment take time. In order to speed up the training process the step calls to the simulated environment have been implemented in a non-blocking way. This means the step calls return before the entire step transition has been completed. The observation after the step transition is not yet available when the call returns. The observation returned by the step call is the observation of the environment at the beginning of the step transition. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. 
 
@@ -116,14 +114,14 @@ The fresh observation test evaluates a trained policy with both $use\_fresh\_obs
 % we can copy this section somewhere else to highlight the learning/development process
 
 
-\subsection{policy timestepLength generalization}
+\section{policy timestepLength generalization}
 
 policy timestepLength generalization 
 
 what happens to a model trained on fixedTimestepsLength when it is evaluated with a shorter/longer/unrestricted fixedTimestepsLength
 
 
-\subsection{JetBot generalization}
+\section{JetBot generalization}
 
 There are two versions of the agent in simulation. The DifferentialJetBot has two front wheels that are accelerated independently for steering. The FourWheelJetBot angles its two front wheels for steering. The differences can result in different agent movement for the same acceleration inputs. One specific version of the agent is used during training, the agent movement has an influence on the developed policy.
 A policy trained on the DifferentialJetBot might not generalize well to the FourWheelJetBot and vice versa. The JetBot generalization test evaluates the trained policy on both JetBot versions to determine if the policy generalizes well. The test evaluates the agent on the different difficulty levels following the evaluation algorithm described in \ref{sec:eval_model_track}.

@@ -116,10 +116,7 @@ Model.\CALL{SaveToFile}{}\\
 
 The model training part of the algorithm is very conventional and follows the standard implementation of PPO training. The model is trained on the collected data for a fixed number of epochs. In each epoch the replay buffer is sampled to create batches of data. The loss is computed for each batch. The gradient of the weights with respect to the loss is computed using backpropagation. The optimizer is then used to update the model parameters using the gradients.
 
-The entire data from the replay buffer is sampled in every epoch. This ensure that the data is used efficiently. The data is shuffled before creating the batches. This ensures that the samples are less correlated and the model updates are more stable.
-
-\subsubsection{Loss function TODO}
-
+The entire data from the replay buffer is sampled in every epoch. This ensure that the collected data is used efficiently. The data is shuffled before creating the batches. This ensures that the samples are less correlated and the model updates are more stable.
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Train Model}{ }
@@ -143,5 +140,21 @@ Optimizer.\CALL{Step}{}\\
 
 \end{pseudocode}
 
+\subsubsection*{Loss function}
 
+The loss function follows the Proximal Policy Optimization algorithm. The PPO loss function is a combination of the policy surrogate and value error \autocite{ppo}. The policy surrogate and value error are combined to be able to update the weights of the entire neural network together. 
+The policy surrogate objective function restricts the size of parameter updates. The ratio between the old and the current policy is clipped. The clipped ratio and non-clipped ratio are multiplied by the advantage. The minimum of the two is used as the policy surrogate loss. This prevents the updates from changing the policy drastically.
+The advantage is an estimator for how much better (or worse) the policy performed than expected. The advantage is computed using the value estimates produced by the neural network. The multiplication of the ratio with the advantage lead to increased probabilities for good actions and decreased probabilities for bad actions.
+
+The value error is the mean squared error between the predicted value and the target value. The parameter changes caused by the value error lead to a more accurate value prediction.
+
+The policy loss can also include an entropy term. In this paper no entropy term is used. This results in the loss function \eqref{eq:eq1} with the value coefficient $c_1 = 0.5$.
+
+\begin{align*}
+    L_t^{CLIP + VF} &= \hat{\mathbb{E}}_t [L_t^{CLIP}(\theta) - c_1 L_t^{VF}(\theta)] \label{eq:eq1}\tag{PPO Loss} \\
+    L_t^{CLIP}(\theta) &= min(r_t(\theta)\hat{A}_t, clip(r_t(\theta), 1-\epsilon, 1+\epsilon)\hat{A}_t) \label{eq:eq2}\tag{Surrogate Objective}\\
+    r_t(\theta) &= \frac{\pi_\theta(a_t|s_t)}{\pi_{\theta_{old}}(a_t|s_t)} \label{eq:eq3}\tag{Ratio}\\
+    L_t^{VF}(\theta) &= (V_\theta (s_t) - V_t^{targ})^2 \label{eq:eq4}\tag{Value Error}
+\end{align*}
+% for the target value + advantage computation see my_buffers.compute_returns_and_advantage returns
 

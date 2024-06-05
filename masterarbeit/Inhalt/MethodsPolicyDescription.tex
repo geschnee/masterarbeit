@@ -6,7 +6,7 @@
 \label{fig:policy_description}
 
 The policy dictates what action the agent takes. The policy consists of preprocessing steps, a memory mechanism and a neural network. The policy is applied to images from the agent camera. The resulting actions are then applied to the agent in the Unity environment. 
-The preprocessing steps and memory mechanism are considered as part of the policy as they are applied to the input images before the neural network. The preprocessing steps cannot be changed for any given policy, as they define dimensions and contents of the neural network's inputs.
+The preprocessing steps and memory mechanism are considered as part of the policy as they are applied to the input images before the neural network. The preprocessing steps cannot be changed for a trained policy, as they define dimensions and contents of the neural network's inputs.
 
 The agent's camera image has three channels, red, green, and blue. Its dimensions are defined by the config parameters $agentImageWidth$ and $agentImageHeight$. These parameters define the agent's field of view.
 The policy receives an image from the agent camera as input. First the image is preprocessed. This changes the image content and dimensions. The preprocessed image is then combined with the memory mechanism to produce the inputs to the policy's neural network. The network then produces an action.
@@ -184,19 +184,20 @@ The memory mechanism enables the policy to use information from previous time st
 
 \subsection{Neural Network}
 
-neural network + action distribution
+The neural network is the core of the policy. It is responsible for producing the actions from the image observations. The neural network belongs to the class of convolutional neural networks. This architecture was chosen since convolutional neural networks are ideal for processing image data. The convolutional network's architecture follows the specifications from \autocite{human_level_control}. This architecture has been used successfully in comparable reinforcement learning problems.
 
-The neural network is the core of the policy. It is responsible for producing the actions from the image observations. The neural network belongs to the class of convolutional neural networks. This architecture was chosen since convolutional neural networks are ideal for processing image data. The convolutional network's architecture follows the specifications from \autocite{nature}. The architecture has been used successfully in many comparable reinforcement learning problems. The main difference to the network from \autocite{nature} is the input size.
-
-The network takes the output of the memory mechanism as input. This input is a three dimensional tensor, similar to an image. The network consists of convolutional and fully connected layers. The network produces two outputs, an action distribution and a value function. The action distribution is a probability distribution over the action space. The value function is a scalar value that estimates the expected return of the current state. The value function is not used during the action inference. The value is only used for the training of the policy to compute the loss. (or advantage)
+The network takes the output of the memory mechanism as input. This input is a three dimensional tensor, similar to an image. The network consists of convolutional and fully connected layers. The network produces two outputs, an action distribution and a value function. The action distribution is a probability distribution over the action space. 
+The value function is a scalar value that estimates the expected return of the current state. The value function is not used during the action inference. The value is only used during the training of the policy network. It is used to compute the advantage function which is required for the loss \autocite{ppo}.
 
 % value or is it the critic? --> it is value
 
 % TODO welches paper hat die architektur beschrieben? nature paper?
+% human_level_conrtol definiert das NatureCNN welches wir nutzen um die features zu extrahieren
+% human_level_control hat einfaches Q-learning verwendet, nicht PPO
 
 % TODO remove the neural network head configs from config files?
 
-\subsubsection*{Input Space}
+\subsubsection{Input Space}
 
 The input space of the neural network is three dimensional. The input is structured like images with $width$, $heigth$ and $channel$ dimensions. The dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The input space is a tensor with the following dimensions:
 
@@ -209,18 +210,71 @@ The input space of the neural network is three dimensional. The input is structu
 The tensor values are integers in the range $[0,255]$. Storing the pixel intensities as integers saves a lot of memory compared to floats.
 
 
-\subsubsection*{Output Space}
+\subsubsection{Action Output Space}
 
 The environment's action space is two dimensional, the dimensions are called $leftAcceleration$ and $rightAcceleration$. The values are restricted to the range $[-1,1]$ and dictate the agent movement \ref*{cha:agent_description}.
 
 \subsubsection{Architecture}
 
-The neural network has an action and a value head. The action head produces the action distribution. The value head produces an estimate of the state's value???. The action and value head share a part of the neural network. The shared part is called the feature extractor and consitutes the first four layers. The feature extractor consists of three convolutional layers and one fully connected layer. The first convolutional layer takes the output of the memory buffer as input. The output of the feature extractor's fully connected layer is used by the action and value heads.
-The action head consists of a single fully connected layer with two outputs. The two outputs represent the mean of the action distribution.
+The neural network has an action and a value head. The action head produces the action distribution. The value head produces an estimate of the state's value. The action and value head share a part of the neural network. The shared part is called the feature extractor and consitutes the first four layers. The feature extractor consists of three convolutional layers and one fully connected layer. The first convolutional layer takes the output of the memory buffer as input. The output of the feature extractor's fully connected layer is used by the action and value heads.
 
-The value head consists of a single fully connected layer with one output. The output represents the critic value.
+The action head consists of a single fully connected layer with two outputs. The two outputs represent the mean of the action distribution. The action distribution is a Gaussian Distribution. The action distribution can be sampled deterministically or stochastically to obtain an action for the agent. The most likely action is returned in determinsitc sampling. This is equal to the outputs of the action head. In stochastic sampling, the action is sampled from the action distribution.
+The sampled actions are clipped to the output space's range $[-1,1]$. This is necessary as the sampling can return a value outside of the range.
 
-The neural network's input dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The network architecture follows the specifications from \autocite{nature}. However the input dimensions differ from the original network. This results in a different number of parameters for the feature extractor's layers.
+The value head consists of a single fully connected layer with one output.
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}[%
+        every node/.style={
+            font=\scriptsize,
+            % Better alignment, see https://tex.stackexchange.com/questions/315075
+            text height=1ex,
+            text depth=.25ex,
+        }, outer sep=auto
+    ]
+    
+    \node[draw] (input) at (0, 0) {Input image stack [width, height, channels]};
+    
+    \node[draw] (c1) at (0, -1) {Convolutional Layer 1};
+    \node[draw] (c2) at (0, -2) {Convolutional Layer 2};
+    \node[draw] (c3) at (0, -3) {Convolutional Layer 3};
+    \node[draw] (fc1) at (0, -4) {Fully Connected Layer};
+    
+    \draw[decorate,decoration={brace,amplitude=5pt}] (3.5,-1) -- (3.5,-4)
+        node[anchor=west,midway,right=4pt] {Feature Extractor};
+    
+    \node[draw] (fcAction) at (-2, -5.5) {Fully Connected Layer};
+    \node[draw] (actionDist) at (-2, -6.5) {Action Distribution};
+    \node[draw] (actionOut) at (-2, -7.5) {Action Output};
+    
+    \node[draw] (fcValue) at (2, -5.5) {Fully Connected Layer};
+    \node[draw] (valueOutput) at (2, -6.5) {Value Output};
+    
+    \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (-4,-5.5) -- (-4,-7.5)
+        node[anchor=east,midway,left=4pt] {Action Head};
+    
+    \draw[decorate,decoration={brace,amplitude=5pt}] (4,-5.5) -- (4,-6.5)
+        node[anchor=west,midway,right=4pt] {Value Head};
+    
+    \draw[->,thick] (input.south) -- (c1.north);
+    \draw[->,thick] (c1.south) -- (c2.north);
+    \draw[->,thick] (c2.south) -- (c3.north);
+    \draw[->,thick] (c3.south) -- (fc1.north);
+    
+    \draw[->,thick] (fc1.south) -- (fcAction.north);
+    \draw[->,thick] (fcAction.south) -- (actionDist.north);
+    \draw[->,thick] (actionDist.south) -- (actionOut.north);
+    
+    \draw[->,thick] (fc1.south) -- (fcValue.north);
+    \draw[->,thick] (fcValue.south) -- (valueOutput.north);
+   
+    \end{tikzpicture}
+\caption{Neural Network Structure}
+\label{fig:network_structure}
+\end{figure}
+
+The neural network's input dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The network architecture follows the specifications from \autocite{human_level_control}. However the input dimensions differ from the original network. This results in a different number of parameters for the feature extractor's layers.
 The parameters and layer dimensions for the most successfull network configuration are shown in figure \ref{fig:network_architecture}.
 
 
@@ -231,27 +285,23 @@ The parameters and layer dimensions for the most successfull network configurati
 
 % the action head is a single linear layer, there is no activation function applied to the output
 
+% DiagGaussianDistribution
+% the log std of the distribution is a learnable parameter
+% it is also updated, see policy_loss (the single parameter of size 2 that is added in the graph last)
+
 \begin{figure}
     \begin{center}
     \begin{tabular}{|| c | p{0.25\linewidth} | p{0.4\linewidth} ||} 
         \hline
-        Component & Layer type & Layer Specifications \\ [0.5ex] 
+        Component & Layer Type & Layer Specifications \\ [0.5ex] 
         \hline\hline
         \multirow{4}{*}{Feature Extractor} & Convolutional Layer & 32 filters, 3 dimensional (10, 8, 8) \\\cline{2-3}
         & Convolutional Layer & 64 filters, 3 dimensional (32, 4, 4) \\\cline{2-3}
         & Convolutional Layer & 64 filters, 3 dimensional (64, 3, 3) \\\cline{2-3}
         & Fully connected Layer & 512 output neurons, (512 x 12096) matrix \\
         \hline
-        %\multirow{4}{*}{trainingLightSetting} & random & Selects a random light setting from bright, standard and dark. \\\cline{2-3}
-        %& bright & Bright illumination. \\\cline{2-3}
-        %& standard & Standard illumination. \\\cline{2-3}
-        %& dark & Dark illumination. \\
-        %\multirow{1}{*}{Action Head} & Fully connected Layer & 2 output neurons, (2 x 512) matrix \\
         Action Head & Fully connected Layer & 2 output neurons, (2 x 512) matrix \\
         \hline
-        %\multirow{4}{*}{spawnOrientation} & Fixed & Spawn JetBot with fixed coordinates and orientation. \\\cline{2-3}
-        %& Random & Spawn JetBot with fixed coordinates and random orientation (-15 to 15 degrees). \\\cline{2-3}
-        %& VeryRandom & Spawn JetBot with fixed coordinates and random orientation (-45 to 45 degrees). \\
         Value Head & Fully connected Layer & 1 output neuron, (1 x 512) matrix \\
         \hline
     \end{tabular}
@@ -267,23 +317,4 @@ The parameters and layer dimensions for the most successfull network configurati
     \caption{Neural network layers and parameters for the best configuration}
     \label{fig:network_architecture}
 \end{figure}
-
-
-%3 conv layers feature extractor:
-%- 32 filters mit (frame\_stacking, 8, 8)
-%- 64 filters mit (32, 4, 4)
-%- 64 filters mit (64, 3, 3)
-%1 fully connected layer mit 512 units
-%- fully mit 512 units
-
-%action head:
-%- fully mit 2 units
-
-%value head:
-%- fully mit 1 unit
-
-
-distribution with deterministic
-action clipping to [-1,1] due to distribution sampling
-(the mean can also be outside since the input to the distribution is a linear layer)
 

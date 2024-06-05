@@ -5,7 +5,7 @@
 Previous sections introduced the composite reward function. The composite reward function consists of a weighted sum of individual reward functions. The individual reward functions are designed to encourage the agent to learn the desired behaviour. The goal is to achieve an agent that completes the parcour without collisions, this is encapsulated in the event reward function. However the event reward function is a very sparse signal, which makes it hard for the agent to learn from. The other individual reward functions are designed to be dense reward functions, they give rewards in every episode step.
 
 It is important to find appropriate weights of the individual reward functions for the composite reward function. We are conducting experiments to analyse the usefullness of the individual reward functions. First we analyse if the agent is capable of learning the behaviour encouraged by the reward function.
-This is done by training the agent with only one reward function at a time. The reward function's coefficient is set to one. The coefficients of the other reward functions are set to zero. The agent is traind on easy tracks with a Random spawnOrientation and standard lightSetting to reduce the difficulty of learning the encouraged behaviour.
+This is done by training the agent with only one reward function at a time. The reward function's coefficient is set to one. The coefficients of the other reward functions are set to zero. The agent is trained on easy tracks with a Random spawnOrientation and standard lightSetting to reduce the difficulty of learning the encouraged behaviour.
 % todo link the configs?
 % ppo_rewardFunction_capability_check_orientationReward.yaml
 
