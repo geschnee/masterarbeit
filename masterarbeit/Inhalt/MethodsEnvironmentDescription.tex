@@ -1,7 +1,7 @@
-%\chapter{Environment Description}
-%\label{cha:env_description}
+\section{Environment Description}
+\label{cha:env_description}
 
-\section{Environment Simulation}
+\subsection{Environment Simulation}
 \label{sec:env_simulation}
 
 The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \autocite{peacefulpie} library. 
@@ -27,7 +27,7 @@ Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter
 
 
 
-\section{Arena Description}
+\subsection{Arena Description}
 
 
 This section describes the simulated environment and agent in detail. The environment is a 3D simulation of a physical arena at the ScaDS.AI research facility. The simulated arena consists of a rectangular platform with enclosing walls. Simulated light sources illuminate the platform from above.
@@ -80,7 +80,7 @@ The ranges for the spawnOrientation parameter influence the difficulty of comple
 
 
 
-\section{Agent Description}
+\subsection{Agent Description}
 \label{cha:agent_description}
 
 The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives a $leftAcceleration$ and $rightAcceleration$ value from the Python algorithm. The values range from -1 to 1 and control the agent's wheels and movement. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
@@ -101,14 +101,14 @@ The FourWheelJetBot was used in the work by \autocite{maximilian}. The Different
 \end{figure} % TODO angle the wheels of the FourWheelJetBot in the image
 
 
-\section{Episode Design}
+\subsection{Episode Design}
 
-An episode represents one attempt of the agent at solving a track in the environment. Each episode consists of a series of steps starting from the initial position. The agent interacts with the environment in each step. The environment is simulated in Unity during each step. This includes things like agent movement, collision detection and reward calculation.
+An episode represents one attempt of the agent at solving a track in the environment. Each episode consists of a series of steps starting from the initial position. Upon episode termination the end status is returned to python. This status is used to compute metrics such as the success\_rate. The agent interacts with the environment in each step. The environment is simulated in Unity during each step. This includes things like agent movement, collision detection and reward calculation.
 
-\subsection{Step duration}
+\subsubsection{Step duration}
 The duration of each step is defined by the environment settings. There are two destinct modes for the step durations. The first mode is the fixed timestep mode. In this mode the duration of each step is fixed and defined by the environment parameter $fixedTimestepsLength$. The second mode is the variable timestep mode. In this mode each step lasts until the environment receives the next action from the agent.
 
-\subsubsection{Fixed Duration}
+\paragraph{Fixed Duration}
 
 The duration of each step is fixed in this mode. In each step the Unity environment receives an action from the policy. The environment simulation is started and the action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step and environment simulation is terminated when the fixed duration has passed. The duration is defined by $fixedTimestepsLength$ in seconds. The Unity environment then waits until the next step or environment reset. The unity environment does not accept new step commands when the current step is not terminated.
 An episode with fixed duration steps is shown in the upper part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits for new steps to start. The figure also shows that the waiting time is not consistent.
@@ -123,7 +123,7 @@ Furthermore the performance of the policy does not depend on the processing spee
 % advantages and disadvantages of both modes
 
 
-\subsubsection{Variable Duration}
+\paragraph{Variable Duration}
 
 The duration of each step is variable in this mode. The environment simulation is started when the first step is received. In each step the Unity environment receives an action from the policy. The step's action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step is terminated when a new step is received from the policy. The new step is started instantly, there is no waiting time between steps. 
 The duration of the steps is not fixed, it can change from step to step. It depends on the policy's computation and message transmission time. The environment simulation is not paused during the policy's computation time. 
@@ -138,15 +138,11 @@ Example: The agent might decide to turn right, expecting to be able to stop the 
 \usetikzlibrary{decorations.pathreplacing}
 % how to build the graphs: https://tex.stackexchange.com/questions/436259/timeline-in-latex
 \definecolor{myLightGray}{RGB}{191,191,191}
-\definecolor{myGray}{RGB}{160,160,160}
 \definecolor{myDarkGray}{RGB}{144,144,144}
-\definecolor{myDarkRed}{RGB}{167,114,115}
-\definecolor{myRed}{RGB}{255,58,70}
-\definecolor{myGreen}{RGB}{0,255,71}
 \definecolor{myBlue}{RGB}{0,191,255}
 \newcommand\offset{-3}
 
-\begin{figure}[!h]
+\begin{figure}[!ht]
 \centering
 \begin{tikzpicture}[%
     every node/.style={
@@ -246,34 +242,32 @@ Example: The agent might decide to turn right, expecting to be able to stop the 
 
 
 
-\subsection{Episode Termination}
-\label{time_limit}The episodes are terminated based on the agent's interactions with the environment. Episodes are terminated when the agent reaches the finish line or a timeout is reached. The timeout is defined by a fixed timelimit of 20 seconds which is increased by further 20 seconds for each passed goal. The timelimit is necessary to terminate episodes where the agent does not reach the finish line, due to the policy's learned behaviour or collisions. 
+\subsubsection{Episode Termination}
+\label{time_limit}The episodes are terminated based on the agent's interactions with the environment. Episodes are always terminated when the agent reaches the finish line or a timeout is reached. Episodes are also terminated when the agent collides with an object and the $collisonMode$ parameter is set to $terminate$.
+The timeout is defined by a fixed timelimit of 30 seconds which is increased by further 30 seconds for each passed goal. The timelimit is necessary to terminate episodes where the agent does not reach the finish line. This can be due to the policy's learned behaviour or collisions. 
+% TOOD check the time limit numbers
 
-Collisions of the agent with the goal posts and the arena walls are detected by the environment. The environment parameter $collisionMode$ defines how the agent's collisions are handled. The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}.
+The episode termination status is used by the python algorithms to evaluate the agent performance. The possible termination statuses are:
+
+\paragraph*{Success}
+
+The episode is considered to have been terminated successfully if the agent passed all of the track's goals in order.
+
+\paragraph*{Timeout}
+
+The timeout status is returned when the agent does not reach the finish line within the timelimit and not all goals have been passed successfully.
+
+\paragraph{FinishWithoutAllGoals}
+
+The FinishWithoutAllGoals status is returned when the agent reaches the finish line without passing through all goals. 
+
+\paragraph*{Collision}
+
+Collisions of the agent with the goal posts and the arena walls are detected by the environment. The environment parameter $collisionMode$ defines how the agent's collisions are handled. The termination status Collision is returned when the agent collides with an object and the $collisionMode$ parameter is set to $terminate$.
 
 
-\begin{figure}
-    
-    \begin{center}
-    \begin{tabular}{|| p{0.2\linewidth} | p{0.35\linewidth} | p{0.35\linewidth} ||} 
-        \hline
-        collisionMode & \makecell{Behaviour upon Collision} & Reasoning \\ [0.5ex] 
-        \hline\hline
-        unrestricted & Negative reward is given for each frame with collision.  This can result in multiple penalties given during a single step. & Default behaviour \\ 
-        \hline
-        oncePerTimestep & Negative reward for collisions is given only once per step. & Limits the negative reward caused by a collision in a step. \\
-        \hline
-        oncePerEpisode & Negative reward for collision is only given once  per episode per object. & Limits the negative reward caused by ongoing collisions. \\
-        \hline
-        terminate  & Episode is terminated instantly. & The early termination could speed up the neural network training. \\
-        \hline
-        ignore  & Collisions are ignored, no negative reward is given. & The agent might learn to avoid collisions based on other rewards. \\
-        \hline
-    \end{tabular}
-    \end{center}
-    \caption{Collision Modes}
-    \label{fig:collision_modes}
-\end{figure}
+
+
 
 
 
@@ -285,10 +279,11 @@ Collisions of the agent with the goal posts and the arena walls are detected by 
 % this was done as the agent sometimes learns to move back and forth in front of the finish line
 
 
-\section{Reward Function}
+\subsection{Reward Function}
 
 The reward function is a function that maps state-action pairs to a scalar reward. The reward function assigns rewards to the agent based on its actions in the environment. The reinforcement learning algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the reinforcement learning process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
 
+\paragraph*{Event Reward}
 The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour \ref{fig:eventReward_function}. The event reward function is evaluated in each step. In case the agent passes a goal or reaches the finish line during the step a positive reward is awarded. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The maximum amount of reward obtainable from this function per episode is $num_goals * goal_reward + parcour_reward = 3 * 1 + 100 = 103$. An agent that maximises the eventReward function will complete the track without collisions. In theory the event Reward should be enough to train an agent that traverses the tracks successfully without collisions.
 
 
@@ -312,11 +307,13 @@ The goal of the training process is to achieve an agent that traverses the track
     \label{fig:eventReward_function}
 \end{figure}
 
+
+\paragraph*{Dense Reward Functions}
 The eventReward function provides the agent with a reward signal that is closely aligned with the desired behaviour. However the eventRewards are only awarded in very few steps. In the optimal episode there are only 4 steps where the reward is non-zero. Three steps where the agent passes a goal and one step where the agent reaches the finish line. The eventReward function is a sparse reward function. Sparse rewards can make it difficult for the agent to learn the desired behaviour. In the case of the eventReward, the agent might never learn to drive towards a goal since there are no rewards that encourage that behaviour. The agent would rely on random exploration alone to discover the positive reward associated with successfully driving through a goal.
 Additional reward functions were developed to help the agent learn to complete the tracks. The additional reward functions are dense reward functions. They assign non-zero rewards in most steps. This is comparable to encouraging route following behaviour with a trail of candy versus a big cake at the end of the route. 
-The first dense reward function is the velocityReward. It was already developed in previous work \autocite{maximilian} to encourage the agent to drive at full speed. The velocityReward function assigns a reward proportional to the agent's velocity. The reward from driving forward might also help at discovering other rewards, e.g. the positive reward for passing a goal awared by eventReward function. 
-The second dense reward function is the orientationReward. The orientationReward function assigns a reward based on the agent's orientation. The reward is proportional to the cosine similarity between the agent's orientation and the direction towards the next goal. The orientationReward function encourages the agent to face the next goal. Together with other rewards this could lead to the agent driving through the next goal.
-The third and last dense reward function is the distanceReward function. The distanceReward function assigns a reward proportional to the difference in distance between the agent and the next goal. The distanceReward is positive if the agent gets closer to the next goal during a step transition. The distance to the next goal is measured from the midpoint between the two goal posts. The distanceReward function encourages higher driving velocity, as higher velocities result in bigger distance differences and thus rewards. The distanceReward function also encourages the agent to drive strait towards the next goal, as this results in the biggest distance differences. In theory the agent should be able to learn to complete the tracks successfully from the distanceReward alone.
+
+
+Dense rewards functions can exasterbate the issue of the agent learning unintended behaviour. The dense rewards can be opinionated and encourage the agent to follow a very specific path. This can lead to the agent not exploring the environment enough to find the very best policy. This is to be kept in mind when designing and testing the dense reward functions.
 
 % TODO dicuss the diasdvantage of dense reward functions
 % TODO discuss the issue of the dense rewards being opinionated?
@@ -324,6 +321,19 @@ The third and last dense reward function is the distanceReward function. The dis
 % it is also not the most  optimal line driving through the middle of the goal posts
 % but this might not translate to the agent's behaviour
 
+\paragraph{Velocity Reward}
+The first dense reward function is the velocityReward. It was already developed in previous work \autocite{maximilian} to encourage the agent to drive at full speed. The velocityReward function assigns a reward proportional to the agent's velocity. The reward from driving forward might also help at discovering other rewards, e.g. the positive reward for passing a goal awared by eventReward function. 
+
+\paragraph{Orientation Reward}
+The second dense reward function is the orientationReward. The orientationReward function assigns a reward based on the agent's orientation. The reward is proportional to the cosine similarity between the agent's orientation and the direction towards the next goal. The orientationReward function encourages the agent to face the next goal. Together with other rewards this can help teach the agent to drive through the next goal.
+
+\paragraph{Distance Reward}
+The third and last dense reward function is the distanceReward function. The distanceReward function assigns a reward proportional to the difference in distance between the agent and the next goal. The distanceReward is positive if the agent gets closer to the next goal during a step transition. The distance to the next goal is measured from the midpoint between the two goal posts. The distanceReward function encourages higher driving velocity, as higher velocities result in bigger distance differences and thus rewards. The distanceReward function also encourages the agent to drive strait towards the next goal, as this results in the biggest distance differences. In theory the agent should be able to learn to complete the tracks successfully from the distanceReward alone.
+
+The distance reward is opinionated. It guides the agent towards the midpoint of the next goal. This reward signal may result in a suboptimal path for the agent. The agent might learn to drive through the goal posts at the midpoint. This is not necessary for the desired behaviour. This is a tradeoff that was made when designing the distance reward function.
+% opinionated was also discused above at intro of dense reward functions
+
+\paragraph{Composite Reward Function}
 The four individual reward functions can be combined in many ways to give the agent dense and meaningful rewards. In previous work the eventReward was combined with the velocityReward to train the agent. In this work we combine the individual reward functions in the composite reward function \ref{fig:reward_functions}. The composite reward function applies scalar weights to the individual reward functions and returns this weighted sum of rewards to the agent. It is crucial to select an appropriate combination of weights for the individual reward functions during training. The weights determine the importance of the individual reward functions and can influence the learned behaviour. If the velocityReward is weighted too high the agent might learn to drive at full speed in circles without ever reaching the finish line. It is also to note that setting a specific reward function's weight to zero essentially removes that reward function.
 
 \begin{figure}
@@ -354,5 +364,31 @@ The four individual reward functions can be combined in many ways to give the ag
 
 
 
+\subsection{CollisionMode}
 
+% TODO move this table to the event reward
+The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}.
+
+\begin{figure}
+    
+    \begin{center}
+    \begin{tabular}{|| p{0.2\linewidth} | p{0.35\linewidth} | p{0.35\linewidth} ||} 
+        \hline
+        collisionMode & \makecell{Behaviour upon Collision} & Reasoning \\ [0.5ex] 
+        \hline\hline
+        unrestricted & Negative reward is given for each frame with collision.  This can result in multiple penalties given during a single step. & Default behaviour \\ 
+        \hline
+        oncePerTimestep & Negative reward for collisions is given only once per step. & Limits the negative reward caused by a collision in a step. \\
+        \hline
+        oncePerEpisode & Negative reward for collision is only given once  per episode per object. & Limits the negative reward caused by ongoing collisions. \\
+        \hline
+        terminate  & Episode is terminated instantly. & The early termination could speed up the neural network training. \\
+        \hline
+        ignore  & Collisions are ignored, no negative reward is given. & The agent might learn to avoid collisions based on other rewards. \\
+        \hline
+    \end{tabular}
+    \end{center}
+    \caption{Collision Modes}
+    \label{fig:collision_modes}
+\end{figure}
 

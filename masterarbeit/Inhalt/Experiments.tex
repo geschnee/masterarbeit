@@ -36,9 +36,10 @@ The evaluation algorithm initializes $n\_eval\_episodes$ environments with the s
 
 
 
-\section{Standard evaluation runs}
+\section{Model evaluation}
 
-The agent is evaluated on every combination of light and difficulty settings. The $success\_rate$ metric is collected for each combination of light and difficulty settings separately. The collected $success\_rates$ are then averaged to produce aggregate $success\_rates$ for each light setting and difficulty setting. The 3 light and difficulty settings result in a total of 9 evaluated combinations and $success\_rates$. A total of 7 aggregate $success\_rates$ are computed, 3 for each light setting and 3 for each difficulty setting. The final aggregate is the $total\_success\_rate$, the average of all 9 collected $success\_rates$. 
+The agent is evaluated on every combination of light and difficulty settings. The Basic evaluation algorithm is used for these evaluations. 
+The $success\_rate$ metric is collected for each combination of light and difficulty settings separately. The collected $success\_rates$ are then averaged to produce aggregate $success\_rates$ for each light setting and difficulty setting. The 3 light and difficulty settings result in a total of 9 evaluated combinations and $success\_rates$. A total of 7 aggregate $success\_rates$ are computed, 3 for each light setting and 3 for each difficulty setting. The final aggregate is the $total\_success\_rate$, the average of all 9 collected $success\_rates$. 
 The $total\_success\_rate$ is used to determine the overall best agent and model.
 All collected and aggregate $success\_rates$ are shown in \ref{table:success_rates_system}.
 

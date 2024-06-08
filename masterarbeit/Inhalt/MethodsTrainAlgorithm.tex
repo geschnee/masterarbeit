@@ -144,7 +144,7 @@ Optimizer.\CALL{Step}{}\\
 
 The loss function follows the Proximal Policy Optimization algorithm. The PPO loss function is a combination of the policy surrogate and value error \autocite{ppo}. The policy surrogate and value error are combined to be able to update the weights of the entire neural network together. 
 The policy surrogate objective function restricts the size of parameter updates. The ratio between the old and the current policy is clipped. The clipped ratio and non-clipped ratio are multiplied by the advantage. The minimum of the two is used as the policy surrogate loss. This prevents the updates from changing the policy drastically.
-The advantage is an estimator for how much better (or worse) the policy performed than expected. The advantage is computed using the value estimates produced by the neural network. The multiplication of the ratio with the advantage lead to increased probabilities for good actions and decreased probabilities for bad actions.
+The advantage is an estimator for how much better (or worse) the policy performed than expected. The advantage $\hat{A}_t$ is computed using the value estimates produced by the neural network. The multiplication of the ratio with the advantage lead to increased probabilities for good actions and decreased probabilities for bad actions.
 
 The value error is the mean squared error between the predicted value and the target value. The parameter changes caused by the value error lead to a more accurate value prediction.
 
