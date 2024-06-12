@@ -3,9 +3,9 @@
 % mention the best_model during collect_rollouts
 % mention this is because the real full eval is expensive
 
-% move the pseudocode to the appendix? this would look much better
 
 The neural network training process consists of a simple training loop. In each iteration, the algorithm collects data from the environment. The data is stored in a replay buffer. After collecting the data, the model is trained on the data in the replay buffer. The training process is repeated until a certain number of timesteps has been collected.  
+
 In most reinforcement learning algorithms, the trained model's performance is evaluated at short intervals. The frequent evaluations serve as a way to monitor the model's performance during training and measure progress. It is not guaranteed in reinforcement learning that a model improves during each model update. Therefore frequent evaluations also help in finding the best version of the model.  
 In this training algorithm there is no dedicated evaluation process at short intervals. Instead the episodes from the data collection step are used to evaluate the model at every iteration of the training loop. This saves computational resources compared to a full evaluation of the model.
 
@@ -32,13 +32,16 @@ num\_timesteps \GETS num\_timesteps + num\_collected\_steps\\
 
 \subsection{Collect Data}
 
-The data collection process is a simple loop that collects a fixed amount of samples from the environment. The reinforcement learning algorithm Proximal Policy Optimization requires that the samples are collected on-policy. The policy itself is used to chose actions during the data collection. The data is stored in a replay buffer for use by the training algorithm.
+The data is stored in a replay buffer for use by the training algorithm. The data collection process starts by resetting the replay buffer, this removes the collected sampled of previous iterations from memory.
+The data collection process is a simple loop that collects a fixed amount of samples from the environment. The reinforcement learning algorithm Proximal Policy Optimization requires that the samples are collected on-policy. As a result the most recently updated model is used to chose actions during the data collection. 
 
-The data collection algorithm resets the environment according to the parameters trainingMapType, trainingLightSetting and spawnOrientation \ref{fig:training_settings}. The observation is used to prompt the model for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
+The data collection algorithm starts a new episode and applies the policy to the environment until the episode terminates. The observation is used to prompt the model for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
 
-The data collection process is also used to evaluate the model. The success rate of the collected episodes is used to determine the best model. The model is saved to disk if the success rate of the collected episodes improved.
+\paragraph{Environment settings for Data collection}
 
-Further statistics about the collected episodes are logged to tensorboard to monitor the training process. Example metrics are the goal\_completion\_rate, first\_goal\_completion\_rate, second\_goal\_completion\_rate and third\_goal\_completion\_rate, as well as the collected weighted rewards.
+The environment settings define how the episodes are reset during the data collection process. The episodes are initialized according to the parameters trainingMapType, trainingLightSetting and spawnOrientation \ref{fig:env_reset_settings}. The settings influence the difficulty and variety of the tracks. The settings define what data the agent policy can learn from during training.
+
+Different configurations are used in the experimentation phase to gain insights into the network's capabilities.
 
 
 \begin{figure}
@@ -53,10 +56,10 @@ Further statistics about the collected episodes are logged to tensorboard to mon
         & randomEvalHard & Selects a random hard track. \\\cline{2-3}
         & randomEval & Selects a random track from all difficulties. 20\% easy, 40\% medium, 40\% hard \\
         \hline
-        \multirow{4}{*}{trainingLightSetting} & random & Selects a random light setting from bright, standard and dark. \\\cline{2-3}
-        & bright & Bright illumination. \\\cline{2-3}
+        \multirow{4}{*}{trainingLightSetting} & bright & Bright illumination. \\\cline{2-3}
         & standard & Standard illumination. \\\cline{2-3}
-        & dark & Dark illumination. \\
+        & dark & Dark illumination. \\\cline{2-3}
+        & random & Selects a random light setting from bright, standard and dark. \\
         \hline
         \multirow{4}{*}{spawnOrientation} & Fixed & Spawn JetBot with fixed coordinates and orientation. \\\cline{2-3}
         & Random & Spawn JetBot with fixed coordinates and random orientation (-15 to 15 degrees). \\\cline{2-3}
@@ -64,81 +67,35 @@ Further statistics about the collected episodes are logged to tensorboard to mon
         \hline
     \end{tabular}
     \end{center}
-    \caption{Environment parameters for training. TODO should we explain these parameters earlier in the env description?}
-    \label{fig:training_settings}
+    \caption{Environment parameters for training.} % the parameters are already defined in endDescription
+    \label{fig:env_reset_settings}
 \end{figure}
 
+\paragraph{Evaluation of the model}
+
+There is no dedicated evaluation step in this training algorithm. The collected episodes are analysed to gain insight into the policy's performance during training. No episodes are executed solely for the purpose of measuring the policy's performance during training. The full evaluation of the model as described in \ref{sec:eval_model_track} is time-consuming. The full evaluation process is only executed after the training process has finished, this speeds up training tremendously.
+
+The collected episodes are used to evaluate the model during training. The success rate of the collected episodes is used to determine the best model. The model is saved to disk if the success rate of the collected episodes improved.
 
 
-\renewcommand{\thepseudonum}{\roman{pseudonum}}
-\begin{pseudocode}{Collect Data}{ }
-\COMMENT{Fill RolloutBuffer with samples obtained by current model}\\
+The success\_rate and other statistics about the collected episodes are logged to tensorboard to monitor the training process. Example metrics are the goal\_completion\_rate and the collected weighted rewards.
+These metrics can show how the policy behaves over time. They show if the policy is able to learn from the collected episodes \ref{fig:metrics_over_time}.
 
-\PROCEDURE{CollectData}{trainingMapType, trainingLightSetting}
-num\_steps \GETS 0\\
-num\_episodes \GETS 0\\
-num\_succesful\_episodes \GETS 0\\
+\begin{figure}
+    \centering
+    \includegraphics[width=0.4\textwidth]{Bilder/tensorboard_images/successfulTraining_goal_completion_rate.png}
+    \includegraphics[width=0.4\textwidth]{Bilder/tensorboard_images/successfulTraining_distance_reward.png}
+    \caption{Metrics from collected episodes during a successful training}
+    \label{fig:metrics_over_time}
+\end{figure}
 
-RolloutBuffer.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
-Env.\CALL{Reset}{}\\
-\WHILE RolloutBuffer.\CALL{NotFull}{} \DO
-\BEGIN
-obs \GETS Env.\CALL{GetObservation}{}\\
-action \GETS Model.\CALL{GetAction}{obs}\\
-reward \GETS Env.\CALL{Step}{action}\\
-num\_steps \GETS num\_steps + 1\\
-\CALL{AddToRolloutBuffer}{obs, action, reward}\\
-\IF Env.\CALL{IsFinished}{} \THEN
-\BEGIN
-num\_episodes \GETS num\_episodes + 1\\
-\IF Env.\CALL{FinishedSuccessfully}{} \THEN
-\BEGIN
-num\_succesful\_episodes \GETS num\_succesful\_episodes + 1\\
-\END\\
-Env.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
-\END\\
-\END\\
-
-rollout\_success\_rate \GETS \frac{num\_succesful\_episodes}{num\_episodes}\\
-
-\IF rollout\_success\_rate >= best\_rollout\_success\_rate \THEN
-\BEGIN
-best\_success\_rate \GETS rollout\_success\_rate\\
-Model.\CALL{SaveToFile}{}\\
-\END\\
-
-
-\RETURN{num\_steps}
-\ENDPROCEDURE
-\end{pseudocode}
 
 \subsection{Train Model}
 
 The model training part of the algorithm is very conventional and follows the standard implementation of PPO training. The model is trained on the collected data for a fixed number of epochs. In each epoch the replay buffer is sampled to create batches of data. The loss is computed for each batch. The gradient of the weights with respect to the loss is computed using backpropagation. The optimizer is then used to update the model parameters using the gradients.
 
 The entire data from the replay buffer is sampled in every epoch. This ensure that the collected data is used efficiently. The data is shuffled before creating the batches. This ensures that the samples are less correlated and the model updates are more stable.
-
-\renewcommand{\thepseudonum}{\roman{pseudonum}}
-\begin{pseudocode}{Train Model}{ }
-\COMMENT{Sample from replay buffer and update the model based on the loss}\\
-
-\PROCEDURE{TrainModel}{}
-amount\_of\_batches \GETS \frac{rollout\_buffer\_size}{batch\_size}\\
-\FOR i \GETS 0 \TO n\_epochs \DO
-\BEGIN
-RolloutBuffer.\CALL{Shuffle}{}\\
-RolloutBuffer.\CALL{CreateBatches}{batch\_size}\\
-\FOR m \GETS 0 \TO amount\_of\_batches \DO
-\BEGIN
-batch \GETS RolloutBuffer.\CALL{GetBatch}{m}\\
-loss \GETS \CALL{ComputeLoss}{batch}\\
-Model.\CALL{Backpropagate}{loss}\\
-Optimizer.\CALL{Step}{}\\
-\END\\
-\END
-\ENDPROCEDURE
-
-\end{pseudocode}
+% the ppo paper uses gradient ascent
 
 \subsubsection*{Loss function}
 
@@ -157,4 +114,9 @@ The policy loss can also include an entropy term. In this paper no entropy term 
     L_t^{VF}(\theta) &= (V_\theta (s_t) - V_t^{targ})^2 \label{eq:eq4}\tag{Value Error}
 \end{align*}
 % for the target value + advantage computation see my_buffers.compute_returns_and_advantage returns
+
+\subsection{Final Result of Training Algorithm}
+
+Weight updates can lead to a decrease in performance during the training process. The model after the final weight update is not guaranteed to be the best observed version.
+The model performance is evaluated during training using the collected episodes. The model with the highest observed success\_rate is considered to be the final output of the training algorithm. This model is later used for the full evaluations.
 

@@ -4,13 +4,25 @@
 \subsection{Environment Simulation}
 \label{sec:env_simulation}
 
-The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \autocite{peacefulpie} library. 
-The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments should be simulated in parallel. The environments are simuated in the same Unity instance. The seperation between the Unity engine and the Python algorithm requires JsonRPC calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine can be reduced by bundling the calls for all environments in one JsonRPC call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
+The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \autocite{peacefulpie} library.
 
+\paragraph{Parallel environment procesing} The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simuated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires JsonRPC calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine can be reduced by bundling the calls for all environments in one JsonRPC call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Bilder/parallel_simulation_unity_instance.png}
+    \caption{Parallel simulation of multiple environments in one Unity instance}
+    \label{fig:parallel_simulation_unity_instance}
+\end{figure}
+
+
+\paragraph{Non-blocking step calls}
 The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. This saves time by reducing the amount of JsonRPC calls. In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. Essentially the returned observation is delayed by one step or $fixedTimestepsLength seconds$. A shorter $fixedTimestepsLength$ results in smaller changes of the environment during the step transitions. In this case the delay of observations has less of an impact on the accuracy of the observations.
 Experiemnts show that the policy can learn to deal with this delay.
 
 Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter is set to true, the policy will request a new observation from Unity via another JsonRPC call before predicting the next action. This can be useful if the policy is sensitive to the delayed observations. However this increases the amount of JsonRPC calls and can slow down the training process.
+
+% TODO vielleicht mit einem coolen Tikz bild die blocking problematik erklären
 
 
 % TODO explain the non-blocking approach of step calls here (and how the observations returned by step are delayed)
@@ -33,39 +45,42 @@ Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter
 This section describes the simulated environment and agent in detail. The environment is a 3D simulation of a physical arena at the ScaDS.AI research facility. The simulated arena consists of a rectangular platform with enclosing walls. Simulated light sources illuminate the platform from above.
 The goal of our agent is to complete tracks in the arena by traversing the track's goals in order. Each goal consists of 2 cuboid pillars of the same colour. The pillars are coloured red or blue. The goals' colours alternate in the track. The distance between the pillars is fixed and the same for all goals. The positions of the goals depends on the episode's track. The tracks are grouped by the difficulty settings easy, medium and hard. An invisible finish line is positioned closely behind the last goal for each track.
 
+\paragraph{Track Description}
 The tracks in the easy setting contain 3 goals that are positioned on the arena's center line with even distances between them. The medium setting contains 3 goals that are shifted on the center line towards the arena's walls. The hard setting contains 3 goals that are shifted on the center line towards the arena's walls, resulting in a zig-zag pattern. The zig-zag pattern is the most challenging for the agent to navigate, as it requires the agent to turn sharply to pass the goals. One track from each difficulty setting is shown in figure \ref{fig:track_difficulty_settings}. The tracks in each setting are structurally very similar to each other. They differ in goal coloring and the orientation of the shift from the center line.
 
 
 \begin{figure}
     \centering
-    \subfigure[Easy]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/evaluation_easy.png}}\qquad
-    \subfigure[Medium]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/evaluation_medium.png}}\qquad
-    \subfigure[Hard]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/evaluation_hard.png}}\\
+    \subfigure[Easy]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/evaluation_easy.png}}\qquad
+    \subfigure[Medium]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/evaluation_medium.png}}\qquad
+    \subfigure[Hard]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/evaluation_hard.png}}\\
     \caption{Example evaluation tracks for each difficulty setting.}
     \label{fig:track_difficulty_settings}
 \end{figure}
 % the images are generated with image_printer.py
 
-
-There are three light settings for the environment: bright, standard and dark. The different light settings are implemented by varying the light intensities of the arena's light sources and changing the horizon in the agent's camera.
+\paragraph{Light Setting Description}
+There are three light settings for the environment: bright, standard and dark. The different light settings are implemented by varying the light intensities of the arena's light sources and changing the horizon illumination of the agent's camera.
 
 \begin{figure}
     \centering
-    \subfigure[Arena Bright]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_bright_arena.png}}\qquad
-    \subfigure[Arena Standard]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_standard_arena.png}}\qquad
-    \subfigure[Arena Dark]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_dark_arena.png}}\\
-    \subfigure[Agent Bright]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_bright_pov_no_preprocessing.png}}\qquad
-    \subfigure[Agent Standard]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_standard_pov_no_preprocessing.png}}\qquad
-    \subfigure[Agent Dark]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/light_setting_dark_pov_no_preprocessing.png}}\\
+    \subfigure[Arena Bright]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/light_setting_bright_arena.png}}\qquad
+    \subfigure[Arena Standard]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/light_setting_standard_arena.png}}\qquad
+    \subfigure[Arena Dark]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/light_setting_dark_arena.png}}\\
+    \subfigure[Agent Bright]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/light_setting_bright_pov_no_preprocessing.png}}\qquad
+    \subfigure[Agent Standard]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/light_setting_standard_pov_no_preprocessing.png}}\qquad
+    \subfigure[Agent Dark]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/light_setting_dark_pov_no_preprocessing.png}}\\
     \caption{Arena and agent camera at different light settings.}
     \label{fig:track_light_settings}
 \end{figure}
 
+\paragraph{Initial Position of Agent}
 The initial position of the agent at the start of an episode is fixed. The starting position is identical for all tracks. The inital orientation is defined by the environment parameter $spawnOrientation$. The parameter specifies the range of rotations around the z-axis.There are three options for the spawnOrientation parameter: Fixed, Random and VeryRandom. For the Fixed option the agent is spawned with an orientation of 0 degrees. In the Random option the agent is spawned with an orientation between -15 and 15 degrees. In the VeryRandom option the agent is spawned with a random orientation between -45 and 45 degrees.
 During the training process an orientation from the range is sampled for each episode. In the evaluation process the agent is spawned with unique orientations from the range, see \ref{sec:eval_model_track}. 
 The ranges for the spawnOrientation parameter influence the difficulty of completing the tracks. Depending on the spawn rotation and the selected track it might not be possible to see the entire first goal from the starting position. This is shown in \ref{fig:spawn_orientation}. 
 
-\newcommand{\spawnOrientation}[1]{\includegraphics[width=0.3\textwidth]{Bilder/latex_images/#1.png}}
+
+\newcommand{\spawnOrientation}[1]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/#1.png}}
 \begin{figure}
     \centering
     \subfigure[Arena $0^{\circ}$ ]{\spawnOrientation{spawnOrientation_Fixed_max}}\qquad
@@ -78,6 +93,11 @@ The ranges for the spawnOrientation parameter influence the difficulty of comple
     \label{fig:spawn_orientation}
 \end{figure} % the figure shows that the first goal is not always visible from the starting position, very nice
 
+\paragraph{Arena Recording}
+
+Video recordings of episodes can be generated by the unity environment. The episode recordings are created from three different perspectives. The first perspective is the agent's camera view. This video shows the images before preprocessing steps are applied. The second perspective is a top-down view of the arena. The third perspective is a side view of the arena.
+Multiple episodes can be simulated in parallel. The video recording is generally not done for all episodes due to performance problems and the large amount of data generated.
+Example videos are shown in the appendix \ref{cha:example_videos}.
 
 
 \subsection{Agent Description}
@@ -268,9 +288,6 @@ Collisions of the agent with the goal posts and the arena walls are detected by 
 
 
 
-
-
-
 % time-limit, episode termination, step-function, Collisions, rewards
 
 % time limit explain here
@@ -293,7 +310,7 @@ The goal of the training process is to achieve an agent that traverses the track
     \begin{align}
          EventReward(s_t, a_t) &= \begin{cases}
               100,           \text{completed the parcour}           \\
-              1,             \text{passed a goal}                   \\
+              100,             \text{passed a goal}                   \\
               -1,            \text{missed a goal}                   \\
               -1,            \text{collision with wall or obstacle} \\
               -1,            \text{timeout}                         \\
@@ -364,10 +381,25 @@ The four individual reward functions can be combined in many ways to give the ag
 
 
 
-\subsection{CollisionMode}
+\subsection{Collision Mode}
 
-% TODO move this table to the event reward
-The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}.
+The variable $collisionMode$ describes how the environment handles collisions of the agent with the goal objects and walls. The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}. In previous research the episodes were terminated upon collision and when missing a goal \autocite{maximilian}. Furthermore there existed two different training regimes. The first regime trained the agent on the full maps, while the second regime trained the agent on a map with only one goal.
+
+The $collisionMode$ parameter was introduced to allow for more flexibility in the training process and fine control over the event rewards. The inital implementation was the unrestricted mode. Training with the unrestricted mode and event reward showed that the agent's policy started out with extreme negative rewards. The agent quickly learned to avoid these negative rewards by avoiding all collisions and movements. The policy got stuck in a local optimum \ref{fig:event_reward_only_collisionModeUnrestricted_event_reward}.The policy did not learn to complete the parcour during the remainder of training. The unrestricted mode potentially triggers the collision's negative rewards multiple times per step. This results in a big skew of the eventReward function towards negative rewards.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.3\textwidth]{Bilder/tensorboard_images/eventRewardOnly_collisionModeUnrestricted_eventReward.png}
+    \includegraphics[width=0.3\textwidth]{Bilder/tensorboard_images/eventRewardOnly_collisionModeUnrestricted_collisionRate.png}
+    \includegraphics[width=0.3\textwidth]{Bilder/tensorboard_images/eventRewardOnly_collisionModeUnrestricted_goalCompletionRate.png}
+    \caption{Event Reward only training with $collisionMode$ $unrestricted$}
+    \label{fig:event_reward_only_collisionModeUnrestricted_event_reward}
+\end{figure}
+
+The modes $oncePerTimestep$, $oncePerTimestep$, $terminate$ and $ignore$ were introduced to limit the negative rewards caused by collisions. Reducing the negative rewards could lead to a policy that does not avoid collisions and movement as much as. This could lead to more exploration of the environment and a succesful policy.
+
+% maximilian ended the episode on collision and on goal missed https://github.com/Maddi97/master_thesis/blob/main/carsim/Assets/Scripts/CheckpointManager.cs
+
 
 \begin{figure}
     
@@ -382,7 +414,7 @@ The $collisionMode$ can take 5 different values described in table \ref{fig:coll
         \hline
         oncePerEpisode & Negative reward for collision is only given once  per episode per object. & Limits the negative reward caused by ongoing collisions. \\
         \hline
-        terminate  & Episode is terminated instantly. & The early termination could speed up the neural network training. \\
+        terminate  & Episode is terminated instantly. & No ongoing collisions. The early termination could speed up the neural network training. \\
         \hline
         ignore  & Collisions are ignored, no negative reward is given. & The agent might learn to avoid collisions based on other rewards. \\
         \hline

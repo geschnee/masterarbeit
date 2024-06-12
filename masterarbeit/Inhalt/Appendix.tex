@@ -1,8 +1,116 @@
 \chapter{Appendix}
 \label{cha:Appendix}
 
+\section{Code Repository}
+
+The code repository is publically availible here: \url{https://github.com/geschnee/carsim-rl-cnn}
+The readme file contains instructions on how to install and run the code.
+
+\section{Most successful model}
+
+The most successful model is publically availible on Huggingface: \url{https://huggingface.co/geschnee/carsim-rl-cnn}
+
+The episode recordings for question 5 are also hosted there.
+
+TODO
+
+
+\subsection{Most Successful Policy Configuration}
+\label{cha:most_successful_config}
+
+The training config of the model for the final evaluations is availible here: \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/most_successful_config.yaml}
+
+\section{Example Video Files}
+\label{cha:example_videos}
+
+Video Files are availible here: \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/results/example_videos}
+
 % z.B. Pseudocode
 
+
+
+\section{Experiments for finding hyperparameters}
+
+\subsection{Reward functions capability check}
+The used configs are the following:
+\begin{itemize}
+    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
+    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
+    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
+    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
+\end{itemize}
+
+
+
+\section{Pseudocode}
+
+\renewcommand{\thepseudonum}{\roman{pseudonum}}
+\begin{pseudocode}{Collect Data}{ }
+\COMMENT{Fill RolloutBuffer with samples obtained by current model}\\
+
+\PROCEDURE{CollectData}{trainingMapType, trainingLightSetting}
+num\_steps \GETS 0\\
+num\_episodes \GETS 0\\
+num\_succesful\_episodes \GETS 0\\
+
+RolloutBuffer.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
+Env.\CALL{Reset}{}\\
+\WHILE RolloutBuffer.\CALL{NotFull}{} \DO
+\BEGIN
+obs \GETS Env.\CALL{GetObservation}{}\\
+action \GETS Model.\CALL{GetAction}{obs}\\
+reward \GETS Env.\CALL{Step}{action}\\
+num\_steps \GETS num\_steps + 1\\
+\CALL{AddToRolloutBuffer}{obs, action, reward}\\
+\IF Env.\CALL{IsFinished}{} \THEN
+\BEGIN
+num\_episodes \GETS num\_episodes + 1\\
+\IF Env.\CALL{FinishedSuccessfully}{} \THEN
+\BEGIN
+num\_succesful\_episodes \GETS num\_succesful\_episodes + 1\\
+\END\\
+Env.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
+\END\\
+\END\\
+
+rollout\_success\_rate \GETS \frac{num\_succesful\_episodes}{num\_episodes}\\
+
+\IF rollout\_success\_rate >= best\_rollout\_success\_rate \THEN
+\BEGIN
+best\_success\_rate \GETS rollout\_success\_rate\\
+Model.\CALL{SaveToFile}{}\\
+best\_model \GETS Model\\
+\END\\
+
+
+\RETURN{num\_steps}
+\ENDPROCEDURE
+\label{pseudocode:collect_data}
+\end{pseudocode}
+
+\renewcommand{\thepseudonum}{\roman{pseudonum}}
+\begin{pseudocode}{Train Model}{ }
+\COMMENT{Sample from replay buffer and update the model based on the loss}\\
+
+\PROCEDURE{TrainModel}{}
+amount\_of\_batches \GETS \frac{rollout\_buffer\_size}{batch\_size}\\
+\FOR i \GETS 0 \TO n\_epochs \DO
+\BEGIN
+RolloutBuffer.\CALL{Shuffle}{}\\
+RolloutBuffer.\CALL{CreateBatches}{batch\_size}\\
+\FOR m \GETS 0 \TO amount\_of\_batches \DO
+\BEGIN
+batch \GETS RolloutBuffer.\CALL{GetBatch}{m}\\
+loss \GETS \CALL{ComputeLoss}{batch}\\
+Model.\CALL{Backpropagate}{loss}\\
+Optimizer.\CALL{Step}{}\\
+\END\\
+\END
+\ENDPROCEDURE
+\label{pseudocode:train_model}
+\end{pseudocode}
+
+\section{Neural Network Architecture}
 
 \begin{figure}
     \centering
@@ -18,6 +126,8 @@
     \label{fig:value_graph}
 \end{figure}
 
+
+\section{Eval Model Track}
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Generate Map and Rotation Combinations}{ }
 
@@ -60,6 +170,7 @@ combinations.\CALL{append}{(tracks[i], rotations[i])}\\
 
 
 
+\section{Replay on JetBot}
 
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
@@ -121,7 +232,7 @@ obs \GETS \CALL{ProcessImage}{env, infer\_obs\_unity\_images[i]}\\
 action \GETS policy.\CALL{Infer}{obs}\\
 reproduce\_times.\CALL{append}{\CALL{TIME}{} - replay\_time\_start}\\
 
-\CALL{AssertEqual}{action, recorded\_actions[i]}\\
+\CALL{AssertClose}{action, recorded\_actions[i]}\\
 
 replay\_time\_start \GETS \CALL{TIME}{}\\
 
@@ -132,3 +243,12 @@ replay\_time\_start \GETS \CALL{TIME}{}\\
 
 \label{pseudocode:replay_episode}
 \end{pseudocode}
+
+\subsection{Installation instructions for execuing replays on the Jetbot}
+
+The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{jetbot\_readme.md file} in the code repository. 
+
+%\url{https://github.com/geschnee/carsim\_no\_mlagents/blob/main/replays\_on\_jetbot.md}
+
+
+% TODO rename all links to carsim-rl-cnn

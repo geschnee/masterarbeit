@@ -675,7 +675,7 @@ User: jetbot
 password: jetbot
 
 
-# 12.06.2024
+# Ziel für 12.06.2024
 
 ## jetBot tests Ergebnis
 
@@ -683,9 +683,40 @@ password: jetbot
 ## fast fertiges Masterarbeitdokument mitbringen
 
 
+# 12.06.2024
 
+## jetbot tests Ergebnis
 
+- sehr gut
+- bentigte mehr Speicherplatz --> alle Experimente auf mount durchgeführt
+- Installation der Bibliotheken von source hat funktioniert + dokumentiert
+- der Jetbot hat keine Performance Probleme (für die Ausführung der Policy)
 
+## Masterarbeit dokument
+
+- noch nicht fertig (besonders die Related Work sektion)
+- methodik fast fertig
+
+## letzter Trainingslauf
+
+training mit harten Tracks und gemischten Lichtverhältnissen (läuft gerade auf meine Desktop)
+
+in Erwartung sollte das die Ergebnisse nicht viel verbessern, da sie schon sehr gut sind
+
+(dauer etwa 3.23 Tage)
+
+## virtueler PC
+
+wird eventuell noch für eval läufe genutzt
+
+## Frage
+
+derzeit jede evaluierung mit 100 Episoden pro setting
+
+--> dauert etwa 4.3 Stunden
+
+weiter die Anzahl der Episoden erhöhen?
+beziehungsweise wie viele Episoden benötigt man zur Evaluation?
 
 
 
