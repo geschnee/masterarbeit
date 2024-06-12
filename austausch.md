@@ -692,10 +692,30 @@ password: jetbot
 - Installation der Bibliotheken von source hat funktioniert + dokumentiert
 - der Jetbot hat keine Performance Probleme (für die Ausführung der Policy)
 
+wie lange braucht die JetBot API um bilder von der Camera zu bekommen
+--> mehr bewertbarkeit der ergebisse Jetbottest
+
+
 ## Masterarbeit dokument
 
 - noch nicht fertig (besonders die Related Work sektion)
 - methodik fast fertig
+
+### Results
+
+hohe collision rate (recover oder nur minor collision)
+
+vermutung pruefen (keine Vermutungen auessern, oder pruefen)
+z.B collision episoden anschauen und schauen ob recover oder minor collision
+
+Frage 2:
+
+licht verhaeltnis hat wenig einfluss auf die performance
+
+unterschiede der lichtverhaeltnisse sind nicht so grosss, besonders nach dem preprocessing
+
+zur diskussion der lichtverhaeltnisse noch die Ergebnisse des Evals ohne equalize erwaehnen
+equalize fuer alle Lichtverhaeltnisse
 
 ## letzter Trainingslauf
 
@@ -720,10 +740,12 @@ beziehungsweise wie viele Episoden benötigt man zur Evaluation?
 
 
 
+# weitere Schritte
 
+## Treffen am 24.06.2024 online
 
-
-
+## keine Verteidigung
+ein Treffen nach Abgabe mit Thomas zur Codeuebergabe
 
 
 
