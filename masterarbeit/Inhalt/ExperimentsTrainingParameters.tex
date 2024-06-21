@@ -55,43 +55,163 @@ The coefficient for the distanceReward was set to 1, the others were set to 0. A
 \end{figure}
 
 
+\section{Experiments fixed difficulty setting}
+\label{cha:experiment_fixed_difficulty}
+
+In the experimentation phase of this project the agents were trained exclusively on tracks of a specific difficulty setting. This was done to analyse the capability of the jetbot agent and to find appropriate hyperparameters that allow the agents to learn. These hyperparameters include the agent camera image dimensions, the $fixedTimestepLength$, the amount of steps to collect in each iteration and more. 
+The experiments showed that it is possible to train the agent with the right hyperparameters to solve tracks of a particular difficulty level when the agent is exclusively trained on that difficulty level. For example the agent could be trained to solve the medium tracks very successfully without needing to encounter easy tracks during training. The light settings were restricted to standard during this experimentation to focus on the difficulty levels.
+
+The experiments produced a set of hyperparameters that could be used for training the agent on the different difficulty levels exclusively. The agents were able to reach success\_rates of 100\% for the collected episodes.
+
+\paragraph{Generalization to lower difficulty levels} The evaluation of these agents showed that they were able to generalize to the tracks of lower difficulty levels. For example the agent that was only trained on hard tracks with standard light conditions could solve the easy and medium tracks as well. The agent trained on hard tracks and standard light setting was able to solve hard tracks with a success\_rate of 99\%. It achieved a success\_rate of 100\% and 93\% on easy and medium tracks without being trained on these difficulty settings \ref{fig:hardDistance_generalization}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceStandardLight_eval_standard_success_rates_barplot.png}
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceStandardLight_eval_standard_collision_rates_barplot.png}
+    \caption{Success and collision rates for all difficulties for an agent trained exclusively on hard tracks with standard light}
+    \label{fig:hardDistance_generalization}
+\end{figure}
+
+\paragraph{Generalization to different light settings}
+Further evaluation of these agents on different light settings showed that the agents were able to generalize to the different light settings as well. The agents were trained on the standard light setting only. However the agents were able to solve episodes with the bright and dark light settings with only slight decreases in performance. The success rates for the different light settings are shown in figure \ref{fig:hardDistance_generalization_light_settings}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceStandardLight_eval_all_success_rates_barplot.png}
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceStandardLight_eval_all_collision_rates_barplot.png}
+    \caption{All success and collision rates for an agent trained exclusively on hard tracks with standard light}
+    \label{fig:hardDistance_generalization_light_settings}
+\end{figure}
+
 \section{Experiments mixed difficulty setting}
 \label{cha:experiment_mixed_difficulty}
 
-In the experimentation pahse of this project the agents were trained exclusively on tracks of a specific difficulty setting. This was done to analyse the capability of the jetbot agent and to find appropriate hyperparameters that allow the agents to learn. These hyperparameters include the agent camera image dimensions, the $fixedTimestepLength$, the amount of steps to collect in each iteration and more. 
-The experiments showed that it is possible to train the agent with the right hyperparameters to solve tracks of a particular difficulty level when the agent is exclusively trained on that difficulty level. For example the agent could be trained to solve the medium tracks very successfully without needing to encounter easy tracks during training. The light settings were restricted to standard during this experimentation to focus on the difficulty levels.
-
-The experiments produced a set of hyperparameters that could be used for training the agent on the different difficulty levels exclusively. Further evaluation of these agents showed that they were able to generalize to the tracks of lower difficulty levels. For example the agent that was only trained on hard tracks with standard light conditions could solve the easy and medium tracks as well.
-
 The next step was to train the agent on all difficulty levels at the same time. The goal was to find hyperparameters that would allow the agent to learn to solve all difficulty levels better than with the previous exclusive training. The agent was trained on all difficulty levels at the same time with the same hyperparameters that were used before. The $trainingMapType$ parameter was set to $randomEval$, this results in split of 20\% easy, 40\% medium and 40\% hard tracks.
 
-The training with mixed tracks for the data collection episodes failed. The agent was not able to learn to solve the tracks as successfully as the isolated training. Further changes to the hyperparameters did not improve the learning process. For example the amount of data collected in each iteration was increased to balance out the increased variety of tracks.
+The training with mixed tracks for the data collection episodes failed. The agent was not able to learn to solve the tracks as successfully as the isolated training on hard tracks. Further changes to the hyperparameters did not improve the learning process. For example the amount of data collected in each iteration was increased to balance out the increased variety of tracks.
 
 % put a figure here? or in the appendix?
 
-\section{Experiment mixed light setting hyperparameter}
+\section{Experiments mixed light setting hyperparameter}
 \label{cha:experiment_mixed_light}
 
-Experiment mixed training hyperparameter
+In the previous experiments, the complexity of the task was reduced by focussing on single light settings. The goal was to test the parameters and find configurations that enable the agent to learn the tasks with increasing complexity. The experiments showed that an agent that is trained on hard tracks exclusively is able to generalize to the lower difficulty tracks as well. These agents were also able to solve the tracks of differenct light settings with only slight differences in performance.
 
-explain how the training with mixed light setting was worse than the training with fixed standard light setting
 
-\subsection{current training run}
-currently training is running to check if the training with mixed light settings works if it is only run on hard tracks
-does this improve?
+The next step was to train the agent on all light settings at the same time. The goal was to find hyperparameters that would allow the agent to learn to solve the tracks with different light settings better than with the previous exclusive training. The agent was trained on difficult tracks with all light settings. The $lightSetting$ parameter was set to $random$, this results in split of 33\% bright, 33\% standard and 33\% dark illumination for the data collection episodes.
 
+\paragraph{General Results}
+The agent was able to learn to solve the tracks of different difficulties. Similarly to the previous experiments, the agent was able to generalize to the easy and medium tracks. The agent was able to solve the easy, medium and hard tracks with success rates of 100\%, 100\% and 99\% \ref{fig:hardDistance_mixedLight_generalization}. This is an improvement over the agent trained exclusively on hard tracks with standard light \ref{cha:experiment_fixed_difficulty}.
+
+% TODO callback to this improvement somewhere
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_standard_success_rates_barplot.png}
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_standard_collision_rates_barplot.png}
+    \caption{Success and collision rates for all difficulties with standard light for an agent trained on hard tracks with all light settings}
+    \label{fig:hardDistance_mixedLight_generalization}
+\end{figure}
+
+\paragraph{Performance on all light settings}
+The agent was evaluated on the different light settings. The agent was able to solve the episodes reliably for all light settings. There were only slight differences in performance between the light settings for hard tracks \ref{fig:hardDistance_mixedLightTraining_results}.
+The agent performed much better in episodes with bright or dark light setting compared to the agent trained exclusively on tracks with standard light \ref{cha:experiment_fixed_difficulty}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}
+    \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_collision_rates_barplot.png}
+    \caption{Success and collision rates for an agent trained on hard tracks with all light settings}
+    \label{fig:hardDistance_mixedLightTraining_results}
+\end{figure}
+
+% TODO
+%possible reasons for the improvement?
+%- the agent is trained on all light settings at the same time 
+%this requires much more learning to have a 100 success\_rate during data collection 
+%better model is selected
+
+
+\section{Experiments importance of histogram equalization preprocessing step}
+
+The previous training results showed that the agent was able to learn to solve the tracks with different light settings. The agents used the histogram equalization preprocessing step \ref{sec:histogram_equalization} to increase the resiliency towards light changes. Agents that were trained on the standard light setting were able to solve tracks under bright and dark light conditions as well. This implies the histogram equalization plays a big role.
+
+\paragraph{Evaluating an agent without the histogram equalization preprocessing step}
+
+The agent from the previous section about mixed light settings during training was evaluated without the histogram equalization preprocessing step. This agent was trained with the histogram equalization step. The removal of the preprocessing step leads to a performance collapse for the standard and dark settings \ref{fig:hardDistance_mixedLight_comparison_withWithoutHistogramEqualization}. The success rate drops to 0\% for the dark light setting.
+The performance for the bright light setting is not affected as severely. Nevertheless the success rate drops from 98\% to 62\% for the hard tracks. 
+
+The decrease in performance was to be expected, as the agent was trained with the histogram equalization preprocessing step. The histogram equalization step changes the image content substantially \ref{table:preprocessing_steps}. The agent has learned to use the output of the preprocessing step. As a result, the agent is not able to solve the tracks without the preprocessing step.
+
+\begin{figure}
+    \centering
+    \subfigure[Success rate with histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}}
+    \subfigure[Success rate without histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_evalWithoutHistEqualization_all_success_rates_barplot.png}}
+    \caption{Success rates for an agent trained on all light settings with histogram equalization}
+    \label{fig:hardDistance_mixedLight_comparison_withWithoutHistogramEqualization}
+\end{figure}
+
+
+\paragraph{Training an agent without the histogram equalization preprocessing step}
+An agent without the histogram equalization preprocessing step was trained on the mixed light setting to determine if the preprocessing step is required for high performance. The results of training an agent without the preprocessing step are shown in the second graph in \ref{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results}. The agent was not able to learn to solve the hard tracks as successfully as the agent trained with the histogram equalization preprocessing step. The difference is noticeable but quite small at 2\% for the success rate of hard tracks.
+
+\begin{figure}
+    \centering
+    \subfigure[Agent trained with histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}}
+    \subfigure[Agent trained without histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_noHistEqualization_all_success_rates_barplot.png}}
+    \caption{Success rate comparison for an agent that is trained with or without histogram equalization on all light settings}
+    \label{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results}
+\end{figure}
+
+
+
+%
+%\paragraph{Adding the histogram equalization preprocessing step to an agent that was trained without it}
+%TODO hardDistanceMixedLight_noHistEqualization_evalWithHistogramEqualization_all_success_rates_barplot 
+%want to mention that?
+
+\paragraph{Conclusion}
+The histogram equalization step contributes strongly to the resiliency to light changes for the constructed agent. It is possible to train a resilient agent without the histogram equalization preprocessing step.
+However the best performance is achieved when the agent is trained with the histogram equalization preprocessing step and all light settings.
+
+The histogrm equalization preprocessing step should never be removed or added after the training is complete, this results in a performance decrease.
+
+\section{Comment on the collision rate}
+
+The trained agents are able to complete the parcours very reliably. However the agents do not avoid collisions entirely. The collision rate generally increases for higher difficulty tracks. The collision rates vary quite strongly between the different trained models. The agent trained on the mixed light setting has a collision rate of 70\% for the hard tracks with standard light setting \ref{fig:hardDistance_mixedLightTraining_results}. Whereas the agent trained on hard tracks with standard light setting has a collision rate of only 29\% \ref{fig:hardDistance_generalization}.
+
+The agents are able to complete the tracks reliably despite the collisions. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent collides with the goal obstacles at its side. The agent basically scapes against the goal posts. The agent does not collide with the goal obstacles head on \ref{fig:example_collision}. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.45\textwidth]{Bilder/example_minor_collision_topview_frame_1295.png}
+    \caption{Example of a collision from a successfully completed episode}
+    \label{fig:example_collision}
+\end{figure}
+
+The reason for the high collision rates is the selected reward function. The agents were trained with the distance reward function exclusively following the first experimentations. The distance reward function does not penalise collisions directly. The distance reward function only discourages collisions indirectly. Collisions that prevent an agent from moving towards the next goal result in less collected reward. For example a frontal collision of the agent with a goal post object requires the agent to then move backwards and around the goal post. The backwards movement is penalized. The agent learns to avoid frontal collisions.
+The minor collisions that occur are not penalized as the agent is still able to move towards the next goal. As a result the agent does not learn to avoid these.
+
+
+%- Collision rate is quite high
+%- collision rate varies quite strongly from trained model to model
+%    - reason: the distanceReward does not discourage the agent from colliding and the metric by which the final eval model is selected des not take the collision rate into account --> would have been better to select the model with the highest success\_rate and lowest collision\_rate
+
+%TODO vielleicht besser in Results umlagern    
 
 \section{Most successful policy}
 
-This section describes how the most successful policy was implemented and trained. This policy is used for the evaluations of the three main research goals.
+
+This section describes how the most successful policy was implemented and trained. The parameters were chosen following the previous experiments. This policy is used for the evaluations of the three main research goals.
 The policy was configured to use the three preprocessing steps downsampling, greyscaling and histogram equalization. The policy used a frame stacking of 10. The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. This results in an observation space of shape $[84, 250, 10]$. The duration of steps was fixed to $0.3$ seconds.
 The neural network follows the earlier descriptions exactly \ref{sec:network_architecture}. It consisted of a feature extractor part with 3 convolutional layers and one fully connected layer. The feature extractor takes the observation as input, its outputs are used by the action and value head. The action and value head each consist of a single fully connected layer. The entire network is trained together end-to-end using backpropagation of the loss defined by the PPO algorithm.
 
 The policy was trained exclusively using the distance reward. The other reward functions were not used \ref{fig:final_reward_function}.
 
-The episodes for data collection used the standard light setting and difficult tracks only. The agent was initialized with random orientations. The episodes were not reset upon collision.
-The training was configured to use 10 environments in parallel to collect data. 2560 samples were collected in each data collection step. The training was terminated after a total of 6500000 steps. 32700 full episodes were executed to collect these samples. 2540 data collection and model training iterations were executed in total. The total training duration was 3.23 days.
-The training progress over the three days can be seen in figure \ref{fig:training_most_successful_model}. The model reached a success rate of 100\% for the collected episodes.
+The episodes for data collection used hard tracks with all light settings. The agent was initialized with random orientations. The episodes were not reset upon collision.
+The training was configured to use 10 environments in parallel to collect data. 2560 samples were collected in each data collection step. The training was terminated after a total of 2385920 steps. 8423 full episodes were executed to collect these samples. 233 data collection and model training iterations were executed in total. The total training duration was 1.02 days.
+The training progress can be seen in figure \ref{fig:training_most_successful_model}. The model reached a success rate of 100\% for the collected episodes.
 
 The full training config can be found in the appendix \ref{cha:most_successful_config}.
 

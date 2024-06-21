@@ -3,27 +3,40 @@
 
 \section{Code Repository}
 
-The code repository is publically availible here: \url{https://github.com/geschnee/carsim-rl-cnn}
+The code repository is publically availible on GitHub: 
+\href{https://github.com/geschnee/carsim-rl-cnn}{carsim-rl-cnn}
+
 The readme file contains instructions on how to install and run the code.
 
 \section{Most successful model}
 
-The most successful model is publically availible on Huggingface: \url{https://huggingface.co/geschnee/carsim-rl-cnn}
+The most successful model is publically availible on Huggingface: 
+\href{https://huggingface.co/geschnee/carsim-rl-cnn}{carsim-rl-cnn}
 
-The episode recordings for question 5 are also hosted there.
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/models/hardDistanceMixedLight.zip}{hardDistanceMixedLight.zip}
 
-TODO
+The episode recordings for question 3 are also hosted there.
 
 
 \subsection{Most Successful Policy Configuration}
 \label{cha:most_successful_config}
 
-The training config of the model for the final evaluations is availible here: \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/most_successful_config.yaml}
+The training config of the model for the final evaluations is availible on GitHub: 
+\href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/hardDistanceMixedLight.yaml}{hardDistanceMixedLight.yaml}
 
 \section{Example Video Files}
 \label{cha:example_videos}
 
-Video Files are availible here: \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/results/example_videos}
+Video Files are availible on Github: 
+\href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/results/example_videos}{example\_videos}
+
+\subsection{Video Files with FourWheelJetBot}
+
+\paragraph{Collisions}
+\label{sec:fourwheel_collisions}
+
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/example_videos_FourWheelJetbot/hard_standard_FourWheelJetBot_env_0_video_1_topview.gif}{example\_videos/hard\_standard\_FourWheelJetBot\_env\_0\_video\_1\_topview.gif}
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/example_videos_FourWheelJetbot/hard_standard_FourWheelJetBot_env_0_video_2_topview.gif}{example\_videos/hard\_standard\_FourWheelJetBot\_env\_0\_video\_2\_topview.gif}
 
 % z.B. Pseudocode
 
@@ -34,15 +47,17 @@ Video Files are availible here: \url{https://github.com/geschnee/carsim-rl-cnn/t
 \subsection{Reward functions capability check}
 The used configs are the following:
 \begin{itemize}
-    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
-    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
-    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
-    \item \url{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
 \end{itemize}
 
 
 
 \section{Pseudocode}
+
+TODO pseudocde für eval\_model\_track?
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Collect Data}{ }
@@ -172,6 +187,10 @@ combinations.\CALL{append}{(tracks[i], rotations[i])}\\
 
 \section{Replay on JetBot}
 
+\subsection{Installation instructions for executing replays on the Jetbot}
+
+The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{replays\_on\_jetbot.md file} in the code repository. 
+
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Record Episode}{ }
@@ -244,11 +263,3 @@ replay\_time\_start \GETS \CALL{TIME}{}\\
 \label{pseudocode:replay_episode}
 \end{pseudocode}
 
-\subsection{Installation instructions for execuing replays on the Jetbot}
-
-The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{jetbot\_readme.md file} in the code repository. 
-
-%\url{https://github.com/geschnee/carsim\_no\_mlagents/blob/main/replays\_on\_jetbot.md}
-
-
-% TODO rename all links to carsim-rl-cnn

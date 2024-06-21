@@ -87,6 +87,7 @@ The conversion to grayscale removes color information from the image. The altern
 
 
 \subsubsection{Histogram Equalization}
+\label{sec:histogram_equalization}
 
 The histogram equalization step increases the contrast of the image. The step can be enabled or disabled with the $equalize\_histogram$ parameter. The histogram equalization step requires a grayscale image as input. The step changes the pixel values of the image. The step does not change the input space size.
 The histogram equalization step changes the pixel values of the image. The histogram of the pixel intensities are made more uniform. First the cumulative histogram of the pixel intensities is calculated. The pixel values are then mapped to new values by using the cumulative histogram. The pixel values are distributed more evenly over the pixel value domain \ref{fig:histogram_equalization}.
