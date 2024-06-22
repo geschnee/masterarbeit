@@ -5,7 +5,7 @@
 
 \label{fig:policy_description}
 
-The policy dictates what action the agent takes. The policy consists of preprocessing steps, a memory mechanism and a neural network. The policy is applied to images from the agent camera. The resulting actions are then applied to the agent in the Unity environment. 
+The policy dictates what action the agent takes. The policy consists of preprocessing steps, a memory mechanism and a neural network. The policy is applied to images from the agent camera. The resulting actions are then applied to the agent in the Unity environment.
 The preprocessing steps and memory mechanism are considered as part of the policy as they are applied to the input images before the neural network. The preprocessing steps cannot be changed for a trained policy, as they define dimensions and contents of the neural network's inputs.
 
 The agent's camera image has three channels, red, green, and blue. Its dimensions are defined by the config parameters $agentImageWidth$ and $agentImageHeight$. These parameters define the agent's field of view.
@@ -17,7 +17,7 @@ The policy receives an image from the agent camera as input. First the image is 
 \subsection{Preprocessing}
 
 The images from the agent camera are preprocessed before they are fed into the neural network. The preprocessing steps are applied to reduce the size of the neural network's input space. They are also applied to reduce the impact of different light settings on the policy's performance.
-Three preprocessing steps have been implemented, downsampling, grayscale conversion, and histogram equalization. The preprocessing steps can be enabled and configured in the environment parameter $image\_preprocessing$. Each preprocessing step transforms an image into a new image. This can change the image dimensions and pixel domains. The steps are applied on the previous step's output. The steps are applied in order of downsampling, grayscale conversion, and histogram equalization. The first step takes the image from the agent camera as input. 
+Three preprocessing steps have been implemented, downsampling, grayscale conversion, and histogram equalization. The preprocessing steps can be enabled and configured in the environment parameter $image\_preprocessing$. Each preprocessing step transforms an image into a new image. This can change the image dimensions and pixel domains. The steps are applied on the previous step's output. The steps are applied in order of downsampling, grayscale conversion, and histogram equalization. The first step takes the image from the agent camera as input.
 The neural network uses the last step's output for inference.
 
 The preprocessing steps are applied to all images from the agent camera. The table \ref{table:preprocessing_steps} shows how the preprocessing steps make images of different light settings more similar. The images in the table were generated using the configurations employed int the training runs.
@@ -32,17 +32,17 @@ The preprocessing steps are applied to all images from the agent camera. The tab
     \begin{center}
         \begin{tabular}{|| p{0.15\linewidth} || p{0.25\linewidth} | p{0.25\linewidth} | p{0.25\linewidth} ||}
             \hline
-            light Setting     & Bright                             & Standard                             & Dark                             \\ [0.5ex]
+            light Setting                 & Bright                             & Standard                             & Dark                             \\ [0.5ex]
             \hline\hline
-            Agent Camera Image from Unity  & \makecell{\unityImg{bright}}       & \makecell{\unityImg{standard}}       & \makecell{\unityImg{dark}}       \\
+            Agent Camera Image from Unity & \makecell{\unityImg{bright}}       & \makecell{\unityImg{standard}}       & \makecell{\unityImg{dark}}       \\
             \hline
-            Downsampled & \makecell{\downsampledImg{bright}} & \makecell{\downsampledImg{standard}} & \makecell{\downsampledImg{dark}} \\
+            Downsampled                   & \makecell{\downsampledImg{bright}} & \makecell{\downsampledImg{standard}} & \makecell{\downsampledImg{dark}} \\
             \hline
-            Grayscale & \makecell{\grayscaleImg{bright}}   & \makecell{\grayscaleImg{standard}}   & \makecell{\grayscaleImg{dark}}   \\
+            Grayscale                     & \makecell{\grayscaleImg{bright}}   & \makecell{\grayscaleImg{standard}}   & \makecell{\grayscaleImg{dark}}   \\
             \hline
-            Equalized & \makecell{\equalizedImg{bright}}   & \makecell{\equalizedImg{standard}}   & \makecell{\equalizedImg{dark}}   \\
+            Equalized                     & \makecell{\equalizedImg{bright}}   & \makecell{\equalizedImg{standard}}   & \makecell{\equalizedImg{dark}}   \\
             \hline
-            Final Input Image & \makecell{\finalImg{bright}}       & \makecell{\finalImg{standard}}       & \makecell{\finalImg{dark}}       \\
+            Final Input Image             & \makecell{\finalImg{bright}}       & \makecell{\finalImg{standard}}       & \makecell{\finalImg{dark}}       \\
             \hline
         \end{tabular}
     \end{center}
@@ -54,7 +54,7 @@ The preprocessing steps are applied to all images from the agent camera. The tab
 
 The reduction of input space size brings a variety of benefits. Some benefits are execution driven, like the reduction of the neural network's inference time. The neural network can make decisions quicker if it has to process fewer inputs. The reduction of the input space size also reduces the amount of data that has to be stored in memory. This is especially important during the training phase since many observations have to be stored in the rollout buffer.
 
-The reduction of the input space size also reduces the number of parameters the neural network has to learn. This can lead to a more robust policy. Networks with smaller input spaces and less parameters are less prone to overfitting. The policy can generalize better to unseen situations. 
+The reduction of the input space size also reduces the number of parameters the neural network has to learn. This can lead to a more robust policy. Networks with smaller input spaces and less parameters are less prone to overfitting. The policy can generalize better to unseen situations.
 
 % what datatype is used for the images? uint8? float32?
 % there was a problem before with some datatype requiring more space than others
@@ -62,9 +62,9 @@ The reduction of the input space size also reduces the number of parameters the 
 
 \subsubsection*{Benefits of reducing the impact of different light settings}
 
-The policy has to be able to complete the different tracks for three different light settings. The policy is not provided with information about what light setting is active for the current episode. This means that the policy has to learn to produce correct actions for images of all three light settings. If images of the light settings look very different, the policy has to learn to the light settings as well as what action to take. 
-The preprocessing steps are applied to make images of different light settings more similar. The neural network is relieved of learning the different light settings. This can make learning easier and faster. 
-The preprocessing steps can also make the policy generalize better to unseen light settings. The policy can be trained on a single light setting and achieve good results for the other light setttings \ref{cha:experiment_mixed_training}. 
+The policy has to be able to complete the different tracks for three different light settings. The policy is not provided with information about what light setting is active for the current episode. This means that the policy has to learn to produce correct actions for images of all three light settings. If images of the light settings look very different, the policy has to learn to the light settings as well as what action to take.
+The preprocessing steps are applied to make images of different light settings more similar. The neural network is relieved of learning the different light settings. This can make learning easier and faster.
+The preprocessing steps can also make the policy generalize better to unseen light settings. The policy can be trained on a single light setting and achieve good results for the other light setttings \ref{cha:experiment_mixed_training}.
 
 
 
@@ -131,54 +131,54 @@ The memory mechanism enables the policy to use information from previous time st
 \usetikzlibrary{fit}
 
 \begin{figure}[!h]
-\centering
-\begin{tikzpicture}[%
-    every node/.style={
-        font=\scriptsize,
-        % Better alignment, see https://tex.stackexchange.com/questions/315075
-        text height=1ex,
-        text depth=.25ex,
-    },
-]
+    \centering
+    \begin{tikzpicture}[%
+            every node/.style={
+                    font=\scriptsize,
+                    % Better alignment, see https://tex.stackexchange.com/questions/315075
+                    text height=1ex,
+                    text depth=.25ex,
+                },
+        ]
 
-\node[inner sep=0pt] (newImg) at (-4,\inOutImageHeight)
-    {\includePreprocessedImage{\timestepT}};
-\node[below] at (newImg.south) {New preprocessed image $t$};
-
-
-\node[inner sep=0pt] (step3) at (\bufferXOffset + 4.5,\imagesOffsetY + 1.5)
-    {\includePreprocessedImage{\timestepTminusThree}};
-\node[below] at (step3.east) {image $t - 3$};
-
-\node[inner sep=0pt] (step2) at (\bufferXOffset + 3.5,\imagesOffsetY + 1)
-    {\includePreprocessedImage{\timestepTminusTwo}};
-\node[below] at (step2.east) {image $t - 2$};
-
-\node[inner sep=0pt] (step1) at (\bufferXOffset + 2.5,\imagesOffsetY + 0.5)
-    {\includePreprocessedImage{\timestepTminusOne}};
-\node[below] at (step1.east) {image $t - 1$};
-
-\node[inner sep=0pt] (step0) at (\bufferXOffset + 1.5,\imagesOffsetY)
-    {\includePreprocessedImage{\timestepT}};
-\node[below] at (step0.south) {new image $t$};
-
-\node[fit={(\bufferXOffset,-0.55) (\bufferXOffset + \bufferWidth,2.5)}, inner sep=0pt, draw=blue, thick] (buffer) {};
-\node[below] (buffertext1) at (buffer.south) {Memory Buffer stack for timestep $t$};
-\node[below] (buffertext2) at (buffertext1.south) {$frame\_stacking = 4$};
-\node[below] (buffertext3) at (buffertext2.south) {Output dimensions: $[width, height, frame\_stacking]$};
+        \node[inner sep=0pt] (newImg) at (-4,\inOutImageHeight)
+        {\includePreprocessedImage{\timestepT}};
+        \node[below] at (newImg.south) {New preprocessed image $t$};
 
 
-\node[inner sep=0pt] (outImg) at (7,\inOutImageHeight)
-    {\includePreprocessedImage{\timestepTminusFour}};
-\node[below] at (outImg.south) {Removed image $t - 4$};
+        \node[inner sep=0pt] (step3) at (\bufferXOffset + 4.5,\imagesOffsetY + 1.5)
+        {\includePreprocessedImage{\timestepTminusThree}};
+        \node[below] at (step3.east) {image $t - 3$};
 
-\draw[->,thick] (\bufferXOffset - 0.75, 1) -- (\bufferXOffset, 1);
-\draw[->,thick] (\bufferXOffset + \bufferWidth, 1) -- (\bufferXOffset + \bufferWidth + 0.75, 1);
+        \node[inner sep=0pt] (step2) at (\bufferXOffset + 3.5,\imagesOffsetY + 1)
+        {\includePreprocessedImage{\timestepTminusTwo}};
+        \node[below] at (step2.east) {image $t - 2$};
+
+        \node[inner sep=0pt] (step1) at (\bufferXOffset + 2.5,\imagesOffsetY + 0.5)
+        {\includePreprocessedImage{\timestepTminusOne}};
+        \node[below] at (step1.east) {image $t - 1$};
+
+        \node[inner sep=0pt] (step0) at (\bufferXOffset + 1.5,\imagesOffsetY)
+        {\includePreprocessedImage{\timestepT}};
+        \node[below] at (step0.south) {new image $t$};
+
+        \node[fit={(\bufferXOffset,-0.55) (\bufferXOffset + \bufferWidth,2.5)}, inner sep=0pt, draw=blue, thick] (buffer) {};
+        \node[below] (buffertext1) at (buffer.south) {Memory Buffer stack for timestep $t$};
+        \node[below] (buffertext2) at (buffertext1.south) {$frame\_stacking = 4$};
+        \node[below] (buffertext3) at (buffertext2.south) {Output dimensions: $[width, height, frame\_stacking]$};
 
 
-\end{tikzpicture}
-\caption{Memory Mechanism}
-\label{fig:memory_mechanism}
+        \node[inner sep=0pt] (outImg) at (7,\inOutImageHeight)
+        {\includePreprocessedImage{\timestepTminusFour}};
+        \node[below] at (outImg.south) {Removed image $t - 4$};
+
+        \draw[->,thick] (\bufferXOffset - 0.75, 1) -- (\bufferXOffset, 1);
+        \draw[->,thick] (\bufferXOffset + \bufferWidth, 1) -- (\bufferXOffset + \bufferWidth + 0.75, 1);
+
+
+    \end{tikzpicture}
+    \caption{Memory Mechanism}
+    \label{fig:memory_mechanism}
 \end{figure}
 
 
@@ -186,7 +186,7 @@ The memory mechanism enables the policy to use information from previous time st
 
 The neural network is the core of the policy. It is responsible for producing the actions from the image observations. The neural network belongs to the class of convolutional neural networks. This architecture was chosen since convolutional neural networks are ideal for processing image data. The convolutional network's architecture follows the specifications from \autocite{human_level_control}. This architecture has been used successfully in comparable reinforcement learning problems.
 
-The network takes the output of the memory mechanism as input. This input is a three dimensional tensor, similar to an image. The network consists of convolutional and fully connected layers. The network produces two outputs, an action distribution and a value function. The action distribution is a probability distribution over the action space. 
+The network takes the output of the memory mechanism as input. This input is a three dimensional tensor, similar to an image. The network consists of convolutional and fully connected layers. The network produces two outputs, an action distribution and a value function. The action distribution is a probability distribution over the action space.
 The value function is a scalar value that estimates the expected return of the current state. The value function is not used during the action inference. The value is only used during the training of the policy network. It is used to compute the advantage function which is required for the loss \autocite{ppo}.
 
 % value or is it the critic? --> it is value
@@ -202,9 +202,9 @@ The value function is a scalar value that estimates the expected return of the c
 The input space of the neural network is three dimensional. The input is structured like images with $width$, $heigth$ and $channel$ dimensions. The dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The input space is a tensor with the following dimensions:
 
 \begin{align*}
-    width &= \frac{agentImageWidth}{downsampling\_factor} \\   
-    height &= \frac{agentImageHeight}{downsampling\_factor} \\     
-    channels &= frame\_stacking \cdot num\_color\_channels
+    width    & = \frac{agentImageWidth}{downsampling\_factor}  \\
+    height   & = \frac{agentImageHeight}{downsampling\_factor} \\
+    channels & = frame\_stacking \cdot num\_color\_channels
 \end{align*}
 
 The tensor values are integers in the range $[0,255]$. Storing the pixel intensities as integers saves a lot of memory compared to floats.
@@ -227,52 +227,52 @@ The value head consists of a single fully connected layer with one output.
 \begin{figure}[!h]
     \centering
     \begin{tikzpicture}[%
-        every node/.style={
-            font=\scriptsize,
-            % Better alignment, see https://tex.stackexchange.com/questions/315075
-            text height=1ex,
-            text depth=.25ex,
-        }, outer sep=auto
-    ]
-    
-    \node[draw] (input) at (0, 0) {Input image stack [width, height, channels]};
-    
-    \node[draw] (c1) at (0, -1) {Convolutional Layer 1};
-    \node[draw] (c2) at (0, -2) {Convolutional Layer 2};
-    \node[draw] (c3) at (0, -3) {Convolutional Layer 3};
-    \node[draw] (fc1) at (0, -4) {Fully Connected Layer};
-    
-    \draw[decorate,decoration={brace,amplitude=5pt}] (3.5,-1) -- (3.5,-4)
+            every node/.style={
+                    font=\scriptsize,
+                    % Better alignment, see https://tex.stackexchange.com/questions/315075
+                    text height=1ex,
+                    text depth=.25ex,
+                }, outer sep=auto
+        ]
+
+        \node[draw] (input) at (0, 0) {Input image stack [width, height, channels]};
+
+        \node[draw] (c1) at (0, -1) {Convolutional Layer 1};
+        \node[draw] (c2) at (0, -2) {Convolutional Layer 2};
+        \node[draw] (c3) at (0, -3) {Convolutional Layer 3};
+        \node[draw] (fc1) at (0, -4) {Fully Connected Layer};
+
+        \draw[decorate,decoration={brace,amplitude=5pt}] (3.5,-1) -- (3.5,-4)
         node[anchor=west,midway,right=4pt] {Feature Extractor};
-    
-    \node[draw] (fcAction) at (-2, -5.5) {Fully Connected Layer};
-    \node[draw] (actionDist) at (-2, -6.5) {Action Distribution};
-    \node[draw] (actionOut) at (-2, -7.5) {Action Output};
-    
-    \node[draw] (fcValue) at (2, -5.5) {Fully Connected Layer};
-    \node[draw] (valueOutput) at (2, -6.5) {Value Output};
-    
-    \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (-4,-5.5) -- (-4,-7.5)
+
+        \node[draw] (fcAction) at (-2, -5.5) {Fully Connected Layer};
+        \node[draw] (actionDist) at (-2, -6.5) {Action Distribution};
+        \node[draw] (actionOut) at (-2, -7.5) {Action Output};
+
+        \node[draw] (fcValue) at (2, -5.5) {Fully Connected Layer};
+        \node[draw] (valueOutput) at (2, -6.5) {Value Output};
+
+        \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (-4,-5.5) -- (-4,-7.5)
         node[anchor=east,midway,left=4pt] {Action Head};
-    
-    \draw[decorate,decoration={brace,amplitude=5pt}] (4,-5.5) -- (4,-6.5)
+
+        \draw[decorate,decoration={brace,amplitude=5pt}] (4,-5.5) -- (4,-6.5)
         node[anchor=west,midway,right=4pt] {Value Head};
-    
-    \draw[->,thick] (input.south) -- (c1.north);
-    \draw[->,thick] (c1.south) -- (c2.north);
-    \draw[->,thick] (c2.south) -- (c3.north);
-    \draw[->,thick] (c3.south) -- (fc1.north);
-    
-    \draw[->,thick] (fc1.south) -- (fcAction.north);
-    \draw[->,thick] (fcAction.south) -- (actionDist.north);
-    \draw[->,thick] (actionDist.south) -- (actionOut.north);
-    
-    \draw[->,thick] (fc1.south) -- (fcValue.north);
-    \draw[->,thick] (fcValue.south) -- (valueOutput.north);
-   
+
+        \draw[->,thick] (input.south) -- (c1.north);
+        \draw[->,thick] (c1.south) -- (c2.north);
+        \draw[->,thick] (c2.south) -- (c3.north);
+        \draw[->,thick] (c3.south) -- (fc1.north);
+
+        \draw[->,thick] (fc1.south) -- (fcAction.north);
+        \draw[->,thick] (fcAction.south) -- (actionDist.north);
+        \draw[->,thick] (actionDist.south) -- (actionOut.north);
+
+        \draw[->,thick] (fc1.south) -- (fcValue.north);
+        \draw[->,thick] (fcValue.south) -- (valueOutput.north);
+
     \end{tikzpicture}
-\caption{Neural Network Structure}
-\label{fig:network_structure}
+    \caption{Neural Network Structure}
+    \label{fig:network_structure}
 \end{figure}
 
 The neural network's input dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The network architecture follows the specifications from \autocite{human_level_control}. However the input dimensions differ from the original network. This results in a different number of parameters for the feature extractor's layers.
@@ -292,28 +292,28 @@ The parameters and layer dimensions for the most successful network configuratio
 
 \begin{figure}
     \begin{center}
-    \begin{tabular}{|| c | p{0.25\linewidth} | p{0.4\linewidth} ||} 
-        \hline
-        Component & Layer Type & Layer Specifications \\ [0.5ex] 
-        \hline\hline
-        \multirow{4}{*}{Feature Extractor} & Convolutional Layer & 32 filters, 3 dimensional (10, 8, 8) \\\cline{2-3}
-        & Convolutional Layer & 64 filters, 3 dimensional (32, 4, 4) \\\cline{2-3}
-        & Convolutional Layer & 64 filters, 3 dimensional (64, 3, 3) \\\cline{2-3}
-        & Fully connected Layer & 512 output neurons, (512 x 12096) matrix \\
-        \hline
-        Action Head & Fully connected Layer & 2 output neurons, (2 x 512) matrix \\
-        \hline
-        Value Head & Fully connected Layer & 1 output neuron, (1 x 512) matrix \\
-        \hline
-    \end{tabular}
-    \begin{tabular}{r@{: }l}
-        $agentImageWidth$ & 500 \\
-        $agentImageHeight$ & 168 \\
-        $downsampling\_factor$ & 2 \\
-        $greyscale$ & True \\
-        $equalize$ & True \\
-        $frame\_stacking$ & 10 \\
-    \end{tabular}
+        \begin{tabular}{|| c | p{0.25\linewidth} | p{0.4\linewidth} ||}
+            \hline
+            Component                          & Layer Type            & Layer Specifications                     \\ [0.5ex]
+            \hline\hline
+            \multirow{4}{*}{Feature Extractor} & Convolutional Layer   & 32 filters, 3 dimensional (10, 8, 8)     \\\cline{2-3}
+                                               & Convolutional Layer   & 64 filters, 3 dimensional (32, 4, 4)     \\\cline{2-3}
+                                               & Convolutional Layer   & 64 filters, 3 dimensional (64, 3, 3)     \\\cline{2-3}
+                                               & Fully connected Layer & 512 output neurons, (512 x 12096) matrix \\
+            \hline
+            Action Head                        & Fully connected Layer & 2 output neurons, (2 x 512) matrix       \\
+            \hline
+            Value Head                         & Fully connected Layer & 1 output neuron, (1 x 512) matrix        \\
+            \hline
+        \end{tabular}
+        \begin{tabular}{r@{: }l}
+            $agentImageWidth$      & 500  \\
+            $agentImageHeight$     & 168  \\
+            $downsampling\_factor$ & 2    \\
+            $greyscale$            & True \\
+            $equalize$             & True \\
+            $frame\_stacking$      & 10   \\
+        \end{tabular}
     \end{center}
     \caption{Neural network layers and parameters for the best configuration}
     \label{fig:network_architecture}

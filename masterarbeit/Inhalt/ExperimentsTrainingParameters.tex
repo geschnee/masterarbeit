@@ -1,5 +1,73 @@
 \chapter{Finding appropriate hyperparameters for training}
 
+This chapter explains how suitable parameters were found for training a successful policy. All parameters can be set in the training configuration file. The configurations that were used for the experiments are referenced in the appendix \ref{cha:experiment_configs}.
+
+\section{General parameters}
+
+There are a number of training parameters that were kept constant throughout the later training and evaluation runs. These parameters were chosen based on initial experimentations and improvements during the development phase.
+
+\subsection{Initial Agent position}
+
+The agent is always starts the episodes at the same position, only the agent orientation can change. There are three options for the spawnOrientation. The experiments showed that it is possible to train the agent with $Fixed$ and $Random$ orientation. It was not possible to train the agent with $VeryRandom$ spawnOrientation.
+The $Random$ orientation was chosen for all further experiments. The agent is spawned thus spawned with an orientation in the range of $[-15^{\circ}, 15^{\circ}]$ during training and evaluation.
+This increases the difficulty of the task compared to $Fixed$ orientation. The policy has to learn more diverse starting conditions.
+
+\subsection{Agent Camera}
+
+The agent camera is used to obtain observations from the environment. The agent's camera resolution is important and can heavily impact the agent's policy. The width and height of the agent camera image were set to $500x168$. This ensures that the agent has a realistic field of view. The agent's field of view is wide enough to partially observe the first goal at the beginning of the episode with $Random$ spawnOrientation \ref{fig:agent_field_of_view}.
+
+
+\begin{figure}
+    \centering
+    \subfigure[minimum $-15^{\circ}$]{\spawnOrientation{spawnOrientation_Random_min_pov}}\qquad
+    \subfigure[neutral $0^{\circ}$]{\spawnOrientation{spawnOrientation_Fixed_max_pov}}\qquad
+    \subfigure[maximum $15^{\circ}$]{\spawnOrientation{spawnOrientation_Random_max_pov}}\qquad
+    \caption{Agent field of view at beginning of episode with $Random$ spawnOrientation}
+    \label{fig:agent_field_of_view}
+\end{figure}
+
+
+\subsection{Observation Space}
+
+The observation space is the input to the agent's neural network. The dimensions are determined by the agent camera dimensions, preprocessing steps and memory mechanism.
+
+TODO take from section below (most successful policy)
+
+\paragraph{Downsampling}
+
+\paragraph{Greyscaling}
+
+\paragraph{Memory Mechanism}
+The $frame\_stacking$ parameter was set to 10. This means the policy can use the last 10 steps for its decision making. Given the fixed step duration of 0.3 seconds, the policy can use information from the last 3 seconds.
+
+\subsection{Step Duration}
+
+
+we use fixed durations of 0.3 with no fresh obs
+
+how many fps is that?
+
+how many frames per episode?
+
+image of movement in one single step
+
+image of movement in 10 steps (since a single step is not noticeable)
+
+why was this used (policy transferable to different devices) (training on multiple devices)
+
+(frames cannot be taken from a video, as the video does not consist of environment steps)
+
+\subsection{Training algorithm parameters}
+
+batch size
+n\_envs
+...
+model structure
+use\_fresh\_obs
+use\_bundled\_calls
+n\_steps
+n\_epochs
+seed
 
 \section{Reward functions capability check}
 
@@ -9,47 +77,47 @@ It is important to find appropriate weights of the individual reward functions f
 This is done by training the agent with only one reward function at a time. The reward function's coefficient is set to one. The coefficients of the other reward functions are set to zero. The agent is trained on easy tracks with a Random spawnOrientation and standard lightSetting to reduce the difficulty of learning the encouraged behaviour.
 
 
-The experiment results are shown in \ref{table:reward_functions_behaviour}. The agent is capable of learning the behaviour encouraged by the distanceReward and velocityReward functions. However the agent is not capable of learning the behaviour encouraged by the eventReward and orientationReward functions. 
+The experiment results are shown in \ref{table:reward_functions_behaviour}. The agent is capable of learning the behaviour encouraged by the distanceReward and velocityReward functions. However the agent is not capable of learning the behaviour encouraged by the eventReward and orientationReward functions.
 
 % TODO nochmal ausführen und dokumentieren oder ist das schon in Excel?
 
 \begin{table}
-\begin{center}
-\begin{tabular}{|| c | p{0.3\textwidth} | p{0.3\textwidth} | p{0.1\textwidth} ||} 
-    \hline
-    function name & encouraged behaviour & learned behaviour  & expected behaviour learned? \\ [0.5ex] 
-    \hline\hline
-    eventReward &  agent drives through the parcour without collisions & agent turns on the spot continuously & no \\ 
-    \hline
-    distanceReward & agent drives towards the next goal & agent drives towards the next goal & yes \\
-    \hline
-    orientationReward & agent turns towards closest goal & agent turns around on the spot continuously & no \\
-    \hline
-    velocityReward  & full speed ahead (no turning) & full speed ahead (no turning) & yes \\
-    \hline
-\end{tabular}
-\end{center}
-\caption{Agent capability check for individual reward functions.}
-\label{table:reward_functions_behaviour}
+    \begin{center}
+        \begin{tabular}{|| c | p{0.3\textwidth} | p{0.3\textwidth} | p{0.1\textwidth} ||}
+            \hline
+            function name     & encouraged behaviour                                & learned behaviour                           & expected behaviour learned? \\ [0.5ex]
+            \hline\hline
+            eventReward       & agent drives through the parcour without collisions & agent turns on the spot continuously        & no                          \\
+            \hline
+            distanceReward    & agent drives towards the next goal                  & agent drives towards the next goal          & yes                         \\
+            \hline
+            orientationReward & agent turns towards closest goal                    & agent turns around on the spot continuously & no                          \\
+            \hline
+            velocityReward    & full speed ahead (no turning)                       & full speed ahead (no turning)               & yes                         \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption{Agent capability check for individual reward functions.}
+    \label{table:reward_functions_behaviour}
 \end{table}
 
 
 \section{Chosen Reward function}
 
-As a result of the capability check, the distanceReward function was determined to be most suitable for the training process. Further tests of combining the distanceReward with the eventReward function were carried out. The goal was to find a parameters for the composite reward function that would allow the agent to learn to complete the tracks without collisions. The distanceReward function alone does not penalize collisions as heavily as the eventReward. 
+As a result of the capability check, the distanceReward function was determined to be most suitable for the training process. Further tests of combining the distanceReward with the eventReward function were carried out. The goal was to find a parameters for the composite reward function that would allow the agent to learn to complete the tracks without collisions. The distanceReward function alone does not penalize collisions as heavily as the eventReward.
 Experiments were executed using both functions together with different coefficients. The behaviour of the agent and the obtained rewards were monitored during training. The results showed that the agent was not capable of leaning from the combined rewards, regardless of the combinations of coefficients.
 
-The distanceReward showed the best results when used alone. The agent was able to learn the desired behaviour and complete the tracks reliably. The distanceReward function was chosen as the only reward function for the final training process. The other reward functions function were not used in the training process. 
-The coefficient for the distanceReward was set to 1, the others were set to 0. As a result the total reward function is defined as \ref{fig:final_reward_function}. 
+The distanceReward showed the best results when used alone. The agent was able to learn the desired behaviour and complete the tracks reliably. The distanceReward function was chosen as the only reward function for the final training process. The other reward functions function were not used in the training process.
+The coefficient for the distanceReward was set to 1, the others were set to 0. As a result the total reward function is defined as \ref{fig:final_reward_function}.
 
 \begin{figure}
     \centering
     \begin{align*}
-         R(s_t,a_t) &= \Delta distance(Agent, NextGoalPosition) \cdot \Delta T \nonumber \\
+        R(s_t,a_t) & = \Delta distance(Agent, NextGoalPosition) \cdot \Delta T \nonumber \\
     \end{align*}
     \caption{Final reward function}
     \begin{tabular}{r@{: }l r@{: }l}
-    $s_t$& state t & $a_t$& action in state t 
+        $s_t$ & state t & $a_t$ & action in state t
     \end{tabular}
     \label{fig:final_reward_function}
 \end{figure}
@@ -58,12 +126,12 @@ The coefficient for the distanceReward was set to 1, the others were set to 0. A
 \section{Experiments fixed difficulty setting}
 \label{cha:experiment_fixed_difficulty}
 
-In the experimentation phase of this project the agents were trained exclusively on tracks of a specific difficulty setting. This was done to analyse the capability of the jetbot agent and to find appropriate hyperparameters that allow the agents to learn. These hyperparameters include the agent camera image dimensions, the $fixedTimestepLength$, the amount of steps to collect in each iteration and more. 
+In the experimentation phase of this project the agents were trained exclusively on tracks of a specific difficulty setting. This was done to analyse the capability of the jetbot agent and to find appropriate hyperparameters that allow the agents to learn. These hyperparameters include the agent camera image dimensions, the $fixedTimestepLength$, the amount of steps to collect in each iteration and more.
 The experiments showed that it is possible to train the agent with the right hyperparameters to solve tracks of a particular difficulty level when the agent is exclusively trained on that difficulty level. For example the agent could be trained to solve the medium tracks very successfully without needing to encounter easy tracks during training. The light settings were restricted to standard during this experimentation to focus on the difficulty levels.
 
 The experiments produced a set of hyperparameters that could be used for training the agent on the different difficulty levels exclusively. The agents were able to reach success\_rates of 100\% for the collected episodes.
 
-\paragraph{Generalization to lower difficulty levels} The evaluation of these agents showed that they were able to generalize to the tracks of lower difficulty levels. For example the agent that was only trained on hard tracks with standard light conditions could solve the easy and medium tracks as well. The agent trained on hard tracks and standard light setting was able to solve hard tracks with a success\_rate of 99\%. It achieved a success\_rate of 100\% and 93\% on easy and medium tracks without being trained on these difficulty settings \ref{fig:hardDistance_generalization}. 
+\paragraph{Generalization to lower difficulty levels} The evaluation of these agents showed that they were able to generalize to the tracks of lower difficulty levels. For example the agent that was only trained on hard tracks with standard light conditions could solve the easy and medium tracks as well. The agent trained on hard tracks and standard light setting was able to solve hard tracks with a success\_rate of 99\%. It achieved a success\_rate of 100\% and 93\% on easy and medium tracks without being trained on these difficulty settings \ref{fig:hardDistance_generalization}.
 
 \begin{figure}
     \centering
@@ -140,7 +208,7 @@ The previous training results showed that the agent was able to learn to solve t
 \paragraph{Evaluating an agent without the histogram equalization preprocessing step}
 
 The agent from the previous section about mixed light settings during training was evaluated without the histogram equalization preprocessing step. This agent was trained with the histogram equalization step. The removal of the preprocessing step leads to a performance collapse for the standard and dark settings \ref{fig:hardDistance_mixedLight_comparison_withWithoutHistogramEqualization}. The success rate drops to 0\% for the dark light setting.
-The performance for the bright light setting is not affected as severely. Nevertheless the success rate drops from 98\% to 62\% for the hard tracks. 
+The performance for the bright light setting is not affected as severely. Nevertheless the success rate drops from 98\% to 62\% for the hard tracks.
 
 The decrease in performance was to be expected, as the agent was trained with the histogram equalization preprocessing step. The histogram equalization step changes the image content substantially \ref{table:preprocessing_steps}. The agent has learned to use the output of the preprocessing step. As a result, the agent is not able to solve the tracks without the preprocessing step.
 
@@ -181,7 +249,7 @@ The histogrm equalization preprocessing step should never be removed or added af
 
 The trained agents are able to complete the parcours very reliably. However the agents do not avoid collisions entirely. The collision rate generally increases for higher difficulty tracks. The collision rates vary quite strongly between the different trained models. The agent trained on the mixed light setting has a collision rate of 70\% for the hard tracks with standard light setting \ref{fig:hardDistance_mixedLightTraining_results}. Whereas the agent trained on hard tracks with standard light setting has a collision rate of only 29\% \ref{fig:hardDistance_generalization}.
 
-The agents are able to complete the tracks reliably despite the collisions. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent collides with the goal obstacles at its side. The agent basically scapes against the goal posts. The agent does not collide with the goal obstacles head on \ref{fig:example_collision}. 
+The agents are able to complete the tracks reliably despite the collisions. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent collides with the goal obstacles at its side. The agent basically scapes against the goal posts. The agent does not collide with the goal obstacles head on \ref{fig:example_collision}.
 
 \begin{figure}
     \centering

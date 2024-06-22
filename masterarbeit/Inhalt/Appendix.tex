@@ -3,14 +3,14 @@
 
 \section{Code Repository}
 
-The code repository is publically availible on GitHub: 
+The code repository is publically availible on GitHub:
 \href{https://github.com/geschnee/carsim-rl-cnn}{carsim-rl-cnn}
 
 The readme file contains instructions on how to install and run the code.
 
 \section{Most successful model}
 
-The most successful model is publically availible on Huggingface: 
+The most successful model is publically availible on Huggingface:
 \href{https://huggingface.co/geschnee/carsim-rl-cnn}{carsim-rl-cnn}
 
 \href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/models/hardDistanceMixedLight.zip}{hardDistanceMixedLight.zip}
@@ -18,16 +18,31 @@ The most successful model is publically availible on Huggingface:
 The episode recordings for question 3 are also hosted there.
 
 
+\section{Experiments for finding hyperparameters - Configuration files}
+\label{cha:experiment_configs}
+
+how to run a specific config? link readme
+
+\subsection{Reward functions capability check}
+The used configs are the following:
+\begin{itemize}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
+\end{itemize}
+
+
 \subsection{Most Successful Policy Configuration}
 \label{cha:most_successful_config}
 
-The training config of the model for the final evaluations is availible on GitHub: 
+The training config of the model for the final evaluations is availible on GitHub:
 \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/hardDistanceMixedLight.yaml}{hardDistanceMixedLight.yaml}
 
 \section{Example Video Files}
 \label{cha:example_videos}
 
-Video Files are availible on Github: 
+Video Files are availible on Github:
 \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/results/example_videos}{example\_videos}
 
 \subsection{Video Files with FourWheelJetBot}
@@ -42,16 +57,6 @@ Video Files are availible on Github:
 
 
 
-\section{Experiments for finding hyperparameters}
-
-\subsection{Reward functions capability check}
-The used configs are the following:
-\begin{itemize}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
-\end{itemize}
 
 
 
@@ -61,68 +66,68 @@ TODO pseudocde für eval\_model\_track?
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Collect Data}{ }
-\COMMENT{Fill RolloutBuffer with samples obtained by current model}\\
+    \COMMENT{Fill RolloutBuffer with samples obtained by current model}\\
 
-\PROCEDURE{CollectData}{trainingMapType, trainingLightSetting}
-num\_steps \GETS 0\\
-num\_episodes \GETS 0\\
-num\_succesful\_episodes \GETS 0\\
+    \PROCEDURE{CollectData}{trainingMapType, trainingLightSetting}
+    num\_steps \GETS 0\\
+    num\_episodes \GETS 0\\
+    num\_succesful\_episodes \GETS 0\\
 
-RolloutBuffer.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
-Env.\CALL{Reset}{}\\
-\WHILE RolloutBuffer.\CALL{NotFull}{} \DO
-\BEGIN
-obs \GETS Env.\CALL{GetObservation}{}\\
-action \GETS Model.\CALL{GetAction}{obs}\\
-reward \GETS Env.\CALL{Step}{action}\\
-num\_steps \GETS num\_steps + 1\\
-\CALL{AddToRolloutBuffer}{obs, action, reward}\\
-\IF Env.\CALL{IsFinished}{} \THEN
-\BEGIN
-num\_episodes \GETS num\_episodes + 1\\
-\IF Env.\CALL{FinishedSuccessfully}{} \THEN
-\BEGIN
-num\_succesful\_episodes \GETS num\_succesful\_episodes + 1\\
-\END\\
-Env.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
-\END\\
-\END\\
+    RolloutBuffer.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
+    Env.\CALL{Reset}{}\\
+    \WHILE RolloutBuffer.\CALL{NotFull}{} \DO
+    \BEGIN
+    obs \GETS Env.\CALL{GetObservation}{}\\
+    action \GETS Model.\CALL{GetAction}{obs}\\
+    reward \GETS Env.\CALL{Step}{action}\\
+    num\_steps \GETS num\_steps + 1\\
+    \CALL{AddToRolloutBuffer}{obs, action, reward}\\
+    \IF Env.\CALL{IsFinished}{} \THEN
+    \BEGIN
+    num\_episodes \GETS num\_episodes + 1\\
+    \IF Env.\CALL{FinishedSuccessfully}{} \THEN
+    \BEGIN
+    num\_succesful\_episodes \GETS num\_succesful\_episodes + 1\\
+    \END\\
+    Env.\CALL{Reset}{trainingMapType, trainingLightSetting}\\
+    \END\\
+    \END\\
 
-rollout\_success\_rate \GETS \frac{num\_succesful\_episodes}{num\_episodes}\\
+    rollout\_success\_rate \GETS \frac{num\_succesful\_episodes}{num\_episodes}\\
 
-\IF rollout\_success\_rate >= best\_rollout\_success\_rate \THEN
-\BEGIN
-best\_success\_rate \GETS rollout\_success\_rate\\
-Model.\CALL{SaveToFile}{}\\
-best\_model \GETS Model\\
-\END\\
+    \IF rollout\_success\_rate >= best\_rollout\_success\_rate \THEN
+    \BEGIN
+    best\_success\_rate \GETS rollout\_success\_rate\\
+    Model.\CALL{SaveToFile}{}\\
+    best\_model \GETS Model\\
+    \END\\
 
 
-\RETURN{num\_steps}
-\ENDPROCEDURE
-\label{pseudocode:collect_data}
+    \RETURN{num\_steps}
+    \ENDPROCEDURE
+    \label{pseudocode:collect_data}
 \end{pseudocode}
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Train Model}{ }
-\COMMENT{Sample from replay buffer and update the model based on the loss}\\
+    \COMMENT{Sample from replay buffer and update the model based on the loss}\\
 
-\PROCEDURE{TrainModel}{}
-amount\_of\_batches \GETS \frac{rollout\_buffer\_size}{batch\_size}\\
-\FOR i \GETS 0 \TO n\_epochs \DO
-\BEGIN
-RolloutBuffer.\CALL{Shuffle}{}\\
-RolloutBuffer.\CALL{CreateBatches}{batch\_size}\\
-\FOR m \GETS 0 \TO amount\_of\_batches \DO
-\BEGIN
-batch \GETS RolloutBuffer.\CALL{GetBatch}{m}\\
-loss \GETS \CALL{ComputeLoss}{batch}\\
-Model.\CALL{Backpropagate}{loss}\\
-Optimizer.\CALL{Step}{}\\
-\END\\
-\END
-\ENDPROCEDURE
-\label{pseudocode:train_model}
+    \PROCEDURE{TrainModel}{}
+    amount\_of\_batches \GETS \frac{rollout\_buffer\_size}{batch\_size}\\
+    \FOR i \GETS 0 \TO n\_epochs \DO
+    \BEGIN
+    RolloutBuffer.\CALL{Shuffle}{}\\
+    RolloutBuffer.\CALL{CreateBatches}{batch\_size}\\
+    \FOR m \GETS 0 \TO amount\_of\_batches \DO
+    \BEGIN
+    batch \GETS RolloutBuffer.\CALL{GetBatch}{m}\\
+    loss \GETS \CALL{ComputeLoss}{batch}\\
+    Model.\CALL{Backpropagate}{loss}\\
+    Optimizer.\CALL{Step}{}\\
+    \END\\
+    \END
+    \ENDPROCEDURE
+    \label{pseudocode:train_model}
 \end{pseudocode}
 
 \section{Neural Network Architecture}
@@ -146,41 +151,41 @@ Optimizer.\CALL{Step}{}\\
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Generate Map and Rotation Combinations}{ }
 
-\PROCEDURE{generate\_map\_and\_rotations}{difficulty, n\_eval\_episodes, env}
+    \PROCEDURE{generate\_map\_and\_rotations}{difficulty, n\_eval\_episodes, env}
 
-rotationMode \GETS env.\CALL{getSpawnMode}{}\\
-rotation\_range\_min, rotation\_range\_max \GETS Spawn.\CALL{getRotationRange}{rotationMode}\\
+    rotationMode \GETS env.\CALL{getSpawnMode}{}\\
+    rotation\_range\_min, rotation\_range\_max \GETS Spawn.\CALL{getRotationRange}{rotationMode}\\
 
-range\_width \GETS rotation\_range\_max - rotation\_range\_min\\
-rotations \GETS []\\
+    range\_width \GETS rotation\_range\_max - rotation\_range\_min\\
+    rotations \GETS []\\
 
-\IF n\_eval\_episodes == 1 \THEN
+    \IF n\_eval\_episodes == 1 \THEN
     rotations.\CALL{append}{(rotation\_range\_min + range\_width)/2}\\
-\ELSE
-\BEGIN
+    \ELSE
+    \BEGIN
     step \GETS range\_width / (n\_eval\_episodes -1)\\
     \FOR i \GETS 0 \TO n\_eval\_episodes - 1 \DO
-        \BEGIN
-        rotations.\CALL{append}{rotation\_range\_min + i * step}\\
-        \END\\
-\END\\
+    \BEGIN
+    rotations.\CALL{append}{rotation\_range\_min + i * step}\\
+    \END\\
+    \END\\
 
-track\_numbers \GETS MapType.\CALL{getAllTracknumbersOfDifficulty}{difficulty}\\
-tracks \GETS []\\
-\FOR i \GETS 0 \TO n\_eval\_episodes - 1 \DO
-\BEGIN
-tracks.\CALL{append}{i \mod \CALL{len}{track\_numbers}}\\
-\END\\
+    track\_numbers \GETS MapType.\CALL{getAllTracknumbersOfDifficulty}{difficulty}\\
+    tracks \GETS []\\
+    \FOR i \GETS 0 \TO n\_eval\_episodes - 1 \DO
+    \BEGIN
+    tracks.\CALL{append}{i \mod \CALL{len}{track\_numbers}}\\
+    \END\\
 
-combinations \GETS []\\
-\FOR i \GETS 0 \TO n\_eval\_episodes - 1 \DO
-\BEGIN
-combinations.\CALL{append}{(tracks[i], rotations[i])}\\
-\END\\
+    combinations \GETS []\\
+    \FOR i \GETS 0 \TO n\_eval\_episodes - 1 \DO
+    \BEGIN
+    combinations.\CALL{append}{(tracks[i], rotations[i])}\\
+    \END\\
 
-\RETURN{combinations}
-\ENDPROCEDURE
-\label{fig:generate_track_rotation}
+    \RETURN{combinations}
+    \ENDPROCEDURE
+    \label{fig:generate_track_rotation}
 \end{pseudocode}
 
 
@@ -189,77 +194,77 @@ combinations.\CALL{append}{(tracks[i], rotations[i])}\\
 
 \subsection{Installation instructions for executing replays on the Jetbot}
 
-The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{replays\_on\_jetbot.md file} in the code repository. 
+The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{replays\_on\_jetbot.md file} in the code repository.
 
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Record Episode}{ }
-\COMMENT{Record episode}\\
+    \COMMENT{Record episode}\\
 
-\PROCEDURE{record\_episode}{policy, env, directory}
+    \PROCEDURE{record\_episode}{policy, env, directory}
 
-env.\CALL{RESET}{}\\
+    env.\CALL{RESET}{}\\
 
-sampled\_actions \GETS [] \\
-infer\_obsstrings \GETS [] \\
-step\_obsstrings \GETS [] \\
+    sampled\_actions \GETS [] \\
+    infer\_obsstrings \GETS [] \\
+    step\_obsstrings \GETS [] \\
 
-done \GETS \FALSE\\
+    done \GETS \FALSE\\
 
-\WHILE ! done \DO
-\BEGIN
-obs, obsstring \GETS env.\CALL{GetObservation}{}\\
-action \GETS policy.\CALL{Infer}{obs}\\
+    \WHILE ! done \DO
+    \BEGIN
+    obs, obsstring \GETS env.\CALL{GetObservation}{}\\
+    action \GETS policy.\CALL{Infer}{obs}\\
 
-step\_obsstring, done \GETS env.\CALL{step}{action}\\
+    step\_obsstring, done \GETS env.\CALL{step}{action}\\
 
-infer\_obsstrings.\CALL{append}{obsstring}\\
-step\_obsstrings.\CALL{append}{step\_obsstring}\\
-sampled\_actions.\CALL{append}{action}\\
-\END\\
+    infer\_obsstrings.\CALL{append}{obsstring}\\
+    step\_obsstrings.\CALL{append}{step\_obsstring}\\
+    sampled\_actions.\CALL{append}{action}\\
+    \END\\
 
-\FOR i \GETS 0 \TO len(step\_obsstrings) \DO
+    \FOR i \GETS 0 \TO len(step\_obsstrings) \DO
     \CALL{SaveToFile}{step\_obsstrings[i], directory + ''/step\_image'' + i + ''.png''}\\
-\FOR i \GETS 0 \TO len(infer\_obsstrings) \DO
+    \FOR i \GETS 0 \TO len(infer\_obsstrings) \DO
     \CALL{SaveToFile}{infer\_obsstrings[i], directory + ''/infer\_image'' + i + ''.png''}\\
-\FOR i \GETS 0 \TO len(sampled\_actions) \DO
+    \FOR i \GETS 0 \TO len(sampled\_actions) \DO
     \CALL{SaveToFile}{sampled\_actions[i], directory + ''/sampled\_action'' + i + ''.npy''}\\
 
 
-\ENDPROCEDURE
-\label{pseudocode:record_episode}
+    \ENDPROCEDURE
+    \label{pseudocode:record_episode}
 \end{pseudocode}
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Replay Episode}{ }
-\COMMENT{Replay episode and record processing + inference time}\\
+    \COMMENT{Replay episode and record processing + inference time}\\
 
-\PROCEDURE{replay\_episode}{ policy, env, directory}
+    \PROCEDURE{replay\_episode}{ policy, env, directory}
 
-recorded\_episode\_length \GETS \CALL{LoadRecordedEpisodeLength}{directory}\\
-recorded\_actions \GETS \CALL{LoadRecordedActions}{directory}\\
-infer\_obs\_unity\_images \GETS \CALL{LoadInferImages}{directory}\\
-step\_obs\_unity\_images \GETS \CALL{LoadStepImages}{directory}\\
+    recorded\_episode\_length \GETS \CALL{LoadRecordedEpisodeLength}{directory}\\
+    recorded\_actions \GETS \CALL{LoadRecordedActions}{directory}\\
+    infer\_obs\_unity\_images \GETS \CALL{LoadInferImages}{directory}\\
+    step\_obs\_unity\_images \GETS \CALL{LoadStepImages}{directory}\\
 
-reproduce\_times \GETS [] \\
+    reproduce\_times \GETS [] \\
 
-replay\_time\_start \GETS \CALL{TIME}{}\\
+    replay\_time\_start \GETS \CALL{TIME}{}\\
 
-\FOR i \GETS 0 \TO recorded\_episode\_length \DO
-\BEGIN
-obs \GETS \CALL{ProcessImage}{env, infer\_obs\_unity\_images[i]}\\
-action \GETS policy.\CALL{Infer}{obs}\\
-reproduce\_times.\CALL{append}{\CALL{TIME}{} - replay\_time\_start}\\
+    \FOR i \GETS 0 \TO recorded\_episode\_length \DO
+    \BEGIN
+    obs \GETS \CALL{ProcessImage}{env, infer\_obs\_unity\_images[i]}\\
+    action \GETS policy.\CALL{Infer}{obs}\\
+    reproduce\_times.\CALL{append}{\CALL{TIME}{} - replay\_time\_start}\\
 
-\CALL{AssertClose}{action, recorded\_actions[i]}\\
+    \CALL{AssertClose}{action, recorded\_actions[i]}\\
 
-replay\_time\_start \GETS \CALL{TIME}{}\\
+    replay\_time\_start \GETS \CALL{TIME}{}\\
 
-\CALL{ProcessImage}{env, step\_obs\_unity\_images[i]}\\
-\END\\
-\RETURN{reproduce\_times}
-\ENDPROCEDURE
+    \CALL{ProcessImage}{env, step\_obs\_unity\_images[i]}\\
+    \END\\
+    \RETURN{reproduce\_times}
+    \ENDPROCEDURE
 
-\label{pseudocode:replay_episode}
+    \label{pseudocode:replay_episode}
 \end{pseudocode}
 
