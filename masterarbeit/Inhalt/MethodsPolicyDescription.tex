@@ -72,8 +72,9 @@ The preprocessing steps can also make the policy generalize better to unseen lig
 
 The downsampling step changes the resolution and dimensions of the image. The step is configured with the $downsampling\_factor$ parameter. The downsampling factor is a positive integer and determines how much the image is downscaled. A $downsampling\_factor$ of one results in no downsampling. The width and height dimensions of the input image are divided by $downsampling\_factor$ to produce the new image dimensions.
 The downsampling process divides the input image in a grid. The grid cells are $downsampling\_factor$ pixels wide and high. The pixel values of the new image are calculated by averaging the pixel values of the grid cells. The new image has a lower resolution than the input image.
-Downsampling reduces the size of the input space substantially.
+Downsampling preserves the image content while reducing the size of the input space substantially.
 
+% TODO extra image for downsampling?
 
 % TODO test with downsampling factor 3 (just to see if the python code works)
 

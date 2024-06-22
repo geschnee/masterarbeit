@@ -3,7 +3,7 @@
 
 \section{Connecting the Python algorithm and Unity Simulation}
 
-The first challenge was to connect the Python algorithm with the Unity simulation. The Python algorithm is responsible for training the agent, while the Unity simulation is responsible for rendering the environment and providing the agent with observations and rewards. The environment is wrapped in a gymnasium environment \autocite{gymnasium}, this way it can be integrated with many existing reinforcement learning libraries and algorithms. The unity simulation acts as a JsonRPC server, the python gymnasium environment acts as a client. 
+The first challenge was to connect the Python algorithm with the Unity simulation. The Python algorithm is responsible for training the agent, while the Unity simulation is responsible for rendering the environment and providing the agent with observations and rewards. The environment is wrapped in a gymnasium environment \autocite{gymnasium}, this way it can be integrated with many existing reinforcement learning libraries and algorithms. The unity simulation acts as a JsonRPC server, the python gymnasium environment acts as a client.
 
 \paragraph{Data exchange}
 The first challenge was to transfer the image data from unity to python. This was solved by encoding the image data as a base64 string and sending it back to python over the network. The image data was then decoded in python and converted to a numpy array.
@@ -13,6 +13,10 @@ The seperation of the simulation and the reinforcement learning algorithm introd
 The reinforcement learning library stable-baselines3 \autocite{sb3} was used for the training of the agent. This library is built to enable the parallel execution of multiple environments. However the library requires that actions are performed on all environments at the same time. Together with the delay caused by communication, this parallel execution would slow down significantly.
 
 The solution to this problem was bundling the actions for the different environments and sending them to unity in one batch. The unity server then executes the actions on the individual environments. This way the delay caused by the communication overhead is only introduced once per batch of actions.
+
+\paragraph{Seed}
+
+TODO environment seed and consistent behaviour during training
 
 \section{step duration}
 non blocking steps

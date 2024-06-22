@@ -695,6 +695,23 @@ password: jetbot
 wie lange braucht die JetBot API um bilder von der Camera zu bekommen
 --> mehr bewertbarkeit der ergebisse Jetbottest
 
+### Research
+
+https://forums.raspberrypi.com/viewtopic.php?t=185069
+
+- Camera Resolution and FPS
+    - https://docs.arducam.com/Nvidia-Jetson-Camera/Native-Camera/imx219/
+- Linux driver for the common camera
+    - https://developer.ridgerun.com/wiki/index.php/Sony_IMX219_Linux_driver
+- The cam is natively supported (drivers)
+    - https://github.com/NVIDIA-AI-IOT/jetbot/blob/master/jetbot/camera/opencv_gst_camera.py this script controlls the recording and makes a callback availible (traitlets camera.value -- onUpdate)
+    - demo how the callback can be used https://github.com/NVIDIA-AI-IOT/jetbot/blob/master/notebooks/collision_avoidance/live_demo_resnet18.ipynb
+
+IMX 219
+
+1280x720	60fps
+
+
 
 ## Masterarbeit dokument
 

@@ -29,57 +29,96 @@ The agent camera is used to obtain observations from the environment. The agent'
 
 \subsection{Observation Space}
 
-The observation space is the input to the agent's neural network. The dimensions are determined by the agent camera dimensions, preprocessing steps and memory mechanism.
+The observation space defines the input dimensions of the agent's neural network. The dimensions are determined by the agent camera image width and height, the preprocessing steps and the memory mechanism. All further experiments used the same settings for downsampling, greyscaling and memory mechanism. This results in the same observation space for all trained models.
 
-TODO take from section below (most successful policy)
-
-\paragraph{Downsampling}
-
-\paragraph{Greyscaling}
+\paragraph{Preprocessing steps}
+A downsampling factor of 2 was used. The image was then converted to greyscale. This means that the agent camera image was downsampled by a factor of 2 along each axis and the channel dimension was reduced from 3 to 1.
 
 \paragraph{Memory Mechanism}
 The $frame\_stacking$ parameter was set to 10. This means the policy can use the last 10 steps for its decision making. Given the fixed step duration of 0.3 seconds, the policy can use information from the last 3 seconds.
 
+\paragraph{Result}
+
+The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. The greyscaling step removes the three color channels. The memory mechanism stacks the last 10 agent camera images along the channel dimension. This results in an observation space of shape $[84, 250, 10]$ with the range of $[0, 255]$.
+
 \subsection{Step Duration}
 
+A fixed step duration of 0.3 seconds was used for all experiments. This means that each action is applied to the environment for 0.3 seconds in the Unity simulation. New steps are only started when this duration has passed. The fixed step duration was chosen to ensure that the policies behave similar on different devices, regardless of the processing speed. This was usefull as the policy training and evaluation runs were executed on multiple devices.
 
-we use fixed durations of 0.3 with no fresh obs
+The fixed step duration of 0.3 seconds results in very small movements for each step. These frequent and small steps allow the policy to make precise movements \ref{table:agent_movement_fixed_duration}. Successful episodes for hard tracks require about 200 steps for completion.
 
-how many fps is that?
+% during collect rollouts 2.8 frames wegen extra zeit in communikation + python
 
-how many frames per episode?
+% make cell?
+\newcommand{\movementStrait}[1]{\includegraphics[width=0.2\textwidth]{Bilder/image_printer_images/movement/strait/#1.png}}
+\newcommand{\movementTurnRight}[1]{\includegraphics[width=0.2\textwidth]{Bilder/image_printer_images/movement/turnRight/#1.png}}
+\newcommand{\movementTurn}[1]{\includegraphics[width=0.2\textwidth]{Bilder/image_printer_images/movement/turn/#1.png}}
+\begin{table}
+    \begin{center}
+        \begin{tabular}{|| c | p{0.2\textwidth} | p{0.2\textwidth} | p{0.2\textwidth} ||}
+            \hline
+            behaviour description & full speed ahead  & steer right   & turn on the spot \\ [0.5ex]
+            \hline
+            action     & (1, 1)    & (1, 0)    & (1, -1) \\ [0.5ex]
+            \hline\hline
+            initial position & \movementStrait{0} & \movementTurnRight{0}  & \movementTurn{0} \\
+            \hline
+            position after step 1 & \movementStrait{1} & \movementTurnRight{1}  & \movementTurn{1} \\
+            \hline
+            position after step 5 & \movementStrait{5} & \movementTurnRight{5} & \movementTurn{5}     \\
+            \hline
+            position after step 15 & \movementStrait{10} & \movementTurnRight{10} & \movementTurn{10}      \\
+            \hline
+            position after step 30 & \movementStrait{30} & \movementTurnRight{30} & \movementTurn{30}      \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption{Agent movement with fixed step duration 0.3 seconds}
+    \label{table:agent_movement_fixed_duration}
+\end{table}
 
-image of movement in one single step
+\subsection{Remaining parameters}
 
-image of movement in 10 steps (since a single step is not noticeable)
+The remaining hyperparameters concern mostly the training algorithm. The training algorithm was adapted from the stable-baselines3 library \autocite{sb3}. The parameters were chosen experimentally to ensure that the training process was successful and could be executed on the different training devices. The parameters and their tradeoffs quickly summarized in the table \ref{table:remaining_params}.
 
-why was this used (policy transferable to different devices) (training on multiple devices)
+\begin{table}
+    \begin{center}
+        \begin{tabular}{|| c | p{0.2\textwidth} | c | p{0.4\textwidth} ||}
+            \hline
+            parameter & function  & value   & tradeoffs \\ [0.5ex]
+            \hline
+            n\_steps     & amount of samples to collect per environment during data collection & 64 & \makecell{+diversity of collected samples \\ +stability of policy \\ -data collection time \\ -memory requirement} \\ %[0.5ex]
+            \hline
+            batch\_size & amount of samples for loss function calculation & 64 &  \\
+            \hline
+            n\_epochs & amount of neural network weight updates for the collected samples & 5 & \makecell{+sample efficiency \\ -stability of policy}\\
+            \hline
+            n\_envs & amount of environments to simulate in parallel & 10  & \makecell{+parallel episode simulation \\ -performance Unity editor} \\
+            \hline\hline
+            use\_fresh\_obs & request fresh obs before inference & False & \makecell{-increased communication \\ -data collection time} \\
+            \hline
+            use\_bundled\_calls & bundle calls for parallel environments & True & \makecell{+reduced communication}      \\
+            \hline
+            seed & seed for neural network initialization and random number generators & 2048 & \makecell{+fixed neural network initialization}      \\
+            \hline
+        \end{tabular}
+    \end{center}
+    \caption{Selected hyperparameters for the PPO algorithm}
+    \label{table:remaining_params}
+\end{table}
 
-(frames cannot be taken from a video, as the video does not consist of environment steps)
-
-\subsection{Training algorithm parameters}
-
-batch size
-n\_envs
-...
-model structure
-use\_fresh\_obs
-use\_bundled\_calls
-n\_steps
-n\_epochs
-seed
+% TODO mention the split between data collection + train time? somewhere
 
 \section{Reward functions capability check}
 
 Previous sections introduced the composite reward function. The composite reward function consists of a weighted sum of individual reward functions. The individual reward functions are designed to encourage the agent to learn the desired behaviour. The goal is to achieve an agent that completes the parcour without collisions, this is encapsulated in the event reward function. However the event reward function is a very sparse signal, which makes it hard for the agent to learn from. The other individual reward functions are designed to be dense reward functions, they give rewards in every episode step.
 
 It is important to find appropriate weights of the individual reward functions for the composite reward function. We are conducting experiments to analyse the usefullness of the individual reward functions. First we analyse if the agent is capable of learning the behaviour encouraged by the reward function.
-This is done by training the agent with only one reward function at a time. The reward function's coefficient is set to one. The coefficients of the other reward functions are set to zero. The agent is trained on easy tracks with a Random spawnOrientation and standard lightSetting to reduce the difficulty of learning the encouraged behaviour.
+This is done by training the agent with only one reward function at a time. The reward function's coefficient is set to one. The coefficients of the other reward functions are set to zero. The agent is trained on easy tracks with a Random spawnOrientation and standard light setting to reduce the difficulty of learning the encouraged behaviour.
 
 
 The experiment results are shown in \ref{table:reward_functions_behaviour}. The agent is capable of learning the behaviour encouraged by the distanceReward and velocityReward functions. However the agent is not capable of learning the behaviour encouraged by the eventReward and orientationReward functions.
 
-% TODO nochmal ausführen und dokumentieren oder ist das schon in Excel?
 
 \begin{table}
     \begin{center}
@@ -104,7 +143,9 @@ The experiment results are shown in \ref{table:reward_functions_behaviour}. The 
 
 \section{Chosen Reward function}
 
-As a result of the capability check, the distanceReward function was determined to be most suitable for the training process. Further tests of combining the distanceReward with the eventReward function were carried out. The goal was to find a parameters for the composite reward function that would allow the agent to learn to complete the tracks without collisions. The distanceReward function alone does not penalize collisions as heavily as the eventReward.
+As a result of the capability check, the distanceReward function was determined to be most suitable for the training process. The distanceReward function was also tested on hard tracks and showed promising results. However the distanceReward alone was not able to build an agent that avoids collisions entirely.
+
+Further tests of combining the distanceReward with the eventReward function were carried out. The goal was to find parameters for the composite reward function that would allow the agent to learn to complete the tracks without collisions. The distanceReward function alone does not penalize collisions as heavily as the eventReward.
 Experiments were executed using both functions together with different coefficients. The behaviour of the agent and the obtained rewards were monitored during training. The results showed that the agent was not capable of leaning from the combined rewards, regardless of the combinations of coefficients.
 
 The distanceReward showed the best results when used alone. The agent was able to learn the desired behaviour and complete the tracks reliably. The distanceReward function was chosen as the only reward function for the final training process. The other reward functions function were not used in the training process.
@@ -271,7 +312,7 @@ The minor collisions that occur are not penalized as the agent is still able to 
 \section{Most successful policy}
 
 
-This section describes how the most successful policy was implemented and trained. The parameters were chosen following the previous experiments. This policy is used for the evaluations of the three main research goals.
+This section summarizes how the most successful policy was implemented and trained. The parameters were chosen following the previous experiments. This policy is used for the evaluations of the three main research goals.
 The policy was configured to use the three preprocessing steps downsampling, greyscaling and histogram equalization. The policy used a frame stacking of 10. The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. This results in an observation space of shape $[84, 250, 10]$. The duration of steps was fixed to $0.3$ seconds.
 The neural network follows the earlier descriptions exactly \ref{sec:network_architecture}. It consisted of a feature extractor part with 3 convolutional layers and one fully connected layer. The feature extractor takes the observation as input, its outputs are used by the action and value head. The action and value head each consist of a single fully connected layer. The entire network is trained together end-to-end using backpropagation of the loss defined by the PPO algorithm.
 
