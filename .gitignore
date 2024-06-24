@@ -15,5 +15,6 @@
 *.run.xml
 *.synctex.gz
 *.toc
+*.zip
 
 .ipynb_checkpoints/*

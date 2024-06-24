@@ -3,22 +3,15 @@
 
 This master thesis contributes to the domain of autonomous driving and reinforcement learning. The thesis solves a simplified autonomous driving task in simulation by training an agent that takes raw camera inputs in an end-to-end manner. The driving task is modelled after physical experiments conducted at the Scads.AI research facility.
 
-This thesis builds upon previous work at the Scads.AI \autocite{maximilian}. This thesis develops an agent that has to solve the same autonomous driving task. The agent from previous work was not able to reliably complete all parcours, its performance suffered further under changing light conditions, motivating the research goals of this thesis. The agent in this thesis differs fundamentally in implementation from the previous work.
+This thesis builds upon previous work at the Scads.AI \autocite{maximilian}. This thesis develops an agent that has to solve the same autonomous driving task. The agent from previous work was not able to reliably complete all parcours. Its performance suffered further under changing light conditions, motivating the research goals of this thesis.
 
-The thesis answers three research questions:
-\begin{itemize}
-    \item Question 1 - Is it possible to train an autonomous driving agent consisting of a convolutional neural network with end-to-end reinforcement learning to reliably solve the parcours of all difficulty levels?
-    \item Question 2 - Is it possible to use an end-to-end trained CNN to make the agent robust to changing light conditions?
-    \item Question 3 - Is it possible to use a neural network that can be transfered to a physical robot?
-\end{itemize}
-A reinforcement learning agent is developed to traverse simulated tracks of varying difficulty and light settings. The agent's policy consists of a convolutional neural network that is trained end-to-end using the Proximal Policy Optimization algorithm. The inputs to the neural network are camera images from the perspective of the agent. Preprocessing steps are applied to the images to reduce the impact of the different light conditions. The agent is trained using the proximal policy optimization algorithm.
+A reinforcement learning agent is developed to traverse simulated tracks of varying difficulty and light settings. The agent's policy consists of a convolutional neural network that is trained end-to-end using reinforcement learning. The inputs to the neural network are camera images from the perspective of the agent.
 The thesis investigates different training approaches to develop a powerful agent, such as for example the reward functions and data collection parameters. The most promissing policy is used to answer the three research questions.
 
 As a result of the experimentation, a policy is developed that is able to navigate the tracks successfully. The policy has success rates of above 95\% for all investigated tracks and light setting configurations. The experiment for the third research question shows that in theory the policy can be transfered to a physical robot.
 The thesis shows that it is possible to train a convolutional neural network agent to solve the investigated autonomous driving task using end-to-end reinforcement learning.
 
 
-What else can I say here?
-the used process of finding parameters?
 
-% TODO check numbers
+
+textcite \textcite{maximilian}

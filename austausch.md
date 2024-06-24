@@ -771,7 +771,6 @@ ein Treffen nach Abgabe mit Thomas zur Codeuebergabe
 
 Latex acronym package
 
-
 - abstract sollte kuerzer sein
 - research questions entfernen
 
