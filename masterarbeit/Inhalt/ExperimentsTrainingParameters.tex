@@ -42,10 +42,11 @@ The $frame\_stacking$ parameter was set to 10. This means the policy can use the
 The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. The greyscaling step removes the three color channels. The memory mechanism stacks the last 10 agent camera images along the channel dimension. This results in an observation space of shape $[84, 250, 10]$ with the range of $[0, 255]$.
 
 \subsection{Step Duration}
+\label{sec:step_duration_experiment}
 
 A fixed step duration of 0.3 seconds was used for all experiments. This means that each action is applied to the environment for 0.3 seconds in the Unity simulation. New steps are only started when this duration has passed. The fixed step duration was chosen to ensure that the policies behave similar on different devices, regardless of the processing speed. This was usefull as the policy training and evaluation runs were executed on multiple devices.
 
-The fixed step duration of 0.3 seconds results in very small movements for each step. These frequent and small steps allow the policy to make precise movements \ref{table:agent_movement_fixed_duration}. Successful episodes for hard tracks require about 200 steps for completion.
+The fixed step duration of 0.3 seconds results in very small movements for each step. These frequent and small steps allow the policy to make precise movements. Single steps are almost not noticeable as shown in table \ref{table:agent_movement_fixed_duration}. Successful episodes for hard tracks require about 200 steps for completion.
 
 % during collect rollouts 2.8 frames wegen extra zeit in communikation + python
 
@@ -242,7 +243,7 @@ The agent performed much better in episodes with bright or dark light setting co
 %better model is selected
 
 
-\section{Experiments importance of histogram equalization preprocessing step}
+\section{Experiments on the importance of the histogram equalization preprocessing step}
 
 The previous training results showed that the agent was able to learn to solve the tracks with different light settings. The agents used the histogram equalization preprocessing step \ref{sec:histogram_equalization} to increase the resiliency towards light changes. Agents that were trained on the standard light setting were able to solve tracks under bright and dark light conditions as well. This implies the histogram equalization plays a big role.
 
@@ -273,13 +274,6 @@ An agent without the histogram equalization preprocessing step was trained on th
     \label{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results}
 \end{figure}
 
-
-
-%
-%\paragraph{Adding the histogram equalization preprocessing step to an agent that was trained without it}
-%TODO hardDistanceMixedLight_noHistEqualization_evalWithHistogramEqualization_all_success_rates_barplot 
-%want to mention that?
-
 \paragraph{Conclusion}
 The histogram equalization step contributes strongly to the resiliency to light changes for the constructed agent. It is possible to train a resilient agent without the histogram equalization preprocessing step.
 However the best performance is achieved when the agent is trained with the histogram equalization preprocessing step and all light settings.
@@ -300,14 +294,9 @@ The agents are able to complete the tracks reliably despite the collisions. The 
 \end{figure}
 
 The reason for the high collision rates is the selected reward function. The agents were trained with the distance reward function exclusively following the first experimentations. The distance reward function does not penalise collisions directly. The distance reward function only discourages collisions indirectly. Collisions that prevent an agent from moving towards the next goal result in less collected reward. For example a frontal collision of the agent with a goal post object requires the agent to then move backwards and around the goal post. The backwards movement is penalized. The agent learns to avoid frontal collisions.
-The minor collisions that occur are not penalized as the agent is still able to move towards the next goal. As a result the agent does not learn to avoid these.
 
+The minor collisions that occur are not penalized as the agent is still able to move towards the next goal. As a result the agent does not learn to avoid these collisions entirely.
 
-%- Collision rate is quite high
-%- collision rate varies quite strongly from trained model to model
-%    - reason: the distanceReward does not discourage the agent from colliding and the metric by which the final eval model is selected des not take the collision rate into account --> would have been better to select the model with the highest success\_rate and lowest collision\_rate
-
-%TODO vielleicht besser in Results umlagern    
 
 \section{Most successful policy}
 

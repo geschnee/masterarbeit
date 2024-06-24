@@ -20,7 +20,7 @@ The environment is simulated in the Unity game engine. The reinforcement learnin
 The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. This saves time by reducing the amount of JsonRPC calls. In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. Essentially the returned observation is delayed by one step or $fixedTimestepsLength seconds$. A shorter $fixedTimestepsLength$ results in smaller changes of the environment during the step transitions. In this case the delay of observations has less of an impact on the accuracy of the observations.
 Experiments show that the policy can learn to deal with this delay.
 
-Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter is set to true, the policy will request a new observation from Unity via another JsonRPC call before predicting the next action. This can be useful if the policy is sensitive to the observation delay. However this increases the amount of JsonRPC calls and can slow down the training process.
+Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter is set to true, the policy will request a new observation from Unity via another JsonRPC call before predicting the next action. This can be useful if the policy is sensitive to the observation delay. However this increases the amount of JsonRPC calls and slows down the training and evaluation process.
 
 % TODO vielleicht mit einem coolen Tikz bild die blocking problematik erklären
 
@@ -34,8 +34,6 @@ Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter
     \caption{Communication between Python and Unity}
     \label{fig:communication_python_unity}
 \end{figure} % TODO remake the image
-
-
 
 
 
@@ -128,22 +126,16 @@ An episode represents one attempt of the agent at solving a track in the environ
 \subsubsection{Step duration}
 The duration of each step is defined by the environment settings. There are two destinct modes for the step durations. The first mode is the fixed timestep mode. In this mode the duration of each step is fixed and defined by the environment parameter $fixedTimestepsLength$. The second mode is the variable timestep mode. In this mode each step lasts until the environment receives the next action from the agent.
 
+The fixed step duration mode was used for the training process after experimentation with both modes \ref{sec:step_duration_experiment}. The fixed step duration was set to 0.3 seconds. This allows for precise movements of the agent as the duration is quite short \ref{table:agent_movement_fixed_duration}.
+
 \paragraph{Fixed Duration}
 
 The duration of each step is fixed in this mode. In each step the Unity environment receives an action from the policy. The environment simulation is started and the action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step and environment simulation is terminated when the fixed duration has passed. The duration is defined by $fixedTimestepsLength$ in seconds. The Unity environment then waits until the next step or environment reset. The unity environment does not accept new step commands when the current step is not terminated.
 An episode with fixed duration steps is shown in the upper part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits for new steps to start. The figure also shows that the waiting time may not be consistent.
 
 The fixed mode has many advantages. The fixed duration of the steps results in consistency of the step transitions. Given identical step durations and environment state, it is well defined how the agent will move in any step. The environment state after completing a step is well defined.
+
 Furthermore the performance of the policy does not depend on the processing speed of the device. A policy in fixed mode can be transfered to other devices without changing the policy's behaviour. In case of slower policy computation, the unity environment pauses the simulation and waits for the next step command. In case of faster policy computation, the unity environment waits until the current fixed length step is completed before starting the next step.
-
-% TODO show an example of different step durations ? 
-% show how the distance that the agent travels changes
-
-% TODO show example steps with the 0.3 duration
-% vielleicht besser bei most successful policy oder so
-
-% TODO explain the two modes in more detail
-% advantages and disadvantages of both modes
 
 
 \paragraph{Variable Duration}
@@ -303,14 +295,10 @@ Collisions of the agent with the goal posts and the arena walls are detected by 
 The reward function is a function that maps state-action pairs to a scalar reward. The reward function assigns rewards to the agent based on its actions in the environment. The reinforcement learning algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the reinforcement learning process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
 
 \paragraph*{Event Reward}
-The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour \ref{fig:eventReward_function}. The event reward function is evaluated in each step. A positive reward is awarded to the agent in case it passes a goal or reaches the finish line during the step. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The magnitude of ... increased TODO why, experimentation?
+The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour \ref{fig:eventReward_function}. The event reward function is evaluated in each step. A positive reward is awarded to the agent in case it passes a goal or reaches the finish line during the step. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The magnitude of positive rewards increased was increased compared to the negative rewards. This means that positive events are more important, a single negative event does not cancel out positive rewards.
 
-The maximum amount of reward obtainable from this function per episode is $num_goals * goal_reward + parcour_reward = 3 * 100 + 100 = 400$. An agent that maximises the eventReward function will complete the track without collisions. In theory the event Reward should be enough to train an agent that traverses the tracks successfully without collisions.
+The maximum amount of reward obtainable from this function per episode is \[num\_goals * goal\_reward + parcour\_reward = 3 * 100 + 100 = 400\]. An agent that maximises the eventReward function will complete the track without collisions. In theory the event Reward should be enough to train an agent that traverses the tracks successfully without collisions.
 
-
-% TODO explain why positive rewards higher
-
-% TODO check if a successful model reaches an average prescale event reward of 400
 
 \begin{figure}
     \centering

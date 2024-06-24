@@ -1,8 +1,6 @@
 \chapter{Results}
 \label{cha:Results}
 
-TODO remake everything with the mixed light training
-check all numbers
 
 \section{Eval for question 1}
 
@@ -19,17 +17,23 @@ The trained policy was evaluated on tracks of all difficulty settings with the s
 \end{figure}
 
 
-The policy completed the easy, medium and hard tracks with a succes\_rate of 100\%, 93\% and 97\%. The collision\_rates were 0\%, 11\% and  29\%. The collision rates increase for the higher difficulty tracks.
+The policy completed the easy, medium and hard tracks with a succes\_rate of 100\%, 100\% and 99\%. 
+The collision\_rates were 0\%, 1\% and  70\%. Especially for the hard difficulty setting, the agent does not avoid collisions completely. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent passes the goals very close to the goal post that is closer to the arena middle \ref{fig:agent_behaviour}. This often results in collisions with the goal obstacles at its side.
 
-\subsection{Discussion}
+\begin{figure}
+    \centering
+    \subfigure[Agent passes the goal close to the arena middle]{\includegraphics[width=0.45\textwidth]{Bilder/example_goal_passing_close_to_middle.png}}
+    \subfigure[Agent may collide with goal post at the side]{\includegraphics[width=0.45\textwidth]{Bilder/example_minor_collision_topview_frame_1295.png}}
+    \caption{Goal passing behaviour of the trained agent}
+    \label{fig:agent_behaviour}
+\end{figure}
+
+
+\subsection{Conclusion}
 
 The trained policy is able to complete all difficulty levels very reliably.
-Especially for higher difficulty settings the agent does not avoid collisions completely. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent collides with the goal obstacles at its side. The agent basically scapes against the goal posts.
 
 The policy was trained on the difficult setting only. The policy did not see easy and medium difficulty parcours before the evaluation. The policy is able to generalize to tracks of lower difficulty.
-
-TODO explain the agent behaviour (movement)
-(the agent passes the goals close to the middle of the arena, not the middle of the goal)
 
 \section{Eval for question 2}
 
@@ -46,21 +50,20 @@ The most succesfull model was used to evaluate the agent's performance under dif
     \label{fig:result_success_rates_lightSettings}
 \end{figure}
 
-The success rates for all light and difficulty settings are very high. The evaluations for the bright and dark light settings show slight differences in performance compared to the standard light setting for medium and hard tracks. The light setting had no influence on the success\_rate for the easy tracks. The agent completed the easy tracks for all light settings with a success rate of 100\%.
-Most notably the success rate for medium tracks even increased by 3\% percent for the dark setting. 
+The success rates for all light and difficulty settings are very high at above 95\%. The agent completed the easy and medium tracks with a success rate of 100\%. The light setting had no influence on the success\_rate for the easy and medium tracks.
+The evaluations for the bright and dark light settings show slight decreases in performance compared to the standard light setting for hard tracks. The success\_rate of hard tracks in the bright and dark light setting was 98\% and 97\%.
 
-The collision rates changed much more significantly for the bright and dark setting compared to the standard setting. Some collision rates are higher for the bright and dark setting, some are lower. Overall the collision rates of difficulty levels did not change significantly compared to the standard light condition. The overall collision rate for the medium setting was 10\% compared to 11\% for the standard setting. The overall collision rate for the hard setting was 26\% compared to 29\% for the standard setting.
-For the hard tracks, the collision rate for the dark setting is only 20\%, while the collision rate for the standard setting is 29\%. 
+The collision rates are very low for the easy and medium tracks. All tracks in these settings were solved without collisions except for the medium tracks with the standard light setting. This medium standard evaluation had a collision rate of 1\%.
+The collision rates for the hard tracks are quite high at 70\% for the standard light setting. The bright and dark light settings are very high as well with 70\% and 62\%.
 
-Across all light and difficulty settings the overall success rate is 97\% and the overall collision rate is only 12\%.
+Across all light and difficulty settings the overall success rate is almost 100\% and the overall collision rate is 22\%.
 
-\subsection{Discussion}
+\subsection{Conclusion}
 
-The policy was able to complete the parcours very reliably under the different light settings. The light setting only had a small impact on the success rate.
-The different light settings also did not lead to an overall increase in collisions.
+The policy was able to complete the parcours very reliably under the different light settings. The light setting only had a minor impact on the success rate.
+Furthermore the different light settings did not lead to an overall increase in collisions.
 
-The evaluated policy was trained on the standard light setting only. The policy did not see samples from the dark and bright light settings during training. The policy is still able to generalize to the bright and dark light settings.
-This suggests that the histogram equalization proprocessing step plays an important role for this policy's behaviour.
+The developed policy was trained following the experiments in the previous chapter. The policy used the histogram equalization preprocessing step and mixed light settings during training. Using these settings the policy was able to learn to navigate the tracks with all light conditions.
 
 
 \section{Eval for Question 3 - Replays}
@@ -131,16 +134,12 @@ The test indicates that the non-deterministic sampling mode performes better, al
 
 \subsection{Test identical start conditions}
 
-% TODO run again
-
-
+identical start conditions result in over 90\% identical trajectories for hard tracks
+--> nice
 
 \subsection{Fresh obs improves}
 
-fresh observation is slightly better than non-fresh observations
---> we can rerun the experiments for question 1 and 2 with fresh observations
-
-rerun to see if the results are the same:
+fresh observation is worse than non-fresh observations
 
 %|    fresh_better_by_easy_standard     | 0        |
 %|    fresh_better_by_hard_standard     | -0.23    |
@@ -156,7 +155,6 @@ rerun to see if the results are the same:
 % 3    0.001    0.000 3704.876 1234.959 my_on_policy_algorithm.py:704(eval_model_track_wrapper_freshObs)
 % 3    0.004    0.001 3077.651 1025.884 my_on_policy_algorithm.py:707(eval_model_track_wrapper_noFreshObs)
 
-% retrain with freshObs?
 
 \subsection{Jetbot generalization}
 
@@ -178,12 +176,7 @@ The success and collision rates are slightly worse than on the DifferentialJetBo
 The overall collision rate is 33\% compared to 24\% for the DifferentialJetBot. Especially for the hard tracks the collision rate is much higher for the FourWheelJetBot with 94\% compared to 70\% for the DifferentialJetBot.
 The collisions of the DifferentialJetBot were previously described as mainly being minor collisions where the agent scrapes the goal posts with its side. Analysis of the recorded videos shows that the collisions of the FourWheelJetBot are similar. However the agent scrapes the goals on its side for longer durations \ref{sec:fourwheel_collisions}.
 
-% TODO explain why this longer collision is caused by the agent design?
-
-% TODO record percentage of steps with collisions and compare?
 % strong collisions here: hard_standard_FourWheelJetBot_env_0_video_2_topview
-
-% TODO show and discuss failed episodes somewhere?
 
 \paragraph{Discussion}
 
