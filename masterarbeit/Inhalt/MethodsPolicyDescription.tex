@@ -108,7 +108,7 @@ The histogram equalization step can make images of different light settings more
 
 \subsection{Memory Mechanism}
 
-Memory mechanisms are a common approach to enhancing a reinforcement learning agent. Memory mechanisms can be implemented in many different ways. Our memory mechanism uses frame stacking, similar to \autocite{maximilian} and \autocite{atari}. The memory is configured with the $frame_stacking$ parameter. The memory is a simple first-in-first-out buffer that stores the last $frame_stacking$ images. The memory is updated by inserting the new image and removing the oldest image. The inserted images are the outputs of the preprocessing steps.
+Memory mechanisms are a common approach to enhancing a reinforcement learning agent. Memory mechanisms can be implemented in many different ways. Our memory mechanism uses frame stacking, similar to \textcite{maximilian} and \textcite{atari}. The memory is configured with the $frame_stacking$ parameter. The memory is a simple first-in-first-out buffer that stores the last $frame_stacking$ images. The memory is updated by inserting the new image and removing the oldest image. The inserted images are the outputs of the preprocessing steps.
 The images from the memory buffer are concatenated along the channel axis to produce the neural network input. This neural network input is essentially an image with many channels.
 The memory buffer is reset at the start of every episode. The reset fills the entire buffer with zeros. The zeros are used as a placeholder. The first-in-first-out mechanism removes the zeros over the first $frame\_stacking$ timesteps.
 
@@ -185,10 +185,10 @@ The memory mechanism enables the policy to use information from previous time st
 
 \subsection{Neural Network}
 
-The neural network is the core of the policy. It is responsible for producing the actions from the image observations. The neural network belongs to the class of convolutional neural networks. This architecture was chosen since convolutional neural networks are ideal for processing image data. The convolutional network's architecture follows the specifications from \autocite{human_level_control}. This architecture has been used successfully in comparable reinforcement learning problems.
+The neural network is the core of the policy. It is responsible for producing the actions from the image observations. The neural network belongs to the class of convolutional neural networks. This architecture was chosen since convolutional neural networks are ideal for processing image data. The convolutional network's architecture follows the specifications from \textcite{human_level_control}. This architecture has been used successfully in comparable reinforcement learning problems.
 
 The network takes the output of the memory mechanism as input. This input is a three dimensional tensor, similar to an image. The network consists of convolutional and fully connected layers. The network produces two outputs, an action distribution and a value function. The action distribution is a probability distribution over the action space.
-The value function is a scalar value that estimates the expected return of the current state. The value function is not used during the action inference. The value is only used during the training of the policy network. It is used to compute the advantage function which is required for the loss \autocite{ppo}.
+The value function is a scalar value that estimates the expected return of the current state. The value function is not used during the action inference. The value is only used during the training of the policy network. It is used to compute the advantage function which is required for the loss \textcite{ppo}.
 
 % value or is it the critic? --> it is value
 
@@ -276,7 +276,7 @@ The value head consists of a single fully connected layer with one output.
     \label{fig:network_structure}
 \end{figure}
 
-The neural network's input dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The network architecture follows the specifications from \autocite{human_level_control}. However the input dimensions differ from the original network. This results in a different number of parameters for the feature extractor's layers.
+The neural network's input dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The network architecture follows the specifications from \textcite{human_level_control}. However the input dimensions differ from the original network. This results in a different number of parameters for the feature extractor's layers.
 The parameters and layer dimensions for the most successful network configuration are shown in figure \ref{fig:network_architecture}.
 
 

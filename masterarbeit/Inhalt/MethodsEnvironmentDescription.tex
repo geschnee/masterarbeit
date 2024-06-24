@@ -4,7 +4,7 @@
 \subsection{Environment Simulation}
 \label{sec:env_simulation}
 
-The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \autocite{peacefulpie} library.
+The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \textcite{peacefulpie} library.
 
 \paragraph{Parallel environment procesing} The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simuated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires JsonRPC calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine can be reduced by bundling the calls for all environments in one JsonRPC call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
 
@@ -108,7 +108,7 @@ The agent is modeled after the NVIDIA JetBot, a small robot designed for educati
 There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The FourWheelJetBot has 2 steering driving wheels at the front and two non-driving wheels in the back. The DifferentialJetBot steers by applying different torques to the two front wheels. The two acceleration values are multiplied by a constant factor and applied to the two wheels independently.
 
 The FourWheelJetBot steers by turning the front wheels in the desired direction and applyig equal torques to both wheels. The steering angle is computed from the difference in the two acceleration values. The torque is computed by multiplying the mean of the two acceleration values with a constant factor.
-The FourWheelJetBot was used in the work by \autocite{maximilian}. The DifferentialJetBot was developed to match the physical NVIDIA JetBot more closely. The two JetBot designs are shown in figure \ref{fig:jetbots}.
+The FourWheelJetBot was used in the work by \textcite{maximilian}. The DifferentialJetBot was developed to match the physical NVIDIA JetBot more closely. The two JetBot designs are shown in figure \ref{fig:jetbots}.
 
 
 \begin{figure}
@@ -336,7 +336,7 @@ Dense rewards functions can exasterbate the issue of the agent learning unintend
 % but this might not translate to the agent's behaviour
 
 \paragraph{Velocity Reward}
-The first dense reward function is the velocityReward. It was already developed in previous work \autocite{maximilian} to encourage the agent to drive at full speed. The velocityReward function assigns a reward proportional to the agent's velocity. The reward from driving forward might also help at discovering other rewards, e.g. the positive reward for passing a goal awared by eventReward function.
+The first dense reward function is the velocityReward. It was already developed in previous work \textcite{maximilian} to encourage the agent to drive at full speed. The velocityReward function assigns a reward proportional to the agent's velocity. The reward from driving forward might also help at discovering other rewards, e.g. the positive reward for passing a goal awared by eventReward function.
 
 \paragraph{Orientation Reward}
 The second dense reward function is the orientationReward. The orientationReward function assigns a reward based on the agent's orientation. The reward is proportional to the cosine similarity between the agent's orientation and the direction towards the next goal. The orientationReward function encourages the agent to face the next goal. Together with other rewards this can help teach the agent to drive through the next goal.
@@ -380,7 +380,7 @@ The four individual reward functions can be combined in many ways to give the ag
 
 \subsection{Collision Mode}
 
-The variable $collisionMode$ describes how the environment handles collisions of the agent with the goal objects and walls. The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}. In previous research the episodes were terminated upon collision and when missing a goal \autocite{maximilian}. Furthermore there existed two different training regimes. The first regime trained the agent on the full maps, while the second regime trained the agent on a map with only one goal.
+The variable $collisionMode$ describes how the environment handles collisions of the agent with the goal objects and walls. The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}. In previous research the episodes were terminated upon collision and when missing a goal \textcite{maximilian}. Furthermore there existed two different training regimes. The first regime trained the agent on the full maps, while the second regime trained the agent on a map with only one goal.
 
 The $collisionMode$ parameter was introduced to allow for more flexibility in the training process and fine control over the event rewards. The inital implementation was the unrestricted mode. Training with the unrestricted mode and event reward showed that the agent's policy started out with extreme negative rewards. The agent quickly learned to avoid these negative rewards by avoiding all collisions and movements. The policy got stuck in a local optimum \ref{fig:event_reward_only_collisionModeUnrestricted_event_reward}.The policy did not learn to complete the parcour during the remainder of training. The unrestricted mode potentially triggers the collision's negative rewards multiple times per step. This results in a big skew of the eventReward function towards negative rewards.
 

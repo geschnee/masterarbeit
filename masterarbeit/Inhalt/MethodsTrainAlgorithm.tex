@@ -99,7 +99,7 @@ The entire data from the replay buffer is sampled in every epoch. This ensure th
 
 \subsubsection*{Loss function}
 
-The loss function follows the Proximal Policy Optimization algorithm \autocite{ppo}. The PPO loss function is a combination of the policy surrogate and value error. The policy surrogate and value error are combined to be able to update the weights of the entire neural network together.
+The loss function follows the Proximal Policy Optimization algorithm \textcite{ppo}. The PPO loss function is a combination of the policy surrogate and value error. The policy surrogate and value error are combined to be able to update the weights of the entire neural network together.
 
 The policy surrogate objective function is responsible for improving the policy's output action distribution. The function behaves similarly to other policy update based aproaches. It restricts the size of parameter updates, increasing the stability during training. The ratio between the old and the current policy is clipped. The clipped ratio and non-clipped ratio are multiplied by the advantage. The minimum of the two is used as the policy surrogate loss. This prevents the updates from changing the policy drastically.
 
@@ -107,7 +107,7 @@ The advantage is an estimator for how much better (or worse) the policy performe
 
 The value error is responsible for improving the policy's output value estimates. The value error is the mean squared error between the predicted value and the target value. The parameter changes caused by the value error lead to a more accurate value prediction.
 
-The policy loss can also include an entropy term. Similarly to the original paper \autocite{ppo}, no entropy term is used in this work. This results in the loss function \eqref{eq:eq1} with the value coefficient $c_1 = 0.5$.
+The policy loss can also include an entropy term. Similarly to the original paper \textcite{ppo}, no entropy term is used in this work. This results in the loss function \eqref{eq:eq1} with the value coefficient $c_1 = 0.5$.
 
 \begin{align*}
     L_t^{CLIP + VF} &= \hat{\mathbb{E}}_t [L_t^{CLIP}(\theta) - c_1 L_t^{VF}(\theta)] \label{eq:eq1}\tag{PPO Loss} \\
