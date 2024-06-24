@@ -64,7 +64,7 @@ The reduction of the input space size also reduces the number of parameters the 
 
 The policy has to be able to complete the different tracks for three different light settings. The policy is not provided with information about what light setting is active for the current episode. This means that the policy has to learn to produce correct actions for images of all three light settings. If images of the light settings look very different, the policy has to learn to the light settings as well as what action to take.
 The preprocessing steps are applied to make images of different light settings more similar. The neural network is relieved of learning the different light settings. This can make learning easier and faster.
-The preprocessing steps can also make the policy generalize better to unseen light settings. The policy can be trained on a single light setting and achieve good results for the other light setttings \ref{cha:experiment_mixed_training}.
+The preprocessing steps can also make the policy generalize better to unseen light settings. The policy can be trained on a single light setting and achieve good results for the other light setttings \ref{cha:experiment_fixed_difficulty_light_settings}.
 
 
 

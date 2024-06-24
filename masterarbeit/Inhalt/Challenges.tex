@@ -3,7 +3,7 @@
 
 \section{Connecting the Python algorithm and Unity Simulation}
 
-The first challenge was to connect the Python algorithm with the Unity simulation. The Python algorithm is responsible for training the agent, while the Unity simulation is responsible for rendering the environment and providing the agent with observations and rewards. The environment is wrapped in a gymnasium environment \autocite{gymnasium}, this way it can be integrated with many existing reinforcement learning libraries and algorithms. The unity simulation acts as a JsonRPC server, the python gymnasium environment acts as a client.
+The first challenge was to connect the Python algorithm with the Unity simulation. The Python algorithm is responsible for training and evaluating the agent. The policy decisions are also executed in Python, this includes the preprocessing steps, neural network and action sampling. The Unity simulation is responsible for rendering the environment and providing the agent with observations and rewards. The environment is wrapped in a gymnasium environment \autocite{gymnasium}, this way it can be integrated with many existing reinforcement learning libraries and algorithms. The unity simulation acts as a JsonRPC server, the python gymnasium environment acts as the client.
 
 \paragraph{Data exchange}
 The first challenge was to transfer the image data from unity to python. This was solved by encoding the image data as a base64 string and sending it back to python over the network. The image data was then decoded in python and converted to a numpy array.
@@ -16,7 +16,12 @@ The solution to this problem was bundling the actions for the different environm
 
 \paragraph{Seed}
 
-TODO environment seed and consistent behaviour during training
+The Proximal Policy Optimization algorithm from the stable-baselines3 library was used to train the agents. This algorithm can be made deterministic by setting a seed. However the Unity game engine is not built to be fully deterministic. The reinforcement learning algorithm and the environment simulation in Unity interact during the training and evaluations. 
+
+As a result, the training progress and all agent evaluations cannot be made fully reproducible.
+
+The configuration files include a seed parameter. This seed is used to seed the random number generators of python and the reinforcement learning library. This way at least the model initialization is reproducible.
+
 
 \section{step duration}
 non blocking steps
@@ -25,4 +30,7 @@ TODO explain that a fixed step duration makes the policy transferable to other d
 
 \section{Parameters for training}
 
-journey to the good parameters in ExperimentsTrainingParameters.tex
+The policy and the policy training process use extensive parameterizations. The parameters can have an impact on the agent's overall capability (e.g. histogram equalization) and the training progress (e.g. reward function parameters).
+
+The search for the optimal parameters is a time-consuming process. Chapter \ref{cha:experiments_training_parameters} describes how the parameters for the training were found via experiments.
+

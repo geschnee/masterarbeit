@@ -17,6 +17,8 @@ The environment is simulated in the Unity game engine. The reinforcement learnin
 
 
 \paragraph{Non-blocking step calls}
+\label{sec:non_blocking_step_calls}
+
 The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. This saves time by reducing the amount of JsonRPC calls. In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. Essentially the returned observation is delayed by one step or $fixedTimestepsLength seconds$. A shorter $fixedTimestepsLength$ results in smaller changes of the environment during the step transitions. In this case the delay of observations has less of an impact on the accuracy of the observations.
 Experiments show that the policy can learn to deal with this delay.
 

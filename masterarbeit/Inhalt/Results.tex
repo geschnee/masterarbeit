@@ -1,6 +1,8 @@
 \chapter{Results}
 \label{cha:Results}
 
+This chapter presents the results of the experiments conducted in this project. The first three experiments were designed to answer the research questions posed in chapter \ref{cha:ResearchGoals} specifically. 
+The experiments were conducted using the policy that was developed as a result of 
 
 \section{Eval for question 1}
 
@@ -75,7 +77,7 @@ Five episodes were recorded for each difficulty and light setting combination. A
 
 \begin{figure}
     \centering
-    \includegraphics[width=0.8\textwidth]{Bilder/notebook_images/replay_times.png}
+    \includegraphics[width=0.5\textwidth]{Bilder/notebook_images/replay_times.png}
     \caption{Replay times on jetbot hardware}
     \label{fig:result_replay_times}
 \end{figure} % a chart showing the replay times (max, min, mean)
@@ -134,12 +136,37 @@ The test indicates that the non-deterministic sampling mode performes better, al
 
 \subsection{Test identical start conditions}
 
+The environment is not 100\% deterministic. This is due to the environment implementation in Unity. The environment uses physics simulations which are not deterministic. In addition the agent's actions are sampled non-deterministically during the evaluation.
+This means that the same start conditions of an episode may result in different trajectories and results. This test evaluates the impact of the non-deterministic environment and sampling on the agent's behaviour. 
+The trained agent is placed in the same start conditions for 100 episodes and the trajectories are compared. The starting conditions entail the selected track, light condition and the agent's starting rotation.
+
+\paragraph{Results}
+
 identical start conditions result in over 90\% identical trajectories for hard tracks
+
+\paragraph{Discussion}
+
 --> nice
 
-\subsection{Fresh obs improves}
 
-fresh observation is worse than non-fresh observations
+\subsection{Fresh Observations Test}
+
+The policy was trained to not use fresh observations \ref{sec:non_blocking_step_calls} with a fixed step duration of 0.3 seconds. The policy input recieves the observation from the start of the previous step as input. The policy input essentially lags 0.3 seconds behind the environment state. This saves processing time during training and evaluation. Alternatively a policy can be run with the $use\_fresh\_obs$ parameter. This makes the policy request a fresh observation from the Unity simulation.
+
+The Fresh Observations Test analyses whether switching the trained policy to use fresh observations improves the performance. The policy is evaluated with fresh observations and without fresh observations for each difficulty level using the Basic Evaluation Algorithm \ref{sec:eval_model_track}. The success rates are compared to determine if fresh observations improve the agent's performance.
+
+\paragraph{Results}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_freshNonFresh_success_rates_barplot.png}
+    \caption{Success rates for policy evaluation using fresh and non-fresh observations}
+    \label{fig:fresh_observations_test_result}
+\end{figure}
+
+The results show that the policy performs similar for the easy and medium settings. The success rates are 100\% for both fresh and non-fresh observations. The hard setting shows a strong decrease in performance when using fresh observations. The success rate goes from 98\% to 68\% \ref{fig:fresh_observations_test_result}.
+
+The evaluations using fresh observations also take longer. The Basic Evaluation Algorithm's per call time for the fresh observations is 20 minutes compared to 17 minutes for the non-fresh observations. The evaluation using fresh observations is slower because the policy has to request a fresh observation from the Unity simulation. This takes additional time.
 
 %|    fresh_better_by_easy_standard     | 0        |
 %|    fresh_better_by_hard_standard     | -0.23    |
@@ -154,6 +181,13 @@ fresh observation is worse than non-fresh observations
 % percall time 20 min vs 17 min
 % 3    0.001    0.000 3704.876 1234.959 my_on_policy_algorithm.py:704(eval_model_track_wrapper_freshObs)
 % 3    0.004    0.001 3077.651 1025.884 my_on_policy_algorithm.py:707(eval_model_track_wrapper_noFreshObs)
+
+\paragraph{Discussion}
+
+The policy was trained using non-fresh observations. The policy's performance decreases for hard tracks when it is evaluated using fresh observations.
+This suggests that the policy has learned to work with the lag of 0.3 seconds between the environment state and input to the policy. The policy's performance decreases when the lag is removed.
+
+The test confirms that the $use\_fresh\_obs$ parameter should not be changed after the training has been completed.
 
 
 \subsection{Jetbot generalization}

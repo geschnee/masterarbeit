@@ -1,4 +1,5 @@
 \chapter{Finding appropriate hyperparameters for training}
+\label{cha:experiments_training_parameters}
 
 This chapter explains how suitable parameters were found for training a successful policy. All parameters can be set in the training configuration file. The configurations that were used for the experiments are referenced in the appendix \ref{cha:experiment_configs}.
 
@@ -173,7 +174,8 @@ The experiments showed that it is possible to train the agent with the right hyp
 
 The experiments produced a set of hyperparameters that could be used for training the agent on the different difficulty levels exclusively. The agents were able to reach success\_rates of 100\% for the collected episodes.
 
-\paragraph{Generalization to lower difficulty levels} The evaluation of these agents showed that they were able to generalize to the tracks of lower difficulty levels. For example the agent that was only trained on hard tracks with standard light conditions could solve the easy and medium tracks as well. The agent trained on hard tracks and standard light setting was able to solve hard tracks with a success\_rate of 99\%. It achieved a success\_rate of 100\% and 93\% on easy and medium tracks without being trained on these difficulty settings \ref{fig:hardDistance_generalization}.
+\paragraph{Generalization to lower difficulty levels} 
+The evaluation of these agents showed that they were able to generalize to the tracks of lower difficulty levels. For example the agent that was only trained on hard tracks with standard light conditions could solve the easy and medium tracks as well. The agent trained on hard tracks and standard light setting was able to solve hard tracks with a success\_rate of 99\%. It achieved a success\_rate of 100\% and 93\% on easy and medium tracks without being trained on these difficulty settings \ref{fig:hardDistance_generalization}.
 
 \begin{figure}
     \centering
@@ -184,6 +186,7 @@ The experiments produced a set of hyperparameters that could be used for trainin
 \end{figure}
 
 \paragraph{Generalization to different light settings}
+\label{cha:experiment_fixed_difficulty_light_settings}
 Further evaluation of these agents on different light settings showed that the agents were able to generalize to the different light settings as well. The agents were trained on the standard light setting only. However the agents were able to solve episodes with the bright and dark light settings with only slight decreases in performance. The success rates for the different light settings are shown in figure \ref{fig:hardDistance_generalization_light_settings}.
 
 \begin{figure}
@@ -298,18 +301,26 @@ The reason for the high collision rates is the selected reward function. The age
 The minor collisions that occur are not penalized as the agent is still able to move towards the next goal. As a result the agent does not learn to avoid these collisions entirely.
 
 
-\section{Most successful policy}
-
+\section{Hard Tracks, mixed light settings - the most successful policy}
+\label{sec:most_successful_policy}
 
 This section summarizes how the most successful policy was implemented and trained. The parameters were chosen following the previous experiments. This policy is used for the evaluations of the three main research goals.
+The policy was trained using the distance reward alone. It was trained on hard tracks with all light settings. The policy used the histogram equalization preprocessing step.
+
+\paragraph{Policy Settings}
 The policy was configured to use the three preprocessing steps downsampling, greyscaling and histogram equalization. The policy used a frame stacking of 10. The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. This results in an observation space of shape $[84, 250, 10]$. The duration of steps was fixed to $0.3$ seconds.
 The neural network follows the earlier descriptions exactly \ref{sec:network_architecture}. It consisted of a feature extractor part with 3 convolutional layers and one fully connected layer. The feature extractor takes the observation as input, its outputs are used by the action and value head. The action and value head each consist of a single fully connected layer. The entire network is trained together end-to-end using backpropagation of the loss defined by the PPO algorithm.
 
+\paragraph{Reward function}
 The policy was trained exclusively using the distance reward. The other reward functions were not used \ref{fig:final_reward_function}.
 
+\paragraph{Training data}
 The episodes for data collection used hard tracks with all light settings. The agent was initialized with random orientations. The episodes were not reset upon collision.
+
+\paragraph{Training algorithm settings}
 The training was configured to use 10 environments in parallel to collect data. 2560 samples were collected in each data collection step. The training was terminated after a total of 2385920 steps. 8423 full episodes were executed to collect these samples. 233 data collection and model training iterations were executed in total. The total training duration was 1.02 days.
 The training progress can be seen in figure \ref{fig:training_most_successful_model}. The model reached a success rate of 100\% for the collected episodes.
+
 
 The full training config can be found in the appendix \ref{cha:most_successful_config}.
 
