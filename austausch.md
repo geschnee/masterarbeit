@@ -767,11 +767,59 @@ ein Treffen nach Abgabe mit Thomas zur Codeuebergabe
 
 
 
+# Treffen 24.06.2024
+
+Latex acronym package
+
+
+- abstract sollte kuerzer sein
+- research questions entfernen
+
+Related Work
+mehr Primaerquellen
+
+Differenzierung zwischen Agent und Policy
+--> 
+--> policy definition
+
+ein bild was die Schritte von Environment zur action zeigt
+zwischenschritte in agent <---> environment interaktion
+
+gramatik lange Saetze Problem
+
+Zitierungen auch in Methodik durchfuehren
+
+
+\citet statt autocite
+
+Title case
+
+https://capitalizemytitle.com/
+
+## Notizen von Martin
+
+Acronym Package Latex (consistency in naming and acronyms)
+	- RL, AI, CNN
+- Links do not work?
+- Abstract:
+	- half page
+	- motivation (why is your research important)
+	- key aspects of your work
+	- results
+- Related Work
+	- more primary sources, such as Sutton et Barto RL book
+- Policy
+	- Definition, understanding
+- Grammar and Spelling
+	- comma
+		- if, adverbs
+	- Shorter sentences (avoid to much parataxes)
+- Sources:
+	- Sutton and Barto
+	- use more primary literature
+- Explain concepts, such as on-policy and off-policy learning or give sources where the reader can check for themselves
 
 
 
-Links die noch zu lesen sind:
-https://datascience.stackexchange.com/questions/22796/convolutional-network-for-classification-extremely-sensitive-to-lighting
-https://ieeexplore.ieee.org/document/8885098
-https://www.nature.com/articles/s41598-023-31532-9
-https://www.google.com/search?q=light+invariant+convolutional+neural+network&sca_esv=224fa05bca59979e&sca_upv=1&sxsrf=ACQVn0_48uHNj8n4H8vfAWItbWJlLleBAw%3A1709902643683&ei=MwvrZYL5KPHqi-gPw-uwoAI&oq=light+invariant+convol&gs_lp=Egxnd3Mtd2l6LXNlcnAiFmxpZ2h0IGludmFyaWFudCBjb252b2wqAggAMgUQIRigATIFECEYoAEyBRAhGKABMgUQIRifBTIFECEYnwUyBRAhGJ8FMgUQIRifBTIFECEYnwUyBRAhGJ8FMgUQIRifBUjtMVAAWMwncAB4AJABAZgBlQOgAfIjqgEKMC4xMS44LjIuMbgBA8gBAPgBAZgCFaACwiHCAgQQIxgnwgIKECMYgAQYigUYJ8ICChAAGIAEGIoFGEPCAgsQLhiABBixAxiDAcICCxAAGIAEGLEDGIMBwgILEC4YgAQYxwEY0QPCAggQABiABBixA8ICEBAAGIAEGIoFGEMYsQMYgwHCAgoQABiABBgUGIcCwgIOEAAYgAQYigUYsQMYgwHCAg4QLhiABBixAxjHARjRA8ICEBAuGIAEGBQYhwIYxwEY0QPCAg0QABiABBiKBRixAxgKwgIFEAAYgATCAgUQLhiABMICGhAuGIAEGMcBGNEDGJcFGNwEGN4EGOAE2AEBwgIIEAAYgAQYywHCAgoQABiABBjLARgKwgIGEAAYFhgewgIJEAAYgAQYDRgTwgIIEAAYFhgeGBPCAgoQABgeGA0YDxgTwgIKEAAYFhgeGA8YE8ICDBAAGBYYHhgPGBMYCsICCBAAGBYYHhgPwgIKEAAYFhgeGA8YCsICBxAhGAoYoAGYAwC6BgYIARABGBSSBwgwLjExLjguMqAHla0B&sclient=gws-wiz-serp
+
+
