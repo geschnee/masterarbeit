@@ -82,6 +82,8 @@
 %\printnomenclature
 %\label{sec:Glossar}
 
+\input{Inhalt/Acronyms}
+
 \listoffigures					% Abbildungsverzeichnis
 \listoftables					% Tabellenverzeichnis
 
@@ -92,7 +94,6 @@
 % ...danach in normalen arabischen Ziffern ---------------------------------
 \clearpage
 \pagenumbering{arabic}
-
 
 % Inhalt -------------------------------------------------------------------
 %		Hier können jetzt die einzelnen Kapitel inkludiert werden. Sie müssen
@@ -109,7 +110,11 @@
 
 \include{Inhalt/MethodsEnvironmentDescription}
 
+\include{Inhalt/MethodsObservationProcessing}
+
 \include{Inhalt/MethodsPolicyDescription}
+
+\include{Inhalt/MethodsAgentInteraction}
 
 \include{Inhalt/MethodsTrainAlgorithm}
 
@@ -117,7 +122,6 @@
 
 \include{Inhalt/ExperimentsTrainingParameters}
 
-%\include{Inhalt/ExperimentsPhysicalRobot}
 
 \include{Inhalt/Challenges}
 

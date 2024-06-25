@@ -73,7 +73,7 @@ Different configurations are used in the experimentation phase to gain insights 
 
 \paragraph{Evaluation of the model}
 
-There is no dedicated evaluation step in this training algorithm. The collected episodes are analysed to gain insight into the policy's performance during training. No episodes are executed solely for the purpose of measuring the policy's performance during training. The full evaluation of the model as described in \ref{sec:eval_model_track} is time-consuming. The full evaluation process is only executed after the training process has finished, this speeds up training tremendously.
+There is no dedicated evaluation step in this training algorithm. The collected episodes are analysed to gain insight into the policy's performance during training. No episodes are executed solely for the purpose of measuring the policy's performance during training. The full evaluation of the model as described in \ref{sec:basic_evaluation_algorithm} is time-consuming. The full evaluation process is only executed after the training process has finished, this speeds up training tremendously.
 
 The collected episodes are used to evaluate the model during training. The success rate of the collected episodes is used to determine the best model. The model is saved to disk if the success rate of the collected episodes improved.
 

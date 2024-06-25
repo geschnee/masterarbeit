@@ -3,6 +3,9 @@
 
 This chapter explains how suitable parameters were found for training a successful policy. All parameters can be set in the training configuration file. The configurations that were used for the experiments are referenced in the appendix \ref{cha:experiment_configs}.
 
+
+% BIG TODO check if the word agent can be replaced by policy here
+
 \section{General parameters}
 
 There are a number of training parameters that were kept constant throughout the later training and evaluation runs. These parameters were chosen based on initial experimentations and improvements during the development phase.
@@ -109,7 +112,6 @@ The remaining hyperparameters concern mostly the training algorithm. The trainin
     \label{table:remaining_params}
 \end{table}
 
-% TODO mention the split between data collection + train time? somewhere
 
 \section{Reward functions capability check}
 
@@ -166,7 +168,7 @@ The coefficient for the distanceReward was set to 1, the others were set to 0. A
 \end{figure}
 
 
-\section{Experiments fixed difficulty setting}
+\section{Experiments training with fixed difficulty setting}
 \label{cha:experiment_fixed_difficulty}
 
 In the experimentation phase of this project the agents were trained exclusively on tracks of a specific difficulty setting. This was done to analyse the capability of the jetbot agent and to find appropriate hyperparameters that allow the agents to learn. These hyperparameters include the agent camera image dimensions, the $fixedTimestepLength$, the amount of steps to collect in each iteration and more.
@@ -197,7 +199,7 @@ Further evaluation of these agents on different light settings showed that the a
     \label{fig:hardDistance_generalization_light_settings}
 \end{figure}
 
-\section{Experiments mixed difficulty setting}
+\section{Experiments training with mixed difficulty setting}
 \label{cha:experiment_mixed_difficulty}
 
 The next step was to train the agent on all difficulty levels at the same time. The goal was to find hyperparameters that would allow the agent to learn to solve all difficulty levels better than with the previous exclusive training. The agent was trained on all difficulty levels at the same time with the same hyperparameters that were used before. The $trainingMapType$ parameter was set to $randomEval$, this results in split of 20\% easy, 40\% medium and 40\% hard tracks.
@@ -206,7 +208,7 @@ The training with mixed tracks for the data collection episodes failed. The agen
 
 % put a figure here? or in the appendix?
 
-\section{Experiments mixed light setting hyperparameter}
+\section{Experiments training with mixed light setting hyperparameter}
 \label{cha:experiment_mixed_light}
 
 In the previous experiments, the complexity of the task was reduced by focussing on single light settings. The goal was to test the parameters and find configurations that enable the agent to learn the tasks with increasing complexity. The experiments showed that an agent that is trained on hard tracks exclusively is able to generalize to the lower difficulty tracks as well. These agents were also able to solve the tracks of differenct light settings with only slight differences in performance.
@@ -214,10 +216,12 @@ In the previous experiments, the complexity of the task was reduced by focussing
 
 The next step was to train the agent on all light settings at the same time. The goal was to find hyperparameters that would allow the agent to learn to solve the tracks with different light settings better than with the previous exclusive training. The agent was trained on difficult tracks with all light settings. The $lightSetting$ parameter was set to $random$, this results in split of 33\% bright, 33\% standard and 33\% dark illumination for the data collection episodes.
 
-\paragraph{General Results}
-The agent was able to learn to solve the tracks of different difficulties. Similarly to the previous experiments, the agent was able to generalize to the easy and medium tracks. The agent was able to solve the easy, medium and hard tracks with success rates of 100\%, 100\% and 99\% \ref{fig:hardDistance_mixedLight_generalization}. This is an improvement over the agent trained exclusively on hard tracks with standard light \ref{cha:experiment_fixed_difficulty}.
+\paragraph{Resuts for standard light setting}
 
-% TODO callback to this improvement somewhere
+The agent was able to learn to solve the tracks of different difficulties. Similarly to the previous experiments, the agent was able to generalize to the easy and medium tracks. The agent was able to solve the easy, medium and hard tracks with success rates of 100\%, 100\% and 99\% \ref{fig:hardDistance_mixedLight_generalization}. 
+
+This is an improvement over the agent trained exclusively on hard tracks with standard light \ref{cha:experiment_fixed_difficulty}.
+This improvement may be due to the increased variety of data encountered during the training phase.
 
 \begin{figure}
     \centering
@@ -228,8 +232,11 @@ The agent was able to learn to solve the tracks of different difficulties. Simil
 \end{figure}
 
 \paragraph{Performance on all light settings}
+
 The agent was evaluated on the different light settings. The agent was able to solve the episodes reliably for all light settings. There were only slight differences in performance between the light settings for hard tracks \ref{fig:hardDistance_mixedLightTraining_results}.
-The agent performed much better in episodes with bright or dark light setting compared to the agent trained exclusively on tracks with standard light \ref{cha:experiment_fixed_difficulty}.
+
+
+The agent performed much better in episodes with bright or dark light setting compared to the agent trained exclusively on tracks with standard light \ref{cha:experiment_fixed_difficulty}. This was to be expected as the agent was trained on all light settings.
 
 \begin{figure}
     \centering
@@ -239,11 +246,6 @@ The agent performed much better in episodes with bright or dark light setting co
     \label{fig:hardDistance_mixedLightTraining_results}
 \end{figure}
 
-% TODO
-%possible reasons for the improvement?
-%- the agent is trained on all light settings at the same time 
-%this requires much more learning to have a 100 success\_rate during data collection 
-%better model is selected
 
 
 \section{Experiments on the importance of the histogram equalization preprocessing step}

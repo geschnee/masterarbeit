@@ -4,9 +4,95 @@
 \subsection{Environment Simulation}
 \label{sec:env_simulation}
 
-The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using JsonRPC and the Peaceful Pie \textcite{peacefulpie} library.
+The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using \acs{RPC} with the Peaceful Pie \textcite{peacefulpie} library.
 
-\paragraph{Parallel environment procesing} The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simuated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires JsonRPC calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine can be reduced by bundling the calls for all environments in one JsonRPC call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
+The interaction is shown in \ref{fig:communication_python_unity}.
+
+\newcommand{\arenaImg}[1]{\includegraphics[width=0.15\textwidth]{Bilder/image_printer_images/agent_interaction/step_#1_arena.png}}
+\newcommand{\agentImg}[1]{\includegraphics[width=0.15\textwidth]{Bilder/image_printer_images/agent_interaction/step_#1_image_from_unity.png}}
+
+\newcommand\yOffsetc{-6.5}
+\newcommand\xOffsetc{4.5}
+\newcommand\envWidth{12}
+
+\usetikzlibrary{decorations.pathreplacing}
+
+\usetikzlibrary{fit}
+\begin{figure}[h]
+    \centering
+    \begin{tikzpicture}[%
+            every node/.style={
+                    font=\scriptsize,
+                    % Better alignment, see https://tex.stackexchange.com/questions/315075
+                    text height=1ex,
+                    text depth=.25ex,
+                },
+        ]
+
+        \node[fit={(0,0) (0 + \envWidth, - 5)}, inner sep=0pt, draw=blue, thick] (env) {};
+        \node[above] (envText) at (env.north) {Environment};
+        \node[below] (envU) at (env.south) {Unity};
+
+        \node[above] (oldState) at (2, -2)
+        {\arenaImg{0}};
+        \node[right] at (oldState.east) {old state};
+
+        \node[below] (newState) at (2, -4)
+        {\arenaImg{1}};
+        \node[right] at (newState.east) {new state};
+
+
+        \node[above] (oldImg) at (7, -2)
+        {\agentImg{0}};
+        \node[right] at (oldImg.east) {old agent camera image};
+
+        \node[below] (newImg) at (7, -4)
+        {\agentImg{1}};
+        \node[right] at (newImg.east) {new agent camera image};
+        
+        
+        \draw[->,thick] (2, -2)--(2, -3);
+        \node[right] at (2, -2.5) {step (action / agent movement)};
+
+        \draw[->,thick] (7, -2)--(7, -3);
+        \node[right] at (7, -2.5) {step (action / agent movement)};
+
+
+        % bottom half:
+        \node[fit={(0 + \xOffsetc,0+ \yOffsetc) (3+ \xOffsetc,-1 + \yOffsetc)}, inner sep=0pt, fill=cyan, draw=blue, thick] (gym) {};
+        \node[above] at (gym.north) {Python Gymnasium Environment};
+        %\node[below] at (gym.south) {Python};
+
+
+        % arrows communication
+        \draw[->,thick, red] (\xOffsetc + 3, -0.5+ \yOffsetc)--(\envWidth+0.5, -0.5+\yOffsetc)--(\envWidth + 0.5, -2.5)--(\envWidth, -2.5);
+        \node[below] at (\xOffsetc + 8, -0.5+ \yOffsetc) {reset and step commands};
+
+        \draw[->,thick, red] (0, -2.5)--(-0.5,-2.5)--(-0.5,-0.5+\yOffsetc)--(\xOffsetc, -0.5+ \yOffsetc);
+        \node[right] (camArrow) at (\xOffsetc -5, -0.5+ \yOffsetc) {\agentImg{1}};
+        \node[below] at (camArrow.south) {rewards + new agent camera images};
+
+        % arrow API
+        \draw[<-,thick] (\xOffsetc + 1.5, -1 + \yOffsetc)--(\xOffsetc + 1.5,\yOffsetc - 3);
+        \node[right] at (\xOffsetc + 1.5, \yOffsetc - 2) {Gymnasium API calls};
+
+        % algos block
+        \node[fit={(0 + \xOffsetc,0+ \yOffsetc -3) (3+ \xOffsetc,-1 + \yOffsetc -3)}, inner sep=0pt, fill=cyan, draw=blue, thick] (algo) {};
+        \node[above] at (algo.north) {\acs{PPO} training and evaluation algorithms};
+        \node[below] at (algo.south) {Python};
+
+    \end{tikzpicture}
+    \begin{tabular}{r@{: }l}
+        red & RPC calls and returns \\
+    \end{tabular}
+    \caption{Communication between Python and Unity}
+    \label{fig:communication_python_unity}
+\end{figure}
+
+
+\paragraph{Parallel environment procesing}
+
+The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simulated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires \acs{RPC} calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine is reduced by bundling the calls for all environments in one \acs{RPC} call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
 
 \begin{figure}
     \centering
@@ -16,27 +102,20 @@ The environment is simulated in the Unity game engine. The reinforcement learnin
 \end{figure}
 
 
-\paragraph{Non-blocking step calls}
+\paragraph{Environment steps}
 \label{sec:non_blocking_step_calls}
 
-The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. This saves time by reducing the amount of JsonRPC calls. In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. Essentially the returned observation is delayed by one step or $fixedTimestepsLength seconds$. A shorter $fixedTimestepsLength$ results in smaller changes of the environment during the step transitions. In this case the delay of observations has less of an impact on the accuracy of the observations.
+The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. The python algorithm can continue without waiting for the step to complete.
+
+In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. Since the Unity environment returns the call before the current step is finished, this is nnot possible. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. 
+
+% TODO tikz image that explains the calls including how the rewards are communicated
+BIG TODO
+
+The returned observation is delayed by one step. The duration of the steps is dictated by the $fixedTimestepsLength$ environment parameter \ref{sec:step_duration}. Shorter step durations result in more accurate observations.
 Experiments show that the policy can learn to deal with this delay.
 
 Alternatively there is the policy parameter $use\_fresh\_obs$. If this parameter is set to true, the policy will request a new observation from Unity via another JsonRPC call before predicting the next action. This can be useful if the policy is sensitive to the observation delay. However this increases the amount of JsonRPC calls and slows down the training and evaluation process.
-
-% TODO vielleicht mit einem coolen Tikz bild die blocking problematik erklären
-
-
-% TODO explain the non-blocking approach of step calls here (and how the observations returned by step are delayed)
-% including the use_fresh_obs flag
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.4\textwidth]{Bilder/unity_communication.png}
-    \caption{Communication between Python and Unity}
-    \label{fig:communication_python_unity}
-\end{figure} % TODO remake the image
-
 
 
 \subsection{Arena Description}
@@ -46,8 +125,9 @@ This section describes the simulated environment and agent in detail. The enviro
 The goal of our agent is to complete tracks in the arena by traversing the track's goals in order. Each goal consists of 2 cuboid pillars of the same colour. The pillars are coloured red or blue. The goals' colours alternate in the track. The distance between the pillars is fixed and the same for all goals. The positions of the goals depends on the episode's track. The tracks are grouped by the difficulty settings easy, medium and hard. An invisible finish line is positioned closely behind the last goal for each track.
 
 \paragraph{Track Description}
-The tracks in the easy setting contain 3 goals that are positioned on the arena's center line with even distances between them. The medium setting contains 3 goals that are shifted on the center line towards the arena's walls. The hard setting contains 3 goals that are shifted on the center line towards the arena's walls, resulting in a zig-zag pattern. The zig-zag pattern is the most challenging for the agent to navigate, as it requires the agent to turn sharply to pass the goals. One track from each difficulty setting is shown in figure \ref{fig:track_difficulty_settings}. The tracks in each setting are structurally very similar to each other. They differ in goal coloring and the orientation of the shift from the center line.
+The tracks in the easy setting contain 3 goals that are positioned on the arena's center line with even distances between them. The medium setting contains 3 goals that are shifted on the center line towards the arena's walls. The hard setting contains 3 goals that are shifted on the center line towards the arena's walls, resulting in a zig-zag pattern. The zig-zag pattern is the most challenging for the agent to navigate, as it requires the agent to turn sharply to pass the goals. One track from each difficulty setting is shown in figure \ref{fig:track_difficulty_settings}. 
 
+The tracks in each difficulty level are structurally very similar to each other. They differ in goal coloring and the orientation of the shift from the center line. In total there are 10 different tracks. The full list is availible in the appendix \ref{fig:all_tracks}.
 
 \begin{figure}
     \centering
@@ -57,7 +137,6 @@ The tracks in the easy setting contain 3 goals that are positioned on the arena'
     \caption{Example evaluation tracks for each difficulty setting.}
     \label{fig:track_difficulty_settings}
 \end{figure}
-% the images are generated with image_printer.py
 
 \paragraph{Light Setting Description}
 There are three light settings for the environment: bright, standard and dark. The different light settings are implemented by varying the light intensities of the arena's light sources and changing the horizon illumination of the agent's camera.
@@ -76,7 +155,8 @@ There are three light settings for the environment: bright, standard and dark. T
 
 \paragraph{Initial Position of Agent}
 The initial position of the agent at the start of an episode is fixed. The starting position is identical for all tracks. The inital orientation is defined by the environment parameter $spawnOrientation$. The parameter specifies the range of rotations around the z-axis.There are three options for the spawnOrientation parameter: Fixed, Random and VeryRandom. For the Fixed option the agent is spawned with an orientation of 0 degrees. In the Random option the agent is spawned with an orientation between -15 and 15 degrees. In the VeryRandom option the agent is spawned with a random orientation between -45 and 45 degrees.
-During the training process an orientation from the range is sampled for each episode. In the evaluation process the agent is spawned with unique orientations from the range, see \ref{sec:eval_model_track}.
+
+During the training process an orientation from the range is sampled for each episode. In the evaluation process the agent is spawned with unique orientations from the range, see \ref{sec:basic_evaluation_algorithm}.
 The ranges for the spawnOrientation parameter influence the difficulty of completing the tracks. Depending on the spawn rotation and the selected track it might not be possible to see the entire first goal from the starting position. This is shown in \ref{fig:spawn_orientation}.
 
 
@@ -93,21 +173,26 @@ The ranges for the spawnOrientation parameter influence the difficulty of comple
     \label{fig:spawn_orientation}
 \end{figure} % the figure shows that the first goal is not always visible from the starting position, very nice
 
+
 \paragraph{Arena Recording}
 
 Video recordings of episodes can be generated by the unity environment. The episode recordings are created from three different perspectives. The first perspective is the agent's camera view. This video shows the images before preprocessing steps are applied. The second perspective is a top-down view of the arena. The third perspective is a side view of the arena.
-Multiple episodes can be simulated in parallel. The video recording is generally not done for all episodes due to performance problems and the large amount of data generated.
+
+Multiple episodes can be simulated in parallel. The video recording is generally not done for all episodes due to performance problems and the large amount of data generated. 
 Example videos are shown in the appendix \ref{cha:example_videos}.
 
 
 \subsection{Agent Description}
 \label{cha:agent_description}
 
-The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives a $leftAcceleration$ and $rightAcceleration$ value from the Python algorithm. The values range from -1 to 1 and control the agent's wheels and movement. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
+The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives an action to execute from the Python algorithm. The actions consist of a $leftAcceleration$ and $rightAcceleration$ value. The agent's wheels are controlled using the values for the entire duration of a step. 
+The values are in the range of $[-1, 1]$. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
 
-There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The FourWheelJetBot has 2 steering driving wheels at the front and two non-driving wheels in the back. The DifferentialJetBot steers by applying different torques to the two front wheels. The two acceleration values are multiplied by a constant factor and applied to the two wheels independently.
 
-The FourWheelJetBot steers by turning the front wheels in the desired direction and applyig equal torques to both wheels. The steering angle is computed from the difference in the two acceleration values. The torque is computed by multiplying the mean of the two acceleration values with a constant factor.
+There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The DifferentialJetBot applies by different torques to the two front wheels. The two acceleration values are multiplied by a constant factor and applied to the two wheels independently.
+
+The FourWheelJetBot has 2 steering driving wheels at the front and two non-driving wheels in the back. The FourWheelJetBot steers by turning the front wheels in the desired direction. Equal torques are applied to both front wheels. The steering angle is computed from the difference in the two acceleration values. The torque is computed by multiplying the mean of the two acceleration values with a constant factor.
+
 The FourWheelJetBot was used in the work by \textcite{maximilian}. The DifferentialJetBot was developed to match the physical NVIDIA JetBot more closely. The two JetBot designs are shown in figure \ref{fig:jetbots}.
 
 
@@ -125,7 +210,24 @@ The FourWheelJetBot was used in the work by \textcite{maximilian}. The Different
 
 An episode represents one attempt of the agent at solving a track in the environment. Each episode consists of a series of steps starting from the initial position. Upon episode termination the end status is returned to python. This status is used to compute metrics such as the success\_rate. The agent interacts with the environment in each step. The environment is simulated in Unity during each step. This includes things like agent movement, collision detection and reward calculation.
 
+\subsubsection{Episode Initialization}
+
+The episode initialization prepares the arena. There are five important parameters that define how the episode is initialized. The initialization first generates the obstacles according to the $mapType$ parameter. The $lightSetting$ parameter defines the illumination for the entire episode.
+The $jetbotName$ parameter dermines which jetbot version is used \ref{fig:jetbots}. The jetbot is then placed in the arena according to the $spawnOrientation$ parameter.
+
+The $videoFilename$ parameter is used to define the filename for the video recording of the episode. No videos are recorded if this parameter is empty.
+
+The call returns an initial observation to the python algorithm. This observation is used by the agent for the first step.
+
+\subsubsection{Steps}
+
+The agent selects actions to perform in each step. The actions consist of a pair of acceleration values \ref{cha:agent_description}. These values are applied to the agent's wheels for the entire duration of the step. The agent's movement is simulated in the Unity environment for the duration of the step. This results in a new environment state.
+The Unity environment calculates the reward obtained during a step. It also registers agent collisions and episode timeouts.
+
+
 \subsubsection{Step duration}
+\label{sec:step_duration}
+
 The duration of each step is defined by the environment settings. There are two destinct modes for the step durations. The first mode is the fixed timestep mode. In this mode the duration of each step is fixed and defined by the environment parameter $fixedTimestepsLength$. The second mode is the variable timestep mode. In this mode each step lasts until the environment receives the next action from the agent.
 
 The fixed step duration mode was used for the training process after experimentation with both modes \ref{sec:step_duration_experiment}. The fixed step duration was set to 0.3 seconds. This allows for precise movements of the agent as the duration is quite short \ref{table:agent_movement_fixed_duration}.
@@ -152,7 +254,6 @@ Changes in step duration might break a trained policy, as the policy has learned
 Example: The agent might decide to turn right, expecting to be able to stop the turning within 0.2 seconds. If the next step is computed too slow the agent might not be able to stop the turning in time. The agent might then crash into a wall.
 
 
-\usetikzlibrary{decorations.pathreplacing}
 % how to build the graphs: https://tex.stackexchange.com/questions/436259/timeline-in-latex
 \definecolor{myLightGray}{RGB}{191,191,191}
 \definecolor{myDarkGray}{RGB}{144,144,144}
@@ -258,9 +359,10 @@ Example: The agent might decide to turn right, expecting to be able to stop the 
 
 
 
-
 \subsubsection{Episode Termination}
-\label{time_limit}The episodes are terminated based on the agent's interactions with the environment. Episodes are always terminated when the agent reaches the finish line or a timeout is reached. Episodes are also terminated when the agent collides with an object and the $collisonMode$ parameter is set to $terminate$.
+\label{time_limit}
+
+The episodes are terminated based on the agent's interactions with the environment. Episodes are always terminated when the agent reaches the finish line or a timeout is reached. Episodes are also terminated when the agent collides with an object and the $collisonMode$ parameter is set to $terminate$.
 The timeout is defined by a fixed timelimit of 30 seconds which is increased by further 30 seconds for each passed goal. The timelimit is necessary to terminate episodes where the agent does not reach the finish line. This can be due to the policy's learned behaviour or collisions.
 
 The episode termination status is used by the python algorithms to evaluate the agent performance. The possible termination statuses are:
@@ -294,7 +396,9 @@ Collisions of the agent with the goal posts and the arena walls are detected by 
 
 \subsection{Reward Function}
 
-The reward function is a function that maps state-action pairs to a scalar reward. The reward function assigns rewards to the agent based on its actions in the environment. The reinforcement learning algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the reinforcement learning process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
+The reward function is a function that maps state-action pairs to a scalar reward. These state-action pairs are episode steps. The reward function assigns rewards to each step based on the agent's actions in the environment.
+
+The reinforcement learning algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the reinforcement learning process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
 
 \paragraph*{Event Reward}
 The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour \ref{fig:eventReward_function}. The event reward function is evaluated in each step. A positive reward is awarded to the agent in case it passes a goal or reaches the finish line during the step. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The magnitude of positive rewards increased was increased compared to the negative rewards. This means that positive events are more important, a single negative event does not cancel out positive rewards.
@@ -327,13 +431,8 @@ The eventReward function provides the agent with a reward signal that is closely
 Additional reward functions were developed to help the agent learn to complete the tracks. The additional reward functions are dense reward functions. They assign non-zero rewards in most steps. This is comparable to encouraging route following behaviour with a trail of candy versus a big cake at the end of the route.
 
 
-Dense rewards functions can exasterbate the issue of the agent learning unintended behaviour. The dense rewards can be opinionated and encourage the agent to follow a very specific path. This can lead to the agent not exploring the environment enough to find the very best policy. This is to be kept in mind when designing and testing the dense reward functions.
+Dense rewards functions can exasterbate the issue of the agent learning unintended behaviour. Assigning rewards to sub-goal can lead to the agent behaving differently than as indended. The agent might not learn to achieve the overall goal, \textcite{rlbook2020}. This is to be kept in mind when designing and testing the dense reward functions.
 
-% TODO dicuss the diasdvantage of dense reward functions
-% TODO discuss the issue of the dense rewards being opinionated?
-% distanceReward encourages the agent to pass the goal through the middle. that is not necessary for the desired behaviour.
-% it is also not the most  optimal line driving through the middle of the goal posts
-% but this might not translate to the agent's behaviour
 
 \paragraph{Velocity Reward}
 The first dense reward function is the velocityReward. It was already developed in previous work \textcite{maximilian} to encourage the agent to drive at full speed. The velocityReward function assigns a reward proportional to the agent's velocity. The reward from driving forward might also help at discovering other rewards, e.g. the positive reward for passing a goal awared by eventReward function.
@@ -342,7 +441,9 @@ The first dense reward function is the velocityReward. It was already developed 
 The second dense reward function is the orientationReward. The orientationReward function assigns a reward based on the agent's orientation. The reward is proportional to the cosine similarity between the agent's orientation and the direction towards the next goal. The orientationReward function encourages the agent to face the next goal. Together with other rewards this can help teach the agent to drive through the next goal.
 
 \paragraph{Distance Reward}
-The third and last dense reward function is the distanceReward function. The distanceReward function assigns a reward proportional to the difference in distance between the agent and the next goal. The distanceReward is positive if the agent gets closer to the next goal during a step transition. The distance to the next goal is measured from the midpoint between the two goal posts. The distanceReward function encourages higher driving velocity, as higher velocities result in bigger distance differences and thus rewards. The distanceReward function also encourages the agent to drive strait towards the next goal, as this results in the biggest distance differences. In theory the agent should be able to learn to complete the tracks successfully from the distanceReward alone.
+The third and last dense reward function is the distanceReward function. The distanceReward function assigns a reward proportional to the difference in distance between the agent and the next goal. The distanceReward is positive if the agent gets closer to the next goal during a step transition. The distance to the next goal is measured from the midpoint between the two goal posts. The distanceReward function encourages higher driving velocity, as higher velocities result in bigger distance differences and thus rewards. The distanceReward function also encourages the agent to drive strait towards the next goal, as this results in the biggest distance differences. 
+
+In theory the agent should be able to learn to complete the tracks successfully from the distanceReward alone. Maximizing the distance reward would result in the agent driving through all goals in order.
 
 The distance reward is opinionated. It guides the agent towards the midpoint of the next goal. This reward signal may result in a suboptimal path for the agent. The agent might learn to drive through the goal posts at the midpoint. This is not necessary for the desired behaviour. This is a tradeoff that was made when designing the distance reward function.
 % opinionated was also discused above at intro of dense reward functions

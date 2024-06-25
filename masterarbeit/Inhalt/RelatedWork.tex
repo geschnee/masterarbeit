@@ -76,9 +76,8 @@ Reinforcement learning algorithms are classified into two major groups. RL algor
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{Bilder/openai_spinningup_taxonomy.png}
-    \caption{Taxonomy of RL algorithms from OpenAI's Spinning Up course \textcite{spinningup}}
+    \caption{Taxonomy of RL algorithms from OpenAI's Spinning Up course \autocite{spinningup}}
 \end{figure}
-% TODO is this citation correct?
 
 Model free algorithms can be further divided into two families. The first family are value-based approaches. These algorithms learn a value function that assigns state and action pairs a value that represents the expected future reward. The policy selects actions based on this function. The state action pair with the highest Q-value is selected. The Q-learning algorithm is an early and common example of value-based algorithms \textcite{rlbook2020}. The traditional Q-learning algorithm uses a table to store the function. The table contains one cell for each state-action pair and stores the Q-value.
 
@@ -99,6 +98,15 @@ The Proximal Policy Optimization algorithm is an Actor-Critic algorithm. It was 
 % TODO sollte der Teil wieder rein?
 
 
+
+% TODO mention reward shaping from rlbook somewhere
+% first give a reward signal that is not aligned with final goal but gives frequent rewards
+% train the agent using this function
+% change function over time to the intended reward function (event Reward)
+% learning behaviour is guided by the shaped reward function
+
+
+
 \subsection*{Convolutional Neural Network for Reinforcement Learning}
 
 Convolutional neural networks are a neural network architecture specifically developed for processing image data, they consist of a number of filters and a fully connected neural network. The filters are applied to the image in a sliding window fashion, the filters detect patterns in the image such as for example edges and corners. Multiple successive applications of such filters enables the network to learn hierarchical information and recognize more complex structures. The fully connected neural network analyses the results of the filters and makes the final prediction \textcite{rlbook2020}.
@@ -106,7 +114,7 @@ Convolutional neural networks are a neural network architecture specifically dev
 CNNs are often used in Reinforcement Learning since RL problems often require an agent to process visual input. Furthermore CNNs can be trained end-to-end in Reinforcement Learning compared to other feature extraction methods, which means the CNN can learn what features are important for the task at hand.
 Therefore a convolutional neural network will be used to process the camera images instead of a hand-crafted feature extraction method. 
 
-CNNs typically do not take the raw camera/simulation images but rather preprocessed images, e.g. greyscaled images \textcite{atari}. Preprocessing steps can help in reducing the complexity of the input space. Convolutional neural networks require a lot of data to learn, data augmentation can help increase the size of the training set and to make the agent more robust. Data augmentation generates new samples from already collected ones by applying transformations to the samples. 
+CNNs typically do not take the raw camera/simulation images but rather preprocessed images, e.g. greyscaled images \textcite{atari}. Preprocessing steps can help in reducing the complexity of the input space. Convolutional neural networks require a lot of data to train, data augmentation can help increase the size of the training set and to make the agent more robust. Data augmentation generates new samples from already collected ones by applying transformations to the samples. 
 
 
 % TODO move next paragraph to CNN section?
@@ -152,7 +160,6 @@ Bojarski \textcite{bojarski2016endToEnd} used imitation learning to train a self
 Tesla used imitation learning to train the path prediction component of their self-driving systems. The fleet of Tesla vehicles allows them to collect a large amount of representative data in the real world. The reference dataset was generated from recordings of human Tesla drivers \textcite{tesla_youtube}. 
 
 Imitation learning and reinforcement learning can be combined to improve the training of the agent. The reinforcement learning process generates samples via interaction between agent and environment. These samples and the expert behaviour dataset are used together to train the agent policy \textcite{car-following_carla_dresden}.
-
 
 
 %\section{Reinforcement Learning for Self-Driving}

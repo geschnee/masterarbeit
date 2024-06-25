@@ -2,11 +2,13 @@
 \label{cha:Results}
 
 This chapter presents the results of the experiments conducted in this project. The first three experiments were designed to answer the research questions posed in chapter \ref{cha:ResearchGoals} specifically. 
-The experiments were conducted using the policy that was developed as a result of 
+
+The experiments were conducted using the policy that was developed as a result of the parameter experimentation \ref{sec:most_successful_policy}. This policy was trained exclusively on hard tracks with all light settings. The histogram equalization preprocessing step was used during training.
+
 
 \section{Eval for question 1}
 
-The trained policy was evaluated on tracks of all difficulty settings with the standard light setting using the Basic Evaluation algorithm \ref{sec:eval_model_track} with 100 episodes per setting. The success rates for the different difficulty settings are shown in figure \ref{fig:result_success_rates_standard}. Example videos of the agent's behaviour during evaluation can be found in the appendix \ref{cha:example_videos}.
+The trained policy was evaluated on tracks of all difficulty settings with the standard light setting using the Basic Evaluation algorithm \ref{sec:basic_evaluation_algorithm} with 100 episodes per setting. The success rates for the different difficulty settings are shown in figure \ref{fig:result_success_rates_standard}. Example videos of the agent's behaviour during evaluation can be found in the appendix \ref{cha:example_videos}.
 
 \subsection{Experiment Results}
 
@@ -20,7 +22,9 @@ The trained policy was evaluated on tracks of all difficulty settings with the s
 
 
 The policy completed the easy, medium and hard tracks with a succes\_rate of 100\%, 100\% and 99\%. 
-The collision\_rates were 0\%, 1\% and  70\%. Especially for the hard difficulty setting, the agent does not avoid collisions completely. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent passes the goals very close to the goal post that is closer to the arena middle \ref{fig:agent_behaviour}. This often results in collisions with the goal obstacles at its side.
+The collision\_rates were 0\%, 1\% and  70\%. Especially for the hard difficulty setting, the agent does not avoid collisions completely. 
+
+The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent passes the goals very close to the goal post that is closer to the arena middle \ref{fig:agent_behaviour}. This often results in collisions with the goal obstacles at its side.
 
 \begin{figure}
     \centering
@@ -29,6 +33,18 @@ The collision\_rates were 0\%, 1\% and  70\%. Especially for the hard difficulty
     \caption{Goal passing behaviour of the trained agent}
     \label{fig:agent_behaviour}
 \end{figure}
+
+The unsuccessful episodes of hard tracks were analyzed to determine why the agent does not reach 100\% success rates. The analysis showed that the agent has frontal collisions with the first goal post at the agents side \ref{fig:unsuccessful_episodes}. This occurs only when the agent is spawned with an extreme rotation. The agent cannot complete the tracks in about 40\% of episodes with the maximum rotation of $15^{\circ}$.
+
+\begin{figure}
+    \centering
+    \subfigure[Agent is spawned with extreme rotation]{\includegraphics[width=0.3\textwidth]{Bilder/extremeSpawnRot_agent_initial.png}}
+    \subfigure[Agent approaches first goal post]{\includegraphics[width=0.3\textwidth]{Bilder/extremeSpawnRot_agent_turns.png}}
+    \subfigure[Agent collides with first goal post and remains stuck]{\includegraphics[width=0.3\textwidth]{Bilder/extremeSpawnRot_agent_collides.png}}
+    \caption{Analysis of unsuccessful episodes}
+    \label{fig:unsuccessful_episodes}
+\end{figure}
+
 
 
 \subsection{Conclusion}
@@ -153,7 +169,7 @@ identical start conditions result in over 90\% identical trajectories for hard t
 
 The policy was trained to not use fresh observations \ref{sec:non_blocking_step_calls} with a fixed step duration of 0.3 seconds. The policy input recieves the observation from the start of the previous step as input. The policy input essentially lags 0.3 seconds behind the environment state. This saves processing time during training and evaluation. Alternatively a policy can be run with the $use\_fresh\_obs$ parameter. This makes the policy request a fresh observation from the Unity simulation.
 
-The Fresh Observations Test analyses whether switching the trained policy to use fresh observations improves the performance. The policy is evaluated with fresh observations and without fresh observations for each difficulty level using the Basic Evaluation Algorithm \ref{sec:eval_model_track}. The success rates are compared to determine if fresh observations improve the agent's performance.
+The Fresh Observations Test analyses whether switching the trained policy to use fresh observations improves the performance. The policy is evaluated with fresh observations and without fresh observations for each difficulty level using the Basic Evaluation Algorithm \ref{sec:basic_evaluation_algorithm}. The success rates are compared to determine if fresh observations improve the agent's performance.
 
 \paragraph{Results}
 
@@ -164,23 +180,10 @@ The Fresh Observations Test analyses whether switching the trained policy to use
     \label{fig:fresh_observations_test_result}
 \end{figure}
 
-The results show that the policy performs similar for the easy and medium settings. The success rates are 100\% for both fresh and non-fresh observations. The hard setting shows a strong decrease in performance when using fresh observations. The success rate goes from 98\% to 68\% \ref{fig:fresh_observations_test_result}.
+The results show that the policy performs similar for the easy and medium settings. The success rates are 100\% for both fresh and non-fresh observations. The hard setting shows a strong decrease in performance when using fresh observations. The success rate drops from 98\% to 68\% \ref{fig:fresh_observations_test_result}.
 
-The evaluations using fresh observations also take longer. The Basic Evaluation Algorithm's per call time for the fresh observations is 20 minutes compared to 17 minutes for the non-fresh observations. The evaluation using fresh observations is slower because the policy has to request a fresh observation from the Unity simulation. This takes additional time.
+The evaluations using fresh observations also take longer. The Basic Evaluation Algorithm's per call time for the fresh observations is about 20 minutes compared to 17 minutes for the non-fresh observations. The evaluation using fresh observations is slower because the policy has to request a fresh observation from the Unity simulation. This takes additional time.
 
-%|    fresh_better_by_easy_standard     | 0        |
-%|    fresh_better_by_hard_standard     | -0.23    |
-%|    fresh_better_by_medium_standard   | 0        |
-%|    success_fresh_easy_standard       | 1        |
-%|    success_fresh_hard_standard       | 0.76     |
-%|    success_fresh_medium_standard     | 1        |
-%|    success_nonfresh_easy_standard    | 1        |
-%|    success_nonfresh_hard_standard    | 0.99     |
-%|    success_nonfresh_medium_standard  | 1        |
-
-% percall time 20 min vs 17 min
-% 3    0.001    0.000 3704.876 1234.959 my_on_policy_algorithm.py:704(eval_model_track_wrapper_freshObs)
-% 3    0.004    0.001 3077.651 1025.884 my_on_policy_algorithm.py:707(eval_model_track_wrapper_noFreshObs)
 
 \paragraph{Discussion}
 
@@ -217,5 +220,3 @@ The collisions of the DifferentialJetBot were previously described as mainly bei
 The policy that was trained on the DifferentialJetBot can be transfered to the FourWheelJetBot with only a slight decrease in performance.
 The policy does not have to be retrained in this case. 
 
-
-% TODO einheitliche Camel case für die jetbots verwenden (namen wie in Configs: DifferentialJetBot, FourWheelJetBot)

@@ -23,11 +23,6 @@ As a result, the training progress and all agent evaluations cannot be made full
 The configuration files include a seed parameter. This seed is used to seed the random number generators of python and the reinforcement learning library. This way at least the model initialization is reproducible.
 
 
-\paragraph{step duration}
-non blocking steps
-
-TODO explain that a fixed step duration makes the policy transferable to other devices (eval runs with fixed step duration should have the same result for a particular trained policy)
-
 \section{Parameters for training}
 
 The policy and the policy training process use extensive parameterizations. The parameters can have an impact on the agent's overall capability (e.g. histogram equalization) and the training progress (e.g. reward function parameters).

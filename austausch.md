@@ -792,7 +792,6 @@ Zitierungen auch in Methodik durchfuehren
 \citet statt autocite
 
 Title case
-
 https://capitalizemytitle.com/
 
 ## Notizen von Martin
