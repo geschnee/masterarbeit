@@ -1,7 +1,7 @@
 
-\section{Agent interaction with the environment}
+\section{Policy interaction with the environment}
 
-This section summarizes the interaction of the agent with the environment. The full interaction is shown in figure \ref{fig:agent_interaction}.
+This section summarizes the interaction of the policy with the environment. The full interaction is shown in figure \ref{fig:agent_interaction}.
 
 As described in previous sections the agent's actions are controlled by the agent's policy. Given an observation the policy selects actions to execute. The observations represent the environment state. They are built from the agent's camera images. The observation processing steps transform these camera images to the observation space. The policy is a neural network that takes the observation space as input and produces actions as output. 
 The actions are applied to the environment. The environment processes the actions and returns a reward and a new observation.
@@ -87,7 +87,7 @@ The actions are applied to the environment. The environment processes the action
         \draw[->,thick] (5.5+ \xOffset, -2+ \yOffset)--(5.5+ \xOffset, -3+ \yOffset);
 
 
-        \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (0+ \xOffset,-6+ \yOffset) -- (7+ \xOffset,-6+ \yOffset)
+        \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (0+ \xOffset,-5.5+ \yOffset) -- (7+ \xOffset,-5.5+ \yOffset)
         node[anchor=north,midway,below=4pt] {Observation Preprocessing};
 
         \node[fit={(8+ \xOffset,0+ \yOffset) (11+ \xOffset,-5+ \yOffset)}, inner sep=0pt, draw=blue, thick] (policy) {};
@@ -100,36 +100,23 @@ The actions are applied to the environment. The environment processes the action
         \node[below] (pAction) at (9.5+ \xOffset, -4+ \yOffset) {Action};
         \draw[->,thick] (9.5+ \xOffset, -2 + \yOffset)--(9.5+ \xOffset, -3+ \yOffset);
 
-        \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (8+ \xOffset,-6+ \yOffset) -- (11+ \xOffset,-6+ \yOffset)
+        \draw[decorate,decoration={brace,mirror,amplitude=5pt}] (8+ \xOffset,-5.5+ \yOffset) -- (11+ \xOffset,-5.5+ \yOffset)
         node[anchor=north,midway,below=4pt] {Policy};
 
         \draw[->,thick] (3+ \xOffset, -2.5+ \yOffset)--(4+ \xOffset, -2.5+ \yOffset);
         \draw[->,thick] (7+ \xOffset, -2.5+ \yOffset)--(8+ \xOffset, -2.5+ \yOffset);
 
 
-
         % arrows communication
         \draw[->,thick, red] (\xOffset + 11, -2.5+ \yOffset)--(\xOffset+11+1, -2.5+\yOffset)--(\xOffset+11+1, -2.5)--(\envWidth, -2.5);
-        \node[right] at (\xOffset + 11 + 1, -2.5 + \yOffsetHalf) {action};
+        \node[centered, fill=white] at (\envWidth +0.5, -2.5 + \yOffsetHalf) {action};
 
         \draw[->,thick, red] (0, -2.5)--(-0.5,-2.5)--(-0.5,-2.5+\yOffset)--(\xOffset, -2.5+ \yOffset);
         \node[right] (camArrow) at (-2, -2.5 + \yOffsetHalf) {\agentImg{1}};
         
-        \node[below] at (camArrow.south) {rewards + new agent camera image};
+        \node[below, fill=white] at (camArrow.south) {rewards + new agent camera image};
 
     \end{tikzpicture}
-    \caption{Full agent interaction with the environment, communication in red}
+    \caption{Full policy interaction with the environment, communication in red}
     \label{fig:agent_interaction}
 \end{figure} % this replaces the old rl_cycle image
-
-%\node[inner sep=0pt] (step3) at (\bufferXOffsets + 0.3,\imagesOffsetY + 0.3)
-%{\preprocessedImg{3}};
-%\node[inner sep=0pt] (step2) at (\bufferXOffsets + 0.2,\imagesOffsetY + 0.2)
-%{\preprocessedImg{2}};
-%\node[inner sep=0pt] (step1) at (\bufferXOffsets + 0.1,\imagesOffsetY + 0.1)
-%{\preprocessedImg{1}};
-%\node[inner sep=0pt] (step0) at (\bufferXOffsets,\imagesOffsetY)
-%{\preprocessedImg{0}};
-
-
-

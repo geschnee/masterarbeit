@@ -6,7 +6,7 @@ This chapter presents the results of the experiments conducted in this project. 
 The experiments were conducted using the policy that was developed as a result of the parameter experimentation \ref{sec:most_successful_policy}. This policy was trained exclusively on hard tracks with all light settings. The histogram equalization preprocessing step was used during training.
 
 
-\section{Eval for question 1}
+\section{Eval for question 1 - \questionOne}
 
 The trained policy was evaluated on tracks of all difficulty settings with the standard light setting using the Basic Evaluation algorithm \ref{sec:basic_evaluation_algorithm} with 100 episodes per setting. The success rates for the different difficulty settings are shown in figure \ref{fig:result_success_rates_standard}. Example videos of the agent's behaviour during evaluation can be found in the appendix \ref{cha:example_videos}.
 
@@ -49,11 +49,13 @@ The unsuccessful episodes of hard tracks were analyzed to determine why the agen
 
 \subsection{Conclusion}
 
-The trained policy is able to complete all difficulty levels very reliably.
+The trained policy is able to complete all difficulty levels very reliably. The policy reached success rates of 100\%, 100\% and 99\% for easy, medium and hard tracks. The end-to-end trained \acs{CNN} policy proves to be very effective at solving the autonomous driving task.
+
+The policy outperforms previous work at the ScaDS.AI by \textcite{maximilian}. The policies developed by \textcite{maximilian} reached success rates of 99\%, 89\% and 64\% for easy, medium and hard tracks.
 
 The policy was trained on the difficult setting only. The policy did not see easy and medium difficulty parcours before the evaluation. The policy is able to generalize to tracks of lower difficulty.
 
-\section{Eval for question 2}
+\section{Eval for Question 2 - \questionTwo}
 
 The most succesfull model was used to evaluate the agent's performance under different light settings. The agent was evaluated on the standard, dark and bright light settings. Each combination of difficulty and light setting was evaluated with the Basic Evaluation Algorithm for 100 episodes. The success rates for the different light settings are shown in figure \ref{fig:result_success_rates_lightSettings}.
 
@@ -81,10 +83,10 @@ Across all light and difficulty settings the overall success rate is almost 100\
 The policy was able to complete the parcours very reliably under the different light settings. The light setting only had a minor impact on the success rate.
 Furthermore the different light settings did not lead to an overall increase in collisions.
 
-The developed policy was trained following the experiments in the previous chapter. The policy used the histogram equalization preprocessing step and mixed light settings during training. Using these settings the policy was able to learn to navigate the tracks with all light conditions.
+The developed policy was trained following the experiments in the previous chapter. The agent used the histogram equalization preprocessing step and mixed light settings during training. Using these settings the policy was able to learn to navigate the tracks with all light conditions.
 
 
-\section{Eval for Question 3 - Replays}
+\section{Eval for Question 3 - \questionThree}
 
 The most successful model was used to record replays of the agent's behaviour. This most successful model used a $fixedTimestepLength$ of $0.3$ seconds. This means the hardware has to able to make a decision every $0.3$ seconds to be considered fast enough.
 
@@ -150,22 +152,45 @@ The tests showed that the difference in performance for the sampling modes was v
 \paragraph{Discussion}
 The test indicates that the non-deterministic sampling mode performes better, although the differences in performance are quite small. Given these results, the main evaluations for question 1 and 2 were conducted with non-deterministic sampling.
 
-\subsection{Test identical start conditions}
+\subsection{Identical start condition Test}
 
-The environment is not 100\% deterministic. This is due to the environment implementation in Unity. The environment uses physics simulations which are not deterministic. In addition the agent's actions are sampled non-deterministically during the evaluation.
-This means that the same start conditions of an episode may result in different trajectories and results. This test evaluates the impact of the non-deterministic environment and sampling on the agent's behaviour. 
-The trained agent is placed in the same start conditions for 100 episodes and the trajectories are compared. The starting conditions entail the selected track, light condition and the agent's starting rotation.
+The environment is not 100\% deterministic. This is due to the environment implementation in Unity \autocite{unity_fixed-update}. The environment uses physics simulations which are not fuly deterministic. In addition the policy's actions are sampled non-deterministically during the evaluation.
+This means that identical start conditions of an episode may result in different trajectories and results. This test evaluates the impact of the non-deterministic environment and sampling on the agent's behaviour. 
+
+The agent is placed in the same start conditions for 100 episodes. The starting conditions entail the selected track, light condition and the agent's starting rotation. The test was executed for the hardBlueFirstRight trach with the standard lighting. Three starting rotations were used \ref{fig:identical_start_conditions_test_rotations}.
+The episode results are compared.
+
+\begin{figure}
+    \centering
+    \subfigure[-15°]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/identical_start_conditions/hardBlueFirstRight_minus15.png}}
+    \subfigure[0°]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/identical_start_conditions/hardBlueFirstRight_0.png}}
+    \subfigure[15°]{\includegraphics[width=0.3\textwidth]{Bilder/image_printer_images/identical_start_conditions/hardBlueFirstRight_15.png}}
+    \caption{tested starting rotations}
+    \label{fig:identical_start_conditions_test_rotations}
+\end{figure}
 
 \paragraph{Results}
 
-identical start conditions result in over 90\% identical trajectories for hard tracks
+The results show that the agent's performance is very consistent for the different starting rotations regarding the $success\_rate$. The agent successfully completes the parcours with $-15°$ and $0°$ starting rotation. The agent completes the parcour in only 7\% of episodes with $15°$ starting rotation.
+For the different starting rotations, the agent either completes the parcour very reliably or very rarely.
+
+The $collision\_rate$ is not consistent for the episodes with the same starting rotation. The $collision\_rate$ is 60\% and 72\% for the $-15°$ and $0°$ starting rotations. 
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{Bilder/notebook_images/identicalResults_mixedLightSettings.png}
+    \caption{Results of 100 episodes for different starting rotations}
+    \label{fig:identical_start_conditions_test_result}
+\end{figure}
+
 
 \paragraph{Discussion}
 
---> nice
+The test shows that identical starting conditions do not always lead to the same episode result. However the success rate is very consistent for the identical starting conditions. The collision rate is significantly less consistent.
 
-BIG TODO
+The results confirm that the $success\_rates$ of the Basic Evaluation Algorithm are reliable. 
 
+% TODO if there is time and ideas only
 
 \subsection{Fresh Observations Test}
 

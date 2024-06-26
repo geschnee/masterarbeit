@@ -1,0 +1,23 @@
+\chapter{Future Research Directions}
+\label{cha:futur_research_directions}
+
+There are two interesting main directions for future work based on the results of this thesis. The first point arises from the fact that the agents were able to complete the tracks with a high success rate. However the agent's \acs{MSLP} policy resulted a high rate of collisions with the goal objects. The second point is the transfer of the policy to real world robots \ref{fig:jetbots}.
+
+
+\paragraph{Decreasing the collision rate}
+
+The agent's policy did not learn to avoid collisions entirely. The reward function that was used for the policy training did not punish collisions enough, this is discussed in chapter \ref{sec:comment_on_collision_rate}. Collision avoidance is especially important for real-world applications.
+
+Possible solutions to this problem could include finding a better reward function parameterization that leads to a policy that avoids collisions. Another approach could be to modify the policy's inputs to include additional information. This could include a wider field of view or additional sensors, such as a depth sensor.
+
+\paragraph{Transfering the policy to real world robots}
+
+The agents developed in this thesis were trained in a simulated environment. The goal of the ongoing research at the ScaDS.AI is to transfer the agents to real world robots. The robots are based on the NVIDIA JetBot platform and are equipped with a camera, wheels and a small computer. The processing power of these robots is limited. The research in this thesis shows that the hardware is sufficient to compute the preprocessing steps and policy in real-time.
+
+The policies developed in this thesis could be transfered to the physical robots. Evaluating the policy in a real-world environment would be an interesting direction for future research. Previous research at the ScaDS.AI by \textcite{merlin_flach} has shown this transfer is difficult. However the agents evaluated by \textcite{merlin_flach} used completely different preprocessing steps and policies compared to the \acs{CNN} light-change resistant policies developed in this thesis. 
+
+% possible improvements could be the use of more diverse training data to make the policy more robust
+
+% see related work section env permutations ...
+
+

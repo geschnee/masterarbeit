@@ -56,12 +56,13 @@ The instability of the hand-crafted preprocessing pipeline and promissing result
 \section{Reinforcement Learning}
 
 % data not programmer decides the salient image pixels (bedeutungsvollen)
+\subsection{Introduction to Reinforcement Learning}
 
-Reinforcement Learning algorithms have been around for a long time, but only recently have they been able to achieve superhuman performance in games and control tasks \textcite{atari}. Most reinforcement learning algorithms formalize the problem as consisting of an environment and an agent. The environment consists of a state space, an action space and a reward function that takes state-action pairs as input. Reward functions assign positive rewards to actions that are deemed to be desirable by the algorithm designers, for example scoring a goal in a football match. Reward function can also assign negative rewards to undesirable actions, for example collisions in a driving simulation. 
+Reinforcement Learning algorithms have been around for a long time, but only recently have they been able to achieve superhuman performance in games and control tasks \textcite{atari}. Reinforcement learning algorithms formalize the problem as consisting of an environment and a policy $\pi$. The environment consists of a state space, an action space and a reward function that takes state-action pairs as input. Reward functions assign positive rewards to actions that are deemed to be desirable by the environment designers, for example scoring a goal in a football match. Reward function can also assign negative rewards to undesirable actions, for example collisions in a driving simulation. 
 
-The goal of reinforcement learning algorithms is to train an agent that interacts with its environment and maximizes the cumulative reward over time. The trained agent learns the desired behaviour and can be used to solve problems in the environment. The process of selecting an action is called the policy $\pi$ \textcite{rlbook2020}. The policy defines the agent's behaviour.
+The goal of reinforcement learning algorithms is to build an agent that interacts with its environment and maximizes the cumulative reward over time. The policy selects actions given an observation. It controls the agents behaviour \textcite{rlbook2020}. It is trained by the \acs{RL} algorithm to learn the desired behaviour. The trained policy can then be used to solve problems in the environment. 
 
-The agent interacts with the environment during the training phase of RL algorithms. The agent takes some representation of the environment as input and selects actions to execute in the environment. The selected actions are executed in the environment which results in a new state. The reward function assigns reward to these state transitions.
+The agent interacts with the environment during the training phase of RL algorithms. The policy takes some representation of the environment's state as input and selects actions to execute in the environment. The selected actions are executed in the environment by the agent which results in a new state. The reward function assigns rewards to these state transitions.
 The observed rewards are then used to update the policy \ref{fig:rlcycle}.
 
 \begin{figure}
@@ -71,6 +72,8 @@ The observed rewards are then used to update the policy \ref{fig:rlcycle}.
     \label{fig:rlcycle}
 \end{figure}
 
+\subsection{Classification of \acs{RL} Algorithms}
+
 Reinforcement learning algorithms are classified into two major groups. RL algorithms that use a model of the environment are called model-based algorithms, algorithms without such models are called model-free algorithms. Algorithms from both groups have been successfully used in a wide range of applications, model-based algorithms are often much more complex but have been shown to be successful at many task that require planning \textcite{alphagoimprovementmuzero}. Model-free approaches are often simpler and more flexible, they have shown great success in various control tasks \textcite{atari}.
 
 \begin{figure}
@@ -79,25 +82,53 @@ Reinforcement learning algorithms are classified into two major groups. RL algor
     \caption{Taxonomy of RL algorithms from OpenAI's Spinning Up course \autocite{spinningup}}
 \end{figure}
 
-Model free algorithms can be further divided into two families. The first family are value-based approaches. These algorithms learn a value function that assigns state and action pairs a value that represents the expected future reward. The policy selects actions based on this function. The state action pair with the highest Q-value is selected. The Q-learning algorithm is an early and common example of value-based algorithms \textcite{rlbook2020}. The traditional Q-learning algorithm uses a table to store the function. The table contains one cell for each state-action pair and stores the Q-value.
+\subsubsection{Model free \acs{RL} Algorithms}
 
-For many problems the use of these tables in not feasible due to the amount of state-action pairs, many extensions to the algorithms have been developed such as for example deep q-learning. Deep q-learning uses a deep neural network to approximate the Q-values \textcite{atari}. The network learns to predict the Q-values for state-action pairs. Neural networks are general approximators. They can return accurate value predictions even for previously unseen states, compared to the state-action table.
-Although Deep q-learning have been used to great success for control tasks they will not be used in this thesis, as they require discrete action spaces and the environment in this thesis consists of a continuous action space.
+\paragraph{Value based algorithms}
+Model free algorithms can be further divided into two families. The first family are value-based approaches. These algorithms learn a function that assigns state-action pairs a value. This function is called the value function. This value represents the expected future reward Q.
+ 
+The policy is not trained directly. The policy selects actions based on this value function instead. The state-action pair with the highest Q-value is selected for a given state.
+
+The training process of the value function is done by updating the Q-values based on the observed rewards. The Q-learning algorithm is an early and common example of value-based algorithms \textcite{rlbook2020}. The Q-learning algorithm updates the values based on the observed rewards and the maximum Q-value of the next state \[Q(S_t, A_t) = Q(S_t, A_t) + \alpha (R_{t+1} + \gamma \max_a Q(S_{t+1}, a) - Q(S_t, A_t))\].
+$\alpha$ is the learning rate. It determines how quick values are changed. $\gamma$ is the discount factor of future rewards.
 
 
-The other family are policy-based algorithms, instead of learning the values associated to state-action pairs these algorithms learn the policy directly. This allows for the use of continuous action spaces. The policy is often represented by a (convolutional) neural network. The policy's parameters are updated to maximize the expected future reward. 
+The Q-learning algorithm can use a table to store the value function. The table contains one cell for each state-action pair and stores the Q-value. 
+For many problems the use of these tables in not feasible due to the amount of state-action pairs, many extensions to the algorithms have been developed such as for example deep q-learning. Deep q-learning uses a deep neural network to approximate the Q-values \textcite{atari}. The network learns to predict the Q-values for state-action pairs. Neural networks are general approximators. They can learn to generalize and return accurate value predictions even for previously unseen states.  
+
+Value-based \acs{RL} algorithms have been used to great success for control tasks \textcite{rlbook2020}. However they will not be used in this thesis, as they require discrete action spaces. The environment in this thesis consists of a continuous action space.
+An action space can be discretized for use by value-based algorithms \ref{fig:example_discretization}. However this can lead to a loss of fidelity.
+
+% TODO \ref{fig:example_discretization} ?
+
+\paragraph{Policy based algorithms}
+% rlbook2020 chapter 13.7
+The other family are policy-based algorithms. These algorithms optimize the policy directly instead of the values associated with states or state-action pairs. Instead of computing the learned probability of each action, the policy learns the statistics of the action distribution.
+Given a scalar action space. The action distribution can be represented as a gaussian probability Distribution:
+\[p(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x-\mu)^2}{2\sigma^2}}\]
+
+The policy can then be defined as the normal probability density over a real-valued scalar action. The mean and standard deviation of the distribution are given by parametric function approximators that depend on the state $s$. The mean is given by $\mu(s, \theta)$ and the standard deviation by $\sigma(s, \theta)$. The policy is then defined as:
+\[\pi(a|s, \theta) = \frac{1}{\sigma(s, \theta)\sqrt{2\pi}} e^{-\frac{(a-\mu(s, \theta))^2}{2\sigma(s,\theta)^2}}\]
+
+The parametric function approximators $\mu(s, \theta)$ and $\sigma(s, \theta)$ are trained by the \acs{RL} algorithm. Any function approximator can be used, for example a \acs{NN} with parameters $\mu$ \textcite{rlbook2020}. 
+
+The action distribution can be extended to multi-dimensional action spaces. This action distribution can be represented as a multivariate gaussian distribution. The function approximator then outputs the mean and covariance matrix of the distribution. This makes policy-based \acs{RL} algorithms very flexible. They can be used for multi-dimensional continuous action spaces.
+
+
 The policy can be updated using the gradient of the expected rewards with respect to the policy parameters. Algorithms that use this approach are called policy gradient algorithms.
 
+
+\paragraph{Actor-Critic Algorithms}
 Alternatively the policy can be updated using Actor-Critic approaches. These combine policy-based and value-based approaches. Actor-Critic approaches contain a policy and a value function. The value function represents the expected future reward of a state. The policy is updated using this value function.
 
-The Proximal Policy Optimization algorithm is an Actor-Critic algorithm. It was developed to improve the stability of policy-based algorithms \textcite{ppo}. The PPO algorithm restricts the size of policy changes caused by parameter updates, which ensures the policy does not change drastically. This improves stability. PPO is currently one of the most popular algorithms for reinforcement learning, and has already been successfully used in the domain of autonomous driving \textcite{maximilian}.
+The Proximal Policy Optimization algorithm is an Actor-Critic algorithm. It was developed to improve the stability of policy-based algorithms \textcite{ppo}. The \acs{PPO} algorithm restricts the size of policy changes caused by parameter updates, which ensures the policy does not change drastically. This improves stability. \acs{PPO} is currently one of the most popular algorithms for reinforcement learning. It has already been successfully used in the domain of autonomous driving \textcite{maximilian}.
 
 
 
 % Another major improvement in the domain of reinforcement learning was the combination of neural networks with traditional planning and search algorithms, the most famous example for this is AlphaGo \textcite{alphago}. These algorithms often are model-based algorithms and use search algorithms (e.g. Monte Carlo Tree Search)  to evaluate the possible actions at a given state. The neural networks are used for the evaluation of states and actions in the search algorithms. AlphaGo was developed for a 2 player deterministic game with a discrete state and action space. Since then this combination of neural networks and search algorithms has also been used to achieve impressive results for all kinds of problems \textcite{alphafold}, for example single player continuous state and action spaces \textcite{alphagoimprovementmuzero}. Although these algorithms could be applied to the problem at hand, they will not be utilized due to the increased complexity of the algorithms and the required computational resources.
 % TODO sollte der Teil wieder rein?
 
-
+% temporal difference learnign: update a function based on previously learned things (e.g. q-learning)
 
 % TODO mention reward shaping from rlbook somewhere
 % first give a reward signal that is not aligned with final goal but gives frequent rewards

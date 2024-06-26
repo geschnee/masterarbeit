@@ -17,7 +17,7 @@ The value function is a scalar value that estimates the expected return of the c
 
 
 
-\subsubsection{Observation Space}
+\subsection{Observation Space}
 
 The input space of the neural network is three dimensional. The input is structured like images with $width$, $heigth$ and $channel$ dimensions. The dimensions are determined by the agent's camera image dimensions, preprocessing parameters and the memory mechanism. The input space is a tensor with the following dimensions:
 
@@ -30,27 +30,56 @@ The input space of the neural network is three dimensional. The input is structu
 The tensor values are integers in the range $[0,255]$. Storing the pixel intensities as integers saves a lot of memory compared to floats.
 
 
-\subsubsection{Action Space}
+\subsection{Action Space}
 
-The environment's action space is two dimensional, the dimensions are called $leftAcceleration$ and $rightAcceleration$. The values are restricted to the range $[-1,1]$ and dictate the agent movement \ref*{cha:agent_description}.
+The environment's action space is a two dimensional scalar, the dimensions are called $leftAcceleration$ and $rightAcceleration$. The values are restricted to the range $[-1,1]$, see \ref{fig:action_space}. They dictate the agent movement \ref{cha:agent_description}.
 
-\subsubsection{Architecture}
+
+\begin{figure}[!h]
+    \centering
+    \begin{tikzpicture}[%
+            every node/.style={
+                    font=\scriptsize,
+                    % Better alignment, see https://tex.stackexchange.com/questions/315075
+                    text height=1ex,
+                    text depth=.25ex,
+                }, outer sep=auto
+        ]
+
+        % draw empty rectangle
+        \node[fit={(0,0) (4,4)}, inner sep=0pt, draw=blue, thick] (space) {};
+        \node[anchor = north east] at (0, 0) {-1, -1};
+        \node[anchor = west] at (4, 0) {-1, 1};
+        \node[anchor = south] at (0, 4) {1, -1};
+        \node[anchor = west] at (4, 4) {1, 1};
+
+        \node at (0,0)[circle,fill,inner sep=0.001pt]{};
+        \node at (0,4)[circle,fill,inner sep=0.01pt]{};
+        \node at (4,0)[circle,fill,inner sep=0.05pt]{};
+        \node at (4,4)[circle,fill,inner sep=0.1pt]{};
+        \node at (2,2)[circle,fill,inner sep=0.0pt]{};
+
+        \node[anchor = north] at (2, 2) {0, 0};
+
+        \draw[<->,thick] (0, -0.2) -- (4, -0.2);
+        \node[anchor = north] at (2, -0.2) {rightAcceleration};
+
+        \draw[<->,thick] (-0.2, 0) -- (-0.2, 4);
+        \node[anchor = east] at (-0.2, 2) {leftAcceleration};
+
+    \end{tikzpicture}
+    \caption{the two-dimensional Action Space}
+    \label{fig:action_space}
+\end{figure}
+
+
+\subsection{Architecture}
 \label{sec:network_architecture}
 
-The neural network has an action and a value head. The action head produces the action distribution. The value head produces an estimate of the state's value. 
+The neural network has produces two outputs, the action distribution and a value estimate. The outputs are produced by sections of the network called the action and value head. The action head produces the action distribution. The value head produces the estimate of the state's value. 
 
-The action and value head share the first part of the neural network. The shared part is called the feature extractor and consitutes the first four layers. The feature extractor consists of three convolutional layers and one fully connected layer. The first convolutional layer takes the output of the memory buffer as input. The output of the feature extractor's fully connected layer is used by the action and value heads.
+The action and value head share the first part of the neural network. They are built on top of the feature extractor. The full structure is shown in \ref{fig:network_structure}.
 
-
-\paragraph{Action Head}
-\label{sec:action_sampling}
-
-The action head consists of a single fully connected layer with two outputs. The two outputs represent the mean of the action distribution. The action distribution is a Gaussian Distribution. The action distribution can be sampled deterministically or stochastically to obtain an action for the agent. The most likely action is returned in determinsitc sampling. This is equal to the outputs of the action head. In stochastic sampling, the action is sampled from the action distribution.
-
-The sampled actions are clipped to the output space's range $[-1,1]$. This is necessary as the sampling can return a value outside of the range.
-
-\paragraph{Value Head}
-The value head consists of a single fully connected layer with one scalar output.
 
 \begin{figure}[!h]
     \centering
@@ -103,8 +132,26 @@ The value head consists of a single fully connected layer with one scalar output
     \label{fig:network_structure}
 \end{figure}
 
+\subsubsection{Feature Extractor}
 
-\subsubsection{Parameters}
+The feature extractor comprises the first four layers of the network. As the name suggests, the feature extractor extracts features from the input for further processing.
+
+The feature extractor consists of three convolutional layers and one fully connected layer. The first convolutional layer takes the output of the memory buffer as input. The output of the feature extractor's fully connected layer is used by the action and value heads.
+
+
+\subsubsection{Action Head}
+\label{sec:action_sampling}
+
+The action head consists of a single fully connected layer with two outputs. The two outputs represent the mean of the two-dimensional action distribution. The action distribution is a Gaussian Distribution. The action distribution can be sampled deterministically or stochastically to obtain an action for the agent. The most likely action is returned in determinsitc sampling. This is equal to the outputs of the action head. In stochastic sampling, the action is sampled from the action distribution.
+
+The sampled actions are clipped to the action space's range $[-1,1]$. This is necessary as the sampling can return a value outside of the range.
+
+\subsubsection{Value Head}
+
+The value head consists of a single fully connected layer with one scalar output.
+
+
+\subsection{Parameters}
 The neural network's input dimensions are determined by the agent's camera image dimensions and the observation processing. The network architecture follows the specifications from \textcite{human_level_control}. However the observation space differ from their network. This results in a different number of parameters for the feature extractor's layers.
 The parameters and layer dimensions used network are shown in figure \ref{fig:network_architecture}.
 

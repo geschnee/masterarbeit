@@ -1,8 +1,60 @@
 \chapter{Conclusion}
 \label{cha:Conclusion}
 
-TODO conclusion
+% Title
+% End-to-End Reinforcement Learning Training of a Convolutional Neural Network to achieve an autonomous driving agent resilient to light changes
 
-BIG TODO
+This research has investigated the development of an autonomous driving agent capable of adapting to varying light conditions. By leveraging end-to-end trained convolutional neural networks, we have shown that it is possible to train an autonomous agent that solves the autonomous driving task very reliably. The task consists of a series of goals that the agent has to drive through. There are three difficulty levels that position the goals in increasingly challenging configurations. The policy is evaluated on the three light settings bright, standard and dark.
+The results highlight the effectiveness of our approach, demonstrating significant robustness towards changing light conditions. This work advances the field of autonomous driving and opens avenues for future research to transfer the policy to real-world jetbot agents.
+
+The developed autonomous driving agent can move in its environment and has a front facing camera. The images from this camera are used for the agent's policy. The camera images are preprocessed to improve the policy's performance and resiliency towards light changes. The policy is trained using the Proximal Policy Optimization algorithm in simulation.
+
+To summarize our key findings, we revisit the primary research questions:
+\begin{itemize}
+    \item Question 1 - \questionOne
+    \item Question 2 - \questionTwo
+    \item Question 3 - \questionThree
+\end{itemize}
+
+\paragraph{Question 1}
+The \acs{CNN} policy proved to be very suitable for the autonomous driving task. The policy was trained successfully end-to-end using only the most difficult tracks. The policy was able to solve the task reliably, even on the most challenging tracks. It was able to achieve a $success\_rate$ of 100\% on the easy and medium difficulty tracks and 99\% in on the difficult tracks.
+
+The policy was able to outperform the previous work on the same task. \textcite{maximilian} used a rather complex preprocessing pipeline to extract features for a \acs{NN} policy.
+
+\paragraph{Question 2}
+The developed \acs{MLSP} policy was robust to the tested light changes. The policy was able to solve the task with a $success\_rate$ of 100\% on all light settings for easy and medium tracks. The $success\_rate$ decreased slightly for the difficult tracks. The policy achieved 98\% on the bright and 97\% on the dark light setting, compared to a $success\_rate$ of 99\% for the standard setting.
+
+The experiments show that the histogram equalization preprocessing step plays a major role in the policy's performance and robustness towards light changes. Furthermore the histogram equalization allows a policy to be trained exclusively on the standard light setting and generalize to the other settings with a small performance decrease \ref{cha:experiment_fixed_difficulty_light_settings}.
+
+\paragraph{Question 3}
+Episode replays of the \acs{MLSP} policy were created and then replayed on the pyhsical robot's hardware. The hardware was able to compute the policy in real-time. The increased processing requirements of the \acs{CNN} policy are no issue for the robot's hardware. This shows that the policy can be transferred to the physical robot in theory.
 
 
+
+To summarize this work, successful autonomous driving agents were developed. The agents' \acs{CNN} policies were trained end-to-end using the \acs{PPO} \acs{RL} algorithm. The agents were able to solve the task reliably for all light settings and difficulty levels. The image preprocessing steps proved crucial in the policy's performance and robustness towards light changes. The preprocessing steps and policy computation was evaluated on the physical robot's hardware and found to be feasible for real-time computation.
+
+The thesis contributes to the further development of autonomous driving agents. The work shows that \acs{CNN} policies can be trained end-to-end to solve the autonomous driving task. The developed policy's resistance to different light changes makes this approach a promising candidate for transfer to the real-world robot hardware.
+
+
+% BIG TODO
+
+
+%- a successful policy was developed
+
+%- policy consisting of a CNN can be trained for the task
+
+%- the policy beats previous work on the same task (standard light setting)
+
+
+%- the policy is robust to the tested light changes
+%- the policy computation can be done on jetbot in realtime
+
+%- the histogram equalization preprocessing step is a helpful step
+%    - the policy is always better when trained with it
+%    - the hist equ step can even help a policy solve light settings that were not in the training set with only a small decrease in performance
+
+
+%The theis shows the CNN is a very fitting approach for this task. ...
+
+
+%TODO replace mentions of parcour by tracks

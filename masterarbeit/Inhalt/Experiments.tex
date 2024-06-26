@@ -227,13 +227,13 @@ The sampling mode performance test uses the Basic evaluation algorithm to evalua
 
 \subsection{Identical start condition Test}
 
-The environment is simulated in Untiy and was described in \ref{cha:env_description} to not be fully deterministic. This means identical actions in identical environment states can result in slightly different environment states. In addition the policy evaluation may use non-deterministic sampling for selecting actions \ref{sec:action_sampling}. This results in different actions for identical observations. 
+The environment is simulated in Untiy. The unity game engine is not fully deterministic \autocite{unity_fixed-update}. This means identical actions in identical environment states can result in slightly different environment states. In addition the policy evaluation may use non-deterministic sampling for selecting actions \ref{sec:action_sampling}. This results in different actions for identical observations. 
 
 Therefore, episodes with identical starting conditions could result in different outcomes. This would be problematic when evaluating the agent since the evaluation results would not be reliable.
 
 The identical start condition test evaluates the agent on multiple episodes with identical starting conditions. The episode results are analysed to see if the policy is consistent when given identical starting conditions. If the policy is inconsistent given identical starting conditions, the evaluation results according to \ref{sec:basic_evaluation_algorithm} are not reliable. The evaluation algorithm described in \ref{sec:basic_evaluation_algorithm} evaluates the agent on a series of different starting conditions, each starting condition is unique and only evaluated once.
 
-This test runs multiple episodes with identical start conditions and analyses the episodes. The episode results are characterized and grouped. The groups are then analysed to determine if the agent's performance is consistent given identical starting conditions. A low number of groups indicates that the agent's performance is consistent. Ideally there is only one group that all episode results belong to.
+This test runs multiple episodes with identical start conditions and analyses the episodes. The episode results are characterized and grouped. The groups are then analysed to determine if the agent's performance is consistent given identical starting conditions. Ideally all episodes would result in the same outcome.
 The episode results are characterized by the endEvent, collision and the three goals' completion.
 
 

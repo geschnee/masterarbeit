@@ -107,7 +107,7 @@ The stable-baselines3 library supports the parallel processing of multiple envir
 
 The step function of the Unity environment is non-blocking. This means that Unity returns the call before the entire step transition is complete. The python algorithm can continue without waiting for the step to complete. This interaction is shown in \ref{fig:step_call_timeline}.
 
-In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. Since the Unity environment returns the call before the current step is finished, this is not possible. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. 
+
 
 \definecolor{myLightGray}{RGB}{191,191,191}
 \definecolor{myDarkGray}{RGB}{144,144,144}
@@ -257,13 +257,14 @@ In conventional reinforcement learning each step transition results in a new obs
     \label{fig:step_call_timeline}
 \end{figure}
 
+In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. Since the Unity environment returns the call before the current step is finished, this is not possible. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. 
 
 The returned observation is delayed by one step. The duration of the steps is dictated by the $fixedTimestepsLength$ environment parameter \ref{sec:step_duration}. Shorter step durations result in more accurate observations.
 Experiments show that the policy can learn to deal with this delay.
 
 Alternatively there is the parameter $use\_fresh\_obs$. If this parameter is set to true, a new agent camera image is requested from Unity via another \ac{RPC} call before predicting the next action. This can be useful if the policy is sensitive to the observation delay. However this increases the amount of \ac{RPC} calls and slows down the training and evaluation process.
 
-% TODO remove mentions of JsonRPC
+
 
 \subsection{Arena Description}
 
@@ -332,8 +333,10 @@ Example videos are shown in the appendix \ref{cha:example_videos}.
 \subsection{Agent Description}
 \label{cha:agent_description}
 
-The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives an action to execute from the Python algorithm. The actions consist of a $leftAcceleration$ and $rightAcceleration$ value. The agent's wheels are controlled using the values for the entire duration of a step. 
-The values are in the range of $[-1, 1]$. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
+The agent is modeled after the NVIDIA JetBot, a small robot designed for educational purposes. The NVIDIA JetBot is equipped with a camera and a differential drive system. The agent's camera is mounted on the JetBot's front and captures the arena from the JetBot's perspective. The camera captures the arena in a 2D image format. In each step the agent receives an action to execute from the Python algorithm. 
+
+The actions consist of a $leftAcceleration$ and $rightAcceleration$ scalar value. The agent's wheels are controlled using these values for the entire duration of a step. 
+The values are restricted to the range of $[-1, 1]$, see \ref{fig:action_space}. The agent moves forward when the values are positive. When the right acceleration value is bigger the agent turns to the left and vice versa.
 
 
 There are two versions of the JetBot agent in the simulation, the DifferentialJetBot and the FourWheelJetBot. The DifferentialJetBot has two driving wheels at the front and a ball supporting it at the back. The DifferentialJetBot applies by different torques to the two front wheels. The two acceleration values are multiplied by a constant factor and applied to the two wheels independently.
