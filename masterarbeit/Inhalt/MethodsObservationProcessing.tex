@@ -1,7 +1,7 @@
 \section{Observation Processing}
 
 
-The policy controls the agent's actions in the environment. The policy is optimized using the \ac{PPO} reinforcement learning algorithm. The policy takes a representation of the environment state as input and produces an action as output. This representation is called the observation.
+The policy controls the agent's actions in the environment. The policy is optimized using the \ac{PPO} \ac{RL} algorithm. The policy takes a representation of the environment state as input and produces an action as output. This representation is called the observation.
 
 The environment state is represented as an image from the agent's camera. This section explains how the observation is processed before it is given to the policy. The steps aim to enhance the policy's performance and generalization capabilities.
 
@@ -100,7 +100,7 @@ The histogram equalization step can make images of different light settings more
 
 \subsection{Memory Mechanism}
 
-Memory mechanisms are a common approach to enhancing a reinforcement learning agent. Memory mechanisms can be implemented in many different ways. Our memory mechanism uses frame stacking, similar to \textcite{maximilian} and \textcite{atari}. The memory is configured with the $frame_stacking$ parameter. The memory is a simple first-in-first-out buffer that stores the last $frame_stacking$ images. The memory is updated by inserting the new image and removing the oldest image. The inserted images are the outputs of the preprocessing steps.
+Memory mechanisms are a common approach to enhancing a \ac{RL} agent. Memory mechanisms can be implemented in many different ways. Our memory mechanism uses frame stacking, similar to \textcite{maximilian} and \textcite{atari}. The memory is configured with the $frame_stacking$ parameter. The memory is a simple first-in-first-out buffer that stores the last $frame_stacking$ images. The memory is updated by inserting the new image and removing the oldest image. The inserted images are the outputs of the preprocessing steps.
 The images from the memory buffer are concatenated along the channel axis to produce the neural network input. This neural network input is essentially an image with many channels.
 The memory buffer is reset at the start of every episode. The reset fills the entire buffer with zeros. The zeros are used as a placeholder. The first-in-first-out mechanism removes the zeros over the first $frame\_stacking$ timesteps.
 

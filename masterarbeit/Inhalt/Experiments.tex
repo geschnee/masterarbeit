@@ -132,7 +132,7 @@ The experiment shwos if the agent is able to adapt to different light settings a
 Previous sections describe how a policy was developed that can be used to control an agent in a simulated environment. This section describes how I will investigate the feasibility of transfering the developed policy onto physical devices. The simulated agent was modeled after a Nvidia JetBot. The Nvidia JetBot is a small robot that is equipped with a camera, a processing unit and two motors that can be controlled independently.
 The Nvidia Jetbot is designed to be able to execute AI software. However the limited computational power of the JetBot raises the question whether the developed policy can be transfered to the JetBot.
 
-The developed policy takes a camera image from the front of the agent as input and applies preprocessing steps to the image. The preprocessed image is then processed by a convolutional neural network that outputs two acceleration values, one for each motor. The acceleration values are applied to the motors for a fixed amount of time. While the agent is moving, the camera image is constantly updated and the policy is applied to the new image. It is crucial that the agent's policy can be computed quick enough to be able act in real time.
+The developed system takes a camera image from the front of the agent as input and applies preprocessing steps to the image. The preprocessed image is then processed by a \ac{CNN} policy that outputs two acceleration values, one for each motor. The acceleration values are applied to the motors for a fixed amount of time. While the agent is moving, the camera image is constantly updated and the policy is applied to the new image. It is crucial that the agent's policy can be computed quick enough to be able act in real time.
 
 \subsection*{Effects of insufficiently slow policy computation}
 If the jetbot is not able to compute the developed policy in the required time, there are two options that do not require changes to the developed/trained policy. The first option is to stop the motors until the policy is computed and then apply the acceleration values. This would make the jetbot movement overall slower and less smooth.
@@ -183,7 +183,7 @@ The experiment is conducted by recording the agent's actions in simulation and r
 \paragraph{Recording Episodes}
 
 Episodes are recorded in the simulation environment. The policy that is used for the recording is saved for later replay on the jetbot.
-The recordings consist of the agent's camera images and the corresponding policy outputs. The camera images are saved without the proprocessing steps applied. These images represent the raw camera input that the jetbot agent would recieve in real time. The policy outputs are saved to verify the accuracy of the policy on the jetbot.
+The recordings consist of the agent's camera images and the corresponding policy outputs. The camera images are saved without the proprocessing steps applied. These images represent the raw camera input that the jetbot agent would receive in real time. The policy outputs are saved to verify the accuracy of the policy on the jetbot.
 
 The episode recordings and policy are then transfered to the jetbot and executed.
 
@@ -239,7 +239,7 @@ The episode results are characterized by the endEvent, collision and the three g
 
 \subsection{Fresh Observation Test}
 
-In the standard reinforcement learning algorithms each step transition results in a new observation that represents the environment's new state. Calls to the Unity environment and the step transitions in the environment take time. In order to speed up the training process the step calls to the simulated environment have been implemented in a non-blocking way. This means the step calls return before the entire step transition has been completed. The observation after the step transition is not yet available when the call returns. The observation returned by the step call is the observation of the environment at the beginning of the step transition. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed.
+In the standard \ac{RL} algorithms each step transition results in a new observation that represents the environment's new state. Calls to the Unity environment and the step transitions in the environment take time. In order to speed up the training process, the step calls to the simulated environment have been implemented in a non-blocking way. As a result the observations are delayed by one step's duration. This is explained in \ref{sec:non_blocking_step_calls}.
 
 The option $use\_fresh\_obs$ controls what observations the policy uses to produce the next actions. If $use\_fresh\_obs$ is set to false, the observation returned by the last step call is used. If $use\_fresh\_obs$ is set to true, a new observation is requested from the Unity simulation.
 

@@ -3,24 +3,24 @@
 
 \section{Connecting the Python algorithm and Unity Simulation}
 
-The first challenge was to connect the Python algorithm with the Unity simulation. The Python algorithm is responsible for training and evaluating the agent. The policy decisions are also executed in Python, this includes the preprocessing steps, neural network and action sampling. The Unity simulation is responsible for rendering the environment and providing the agent with observations and rewards. The environment is wrapped in a gymnasium environment \textcite{gymnasium}, this way it can be integrated with many existing reinforcement learning libraries and algorithms. The unity simulation acts as a \acs{RPC} server, the python gymnasium environment acts as the client.
+The first challenge was to connect the Python algorithm with the Unity simulation. The Python algorithm is responsible for training and evaluating the agent. The policy decisions are also executed in Python, this includes the preprocessing steps, neural network and action sampling. The Unity simulation is responsible for rendering the environment and providing the agent with observations and rewards. The environment is wrapped in a gymnasium environment \textcite{gymnasium}, this way it can be integrated with many existing \ac{RL} libraries and algorithms. The unity simulation acts as a \ac{RPC} server, the python gymnasium environment acts as the client.
 
 \paragraph{Data exchange}
-The first challenge was to transfer the image data from unity to python. This was solved by encoding the image data as a base64 string and sending it back to python over the network via \acs{RPC}. The image data was then decoded in python and converted to a numpy array.
+The first challenge was to transfer the image data from unity to python. This was solved by encoding the image data as a base64 string and sending it back to python over the network via \ac{RPC}. The image data was then decoded in python and converted to a numpy array.
 
 \paragraph{Communication Speed}
-The seperation of the simulation and the reinforcement learning algorithm introduces a delay for all interactions with the simulated environments. This is most noticeable in the data collection part of the training loop, since the environment has to execute the actions of the agent and send back the new observations and rewards. 
-The reinforcement learning library stable-baselines3 \textcite{sb3} was used for the training of the agent. This library is built to enable the parallel execution of multiple environments. However the library requires that actions are performed on all environments at the same time. Together with the delay caused by communication, this parallel execution would slow down significantly.
+The seperation of the simulation and the \ac{RL} algorithm introduces a delay for all interactions with the simulated environments. This is most noticeable in the data collection part of the training loop, since the environment has to execute the actions of the agent and send back the new observations and rewards. 
+The \ac{RL} library stable-baselines3 \textcite{sb3} was used for the training of the agent. This library is built to enable the parallel execution of multiple environments. However the library requires that actions are performed on all environments at the same time. Together with the delay caused by communication, this parallel execution would slow down significantly.
 
 The solution to this problem was bundling the actions for the different environments and sending them to unity in one batch. The unity server then executes the actions on the individual environments. This way the delay caused by the communication overhead is only introduced once per batch of actions.
 
 \paragraph{Seed}
 
-The Proximal Policy Optimization algorithm from the stable-baselines3 library was used to train the agents. This algorithm can be made deterministic by setting a seed. However the Unity game engine is not built to be fully deterministic. The reinforcement learning algorithm and the environment simulation in Unity interact during the training and evaluations. 
+The \ac{PPO} algorithm from the stable-baselines3 library was used to train the agents. This algorithm can be made deterministic by setting a seed. However the Unity game engine is not built to be fully deterministic. The \ac{RL} algorithm and the environment simulation in Unity interact during the training and evaluations. 
 
 As a result, the training progress and all agent evaluations cannot be made fully reproducible.
 
-The configuration files include a seed parameter. This seed is used to seed the random number generators of python and the reinforcement learning library. This way at least the model initialization is reproducible.
+The configuration files include a seed parameter. This seed is used to seed the random number generators of python and the \ac{RL} library. This way at least the model initialization is reproducible.
 
 \section{Parameters for training}
 

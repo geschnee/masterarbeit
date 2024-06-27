@@ -6,8 +6,8 @@
 
 The neural network training process consists of a simple training loop. In each iteration, the algorithm collects data from the environment. The data is stored in a replay buffer. After collecting the data, the model is trained on the data in the replay buffer. The training process is repeated until a certain number of timesteps has been collected.  
 
-In most reinforcement learning algorithms, the trained model's performance is evaluated at short intervals. The frequent evaluations serve as a way to monitor the model's performance during training and measure progress. It is not guaranteed in reinforcement learning that a model improves during each model update. Therefore frequent evaluations also help in finding the best version of the model.  
-In this training algorithm there is no dedicated evaluation process at short intervals. Instead the episodes from the data collection step are used to evaluate the model at every iteration of the training loop. This saves computational resources compared to a full evaluation of the model.
+In most \ac{RL} algorithms, the trained model's performance is evaluated at short intervals. The frequent evaluations serve as a way to monitor the model's performance during training and measure progress. It is not guaranteed in \ac{RL} that a model improves during each model update. Therefore frequent evaluations also help in finding the best version of the model.  
+In this training algorithm there is no dedicated evaluation process at short intervals. Instead the episodes from the data collection step are used to evaluate the model at every iteration of the training loop. This saves computational resources compared to a dedicated evaluation of the model.
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{TrainNetwork}{ }
@@ -33,9 +33,11 @@ num\_timesteps \GETS num\_timesteps + num\_collected\_steps\\
 \subsection{Collect Data}
 
 The data is stored in a replay buffer for use by the training algorithm. The data collection process starts by resetting the replay buffer, this removes the collected sampled of previous iterations from memory.
-The data collection process is a simple loop that collects a fixed amount of samples from the environment. The reinforcement learning algorithm Proximal Policy Optimization requires that the samples are collected on-policy. As a result the most recently updated model is used to chose actions during the data collection. 
+The data collection process is a simple loop that collects a fixed amount of samples from the environment. The \ac{PPO} \ac{RL} algorithm requires that the samples are collected on-policy. As a result the most recently updated model is used to chose actions during the data collection. 
 
-The data collection algorithm starts a new episode and applies the policy to the environment until the episode terminates. The observation is used to prompt the model for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
+The data collection algorithm starts a new episode and applies the policy to the environment until the episode terminates. The observation is used to prompt the \ac{CNN} policy for an action. The action is then applied to the environment, resulting in a reward and a new environment state. The observation, action and reward tuples are stored in the replay buffer. A new episode is started upon termination of the current episode. The data collection process continues until the replay buffer is full.
+
+Actions are sampled non-deterministically from the policy. This ensures that the agent explores the environment and is able to learn from new data.
 
 \paragraph{Environment settings for Data collection}
 
@@ -99,7 +101,7 @@ The entire data from the replay buffer is sampled in every epoch. This ensure th
 
 \subsubsection*{Loss function}
 
-The loss function follows the Proximal Policy Optimization algorithm \textcite{ppo}. The PPO loss function is a combination of the policy surrogate and value error. The policy surrogate and value error are combined to be able to update the weights of the entire neural network together.
+The loss function follows the \ac{PPO} algorithm by \textcite{ppo}. The PPO loss function is a combination of the policy surrogate and value error. The policy surrogate and value error are combined to be able to update the weights of the entire neural network together.
 
 The policy surrogate objective function is responsible for improving the policy's output action distribution. The function behaves similarly to other policy update based aproaches. It restricts the size of parameter updates, increasing the stability during training. The ratio between the old and the current policy is clipped. The clipped ratio and non-clipped ratio are multiplied by the advantage. The minimum of the two is used as the policy surrogate loss. This prevents the updates from changing the policy drastically.
 

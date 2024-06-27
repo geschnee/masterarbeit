@@ -4,7 +4,7 @@
 \subsection{Environment Simulation}
 \label{sec:env_simulation}
 
-The environment is simulated in the Unity game engine. The reinforcement learning algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the reinforcement learning algorithm and the Unity engine. The communication is implemented using \acs{RPC} with the Peaceful Pie \textcite{peacefulpie} library.
+The environment is simulated in the Unity game engine. The \ac{RL} algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the \ac{RL} algorithm and the Unity engine. The communication is implemented using \ac{RPC} with the Peaceful Pie \textcite{peacefulpie} library.
 
 The interaction is shown in \ref{fig:communication_python_unity}.
 
@@ -78,7 +78,7 @@ The interaction is shown in \ref{fig:communication_python_unity}.
 
         % algos block
         \node[fit={(0 + \xOffsetc,0+ \yOffsetc -3) (3+ \xOffsetc,-1 + \yOffsetc -3)}, inner sep=0pt, fill=cyan, draw=blue, thick] (algo) {};
-        \node[above] at (algo.north) {\acs{PPO} training and evaluation algorithms};
+        \node[above] at (algo.north) {\ac{PPO} training and evaluation algorithms};
         \node[below] at (algo.south) {Python};
 
     \end{tikzpicture}
@@ -92,7 +92,7 @@ The interaction is shown in \ref{fig:communication_python_unity}.
 
 \paragraph{Parallel environment procesing}
 
-The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simulated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires \acs{RPC} calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine is reduced by bundling the calls for all environments in one \acs{RPC} call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
+The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simulated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires \ac{RPC} calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine is reduced by bundling the calls for all environments in one \ac{RPC} call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
 
 \begin{figure}
     \centering
@@ -257,10 +257,18 @@ The step function of the Unity environment is non-blocking. This means that Unit
     \label{fig:step_call_timeline}
 \end{figure}
 
-In conventional reinforcement learning each step transition results in a new observation that is used to predict the next action. Since the Unity environment returns the call before the current step is finished, this is not possible. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent after the next step has completed. 
+In conventional \ac{RL} each step transition results in a new observation that is used to predict the next action. Since the Unity environment returns the call before the current step is finished, this is not possible. In this implementation the step call to Unity returns the observation from the start of the step instead. This observation does not capture the changes that have occurred in the environment during the step transition. The full changes are then visible to the agent when the next step call has been completed. 
 
-The returned observation is delayed by one step. The duration of the steps is dictated by the $fixedTimestepsLength$ environment parameter \ref{sec:step_duration}. Shorter step durations result in more accurate observations.
-Experiments show that the policy can learn to deal with this delay.
+In summary, the returned observation is delayed by one step. The duration of the steps is dictated by the $fixedTimestepsLength$ environment parameter \ref{sec:step_duration}. Short step durations result in accurate observations, since their delays are small.
+Experiments show that the policy can learn to deal with this delay. The delay is negligeable due to the $fixedTimestepsLength$ of 0.3 seconds used in this thesis \ref{fig:delay}.
+
+\begin{figure}
+    \centering
+    \subfigure[Step n]{\includegraphics[width=0.4\textwidth]{Bilder/image_printer_images/agent_steps/step_1_image_from_unity.png}}
+    \subfigure[Step n+1]{\includegraphics[width=0.4\textwidth]{Bilder/image_printer_images/agent_steps/step_2_image_from_unity.png}}
+    \caption{Agent Camera Images from two subsequent steps showcasing the negligeable changes}
+    \label{fig:delay}
+\end{figure}
 
 Alternatively there is the parameter $use\_fresh\_obs$. If this parameter is set to true, a new agent camera image is requested from Unity via another \ac{RPC} call before predicting the next action. This can be useful if the policy is sensitive to the observation delay. However this increases the amount of \ac{RPC} calls and slows down the training and evaluation process.
 
@@ -359,12 +367,12 @@ The FourWheelJetBot was used in the work by \textcite{maximilian}. The Different
 
 \subsection{Episode Design}
 
-An episode represents one attempt of the agent at solving a track in the environment. Each episode consists of a series of steps starting from the initial position. Upon episode termination the end status is returned to python. This status is used to compute metrics such as the success\_rate. The agent interacts with the environment in each step. The environment is simulated in Unity during each step. This includes things like agent movement, collision detection and reward calculation.
+An episode represents one attempt of the agent at solving a track in the environment. Each episode consists of a series of steps starting from the initial position. Upon episode termination the end status is returned to python. This status is used to compute metrics such as the success\_rate. The agent interacts with the environment in each step. The environment is simulated in Unity for the duration of the steps. This includes things like agent movement, collision detection and reward calculation.
 
 \subsubsection{Episode Initialization}
 
 The episode initialization prepares the arena. There are five important parameters that define how the episode is initialized. The initialization first generates the obstacles according to the $mapType$ parameter. The $lightSetting$ parameter defines the illumination for the entire episode.
-The $jetbotName$ parameter dermines which jetbot version is used \ref{fig:jetbots}. The jetbot is then placed in the arena according to the $spawnOrientation$ parameter.
+The $jetbotName$ parameter dermines which jetbot design is used. The jetbot is then placed in the arena according to the $spawnOrientation$ parameter.
 
 The $videoFilename$ parameter is used to define the filename for the video recording of the episode. No videos are recorded if this parameter is empty.
 
@@ -381,12 +389,12 @@ The Unity environment calculates the reward obtained during a step. It also regi
 
 The duration of each step is defined by the environment settings. There are two destinct modes for the step durations. The first mode is the fixed timestep mode. In this mode the duration of each step is fixed and defined by the environment parameter $fixedTimestepsLength$. The second mode is the variable timestep mode. In this mode each step lasts until the environment receives the next action from the agent.
 
-The fixed step duration mode was used for the training process after experimentation with both modes \ref{sec:step_duration_experiment}. The fixed step duration was set to 0.3 seconds. This allows for precise movements of the agent as the duration is quite short \ref{table:agent_movement_fixed_duration}.
+The fixed step duration mode was used for the training process after experimentation with both modes. The fixed step duration was set to 0.3 seconds. This allows for precise movements of the agent as the duration is quite short \ref{table:agent_movement_fixed_duration}.
 
 \paragraph{Fixed Duration}
 
-The duration of each step is fixed in this mode. In each step the Unity environment receives an action from the policy. The environment simulation is started and the action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step and environment simulation is terminated when the fixed duration has passed. The duration is defined by $fixedTimestepsLength$ in seconds. The Unity environment then waits until the next step or environment reset. The unity environment does not accept new step commands when the current step is not terminated.
-An episode with fixed duration steps is shown in the upper part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits for new steps to start. The figure also shows that the waiting time may not be consistent.
+The duration of each step is fixed in this mode. In each step the Unity environment receives an action from the policy. The environment simulation is started and the action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards.  Collisions and timeouts are detected. The step and environment simulation is terminated when the fixed duration has passed. The duration is defined by $fixedTimestepsLength$ in seconds. The Unity environment then waits until the next step or environment reset. The unity environment does not accept new step commands when the current step is not terminated.
+An episode with fixed duration steps is shown in the upper part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits for new steps to start. It furthermore shows that the waiting time may not be consistent.
 
 The fixed mode has many advantages. The fixed duration of the steps results in consistency of the step transitions. Given identical step durations and environment state, it is well defined how the agent will move in any step. The environment state after completing a step is well defined.
 
@@ -397,7 +405,7 @@ Furthermore the performance of the policy does not depend on the processing spee
 
 The duration of each step is variable in this mode. The environment simulation is started when the first step is received. In each step the Unity environment receives an action from the policy. The step's action is applied to the jetbot agent. The agent moves according to the action and interacts with the environment. The agent collects rewards, collisions and timeouts are detected. The step is terminated when a new step is received from the policy. The new step is started instantly, there is no waiting time between steps.
 The duration of the steps is not fixed, it can change from step to step. It depends on the policy's computation and message transmission time. The environment simulation is not paused during the policy's computation time.
-An episode with variable duration steps is shown in the lower part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits only for the first step. The figure also shows that the step sizes may change from step to step.
+An episode with variable duration steps is shown in the lower part of figure \ref{fig:unity_timeline_steps_duration}. The figure shows how the Unity environment waits only for the first step. It furthermore shows that the step sizes may change from step to step.
 
 The biggest advantage and disadvantage this mode is that the step duration depends on the policy's computation and message transmission time. If the policy is computed fast, the average duration of the steps will be shorter. Shorter steps allow for more precise movements. Shorter durations for steps can result in a more capable policy.
 A disadvantage is that the step duration can change due to a changed policy computation time. The policy computation time will be different on other devices or when there is additional load on the processing unit.
@@ -549,20 +557,20 @@ Collisions of the agent with the goal posts and the arena walls are detected by 
 
 The reward function is a function that maps state-action pairs to a scalar reward. These state-action pairs are episode steps. The reward function assigns rewards to each step based on the agent's actions in the environment.
 
-The reinforcement learning algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the reinforcement learning process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
+The \ac{RL} algorithm trains the agent to maximise the cumulative reward over an episode. The reward function is a critical component of the \ac{RL} process. It is important to design a reward function that is closely alligned with the goal. The agent could learn unintended behaviour if the reward function is not designed carefully.
 
 \paragraph*{Event Reward}
-The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour \ref{fig:eventReward_function}. The event reward function is evaluated in each step. A positive reward is awarded to the agent in case it passes a goal or reaches the finish line during the step. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The magnitude of positive rewards increased was increased compared to the negative rewards. This means that positive events are more important, a single negative event does not cancel out positive rewards.
+The goal of the training process is to achieve an agent that traverses the tracks without collisions and passed through the goals in order. The eventReward function describes this behaviour, see \ref{fig:eventReward_function}. The event reward function is evaluated in each step. A positive reward is awarded to the agent in case it passes a goal or reaches the finish line during the step. A penalty is applied in case the agent misses a goal, collides with an object or the timeout is reached. The magnitude of positive rewards increased was increased compared to the negative rewards. This means that positive events are more important, a single negative event does not cancel out positive rewards.
 
-The maximum amount of reward obtainable from this function per episode is \[num\_goals * goal\_reward + parcour\_reward = 3 * 100 + 100 = 400\]. An agent that maximises the eventReward function will complete the track without collisions. In theory the event Reward should be enough to train an agent that traverses the tracks successfully without collisions.
+The maximum amount of reward obtainable from this function per episode is: \[num\_goals * goal\_reward + track\_reward = 3 * 100 + 100 = 400\] An agent that maximises the eventReward function will complete the track without collisions. In theory the event Reward should be enough to train an agent that traverses the tracks successfully without collisions.
 
 
 \begin{figure}
     \centering
     \begin{align}
         EventReward(s_t, a_t) & = \begin{cases}
-                                      100,           \text{completed the parcour}           \\
-                                      100,             \text{passed a goal}                 \\
+                                      100,           \text{completed the track}           \\
+                                      100,           \text{passed a goal}                 \\
                                       -1,            \text{missed a goal}                   \\
                                       -1,            \text{collision with wall or obstacle} \\
                                       -1,            \text{timeout}                         \\
@@ -596,7 +604,7 @@ The third and last dense reward function is the distanceReward function. The dis
 
 In theory the agent should be able to learn to complete the tracks successfully from the distanceReward alone. Maximizing the distance reward would result in the agent driving through all goals in order.
 
-The distance reward is opinionated. It guides the agent towards the midpoint of the next goal. This reward signal may result in a suboptimal path for the agent. The agent might learn to drive through the goal posts at the midpoint. This is not necessary for the desired behaviour. This is a tradeoff that was made when designing the distance reward function.
+The distance reward is opinionated. It guides the agent towards the midpoint of the next goal. This reward signal may result in a suboptimal path for the agent. The policy might learn to drive through the goal posts at the midpoint. This is not necessary for the desired behaviour. This is a tradeoff that was made when designing the distance reward function.
 % opinionated was also discused above at intro of dense reward functions
 
 \paragraph{Composite Reward Function}
@@ -611,7 +619,7 @@ The four individual reward functions can be combined in many ways to give the ag
         OrientationReward(s_t,a_t) & = S_C(NextGoalPosition - AgentPosition, agentDirection) \cdot \Delta T \nonumber     \\
         VelocityReward(s_t, a_t)   & = v \cdot \Delta T \nonumber                                                         \\
         EventReward(s_t, a_t)      & = \begin{cases}
-                                           100,           \text{completed the parcour}           \\
+                                           100,           \text{completed the track}           \\
                                            1,             \text{passed a goal}                   \\
                                            -1,            \text{missed a goal}                   \\
                                            -1,            \text{collision with wall or obstacle} \\
@@ -634,7 +642,7 @@ The four individual reward functions can be combined in many ways to give the ag
 
 The variable $collisionMode$ describes how the environment handles collisions of the agent with the goal objects and walls. The $collisionMode$ can take 5 different values described in table \ref{fig:collision_modes}. In previous research the episodes were terminated upon collision and when missing a goal \textcite{maximilian}. Furthermore there existed two different training regimes. The first regime trained the agent on the full maps, while the second regime trained the agent on a map with only one goal.
 
-The $collisionMode$ parameter was introduced to allow for more flexibility in the training process and fine control over the event rewards. The inital implementation was the unrestricted mode. Training with the unrestricted mode and event reward showed that the agent's policy started out with extreme negative rewards. The agent quickly learned to avoid these negative rewards by avoiding all collisions and movements. The policy got stuck in a local optimum \ref{fig:event_reward_only_collisionModeUnrestricted_event_reward}.The policy did not learn to complete the parcour during the remainder of training. The unrestricted mode potentially triggers the collision's negative rewards multiple times per step. This results in a big skew of the eventReward function towards negative rewards.
+The $collisionMode$ parameter was introduced to allow for more flexibility in the training process and fine control over the event rewards. The inital implementation was the unrestricted mode. Training with the unrestricted mode and event reward showed that the agent's policy started out with extreme negative rewards. The agent quickly learned to avoid these negative rewards by avoiding all collisions and movements. The policy got stuck in a local optimum \ref{fig:event_reward_only_collisionModeUnrestricted_event_reward}. The policy did not learn to complete the track during the remainder of training. The unrestricted mode potentially triggers the collision's negative rewards multiple times per step. This results in a big skew of the eventReward function towards negative rewards.
 
 \begin{figure}
     \centering

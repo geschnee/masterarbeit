@@ -32,10 +32,10 @@ The agent camera is used to obtain observations from the environment. The agent'
 
 \subsection{Observation Space}
 
-The observation space defines the input dimensions of the policy neural network. The dimensions are determined by the agent camera image width and height, the preprocessing steps and the memory mechanism. All further experiments used the same settings for downsampling, greyscaling and memory mechanism. This results in the same observation space for all trained models.
+The observation space defines the input dimensions of the policy neural network. The dimensions are determined by the agent camera image width and height, the preprocessing steps and the memory mechanism. All further experiments used the same settings for downsampling, grayscaling and memory mechanism. This results in the same observation space for all trained models.
 
 \paragraph{Preprocessing steps}
-A downsampling factor of 2 was used. The image was then converted to greyscale. This means that the agent camera image was downsampled by a factor of 2 along each axis and the channel dimension was reduced from 3 to 1.
+A downsampling factor of 2 was used. The image was then converted to grayscale. This means that the agent camera image was downsampled by a factor of 2 along each axis and the channel dimension was reduced from 3 to 1.
 
 The histogram equalization preprocessing step was not used in every experiment. The histogram equalization step does not change the shape of the observation space. THerefore it can be added or removed without requiring a change in the policy.
 
@@ -44,7 +44,7 @@ The $frame\_stacking$ parameter was set to 10. This means the policy can use the
 
 \paragraph{Result}
 
-The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. The greyscaling step removes the three color channels. The memory mechanism stacks the last 10 agent camera images along the channel dimension. This results in an observation space of shape $[84, 250, 10]$ with the range of $[0, 255]$.
+The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. The grayscaling step removes the three color channels. The memory mechanism stacks the last 10 agent camera images along the channel dimension. This results in an observation space of shape $[84, 250, 10]$ with the range of $[0, 255]$.
 
 \subsection{Step Duration}
 \label{sec:step_duration_experiment}
@@ -85,7 +85,7 @@ The fixed step duration of 0.3 seconds results in very small movements for each 
 
 \subsection{Remaining parameters}
 
-The remaining hyperparameters concern mostly the \acs{PPO} training algorithm. The training algorithm was adapted from the stable-baselines3 library \textcite{sb3}. The parameters were chosen experimentally to ensure that the training process was successful and could be executed on the different training devices. The parameters and their tradeoffs are quickly summarized in the table \ref{table:remaining_params}.
+The remaining hyperparameters concern mostly the \ac{PPO} training algorithm. The training algorithm was adapted from the stable-baselines3 library \textcite{sb3}. The parameters were chosen experimentally to ensure that the training process was successful and could be executed on the different training devices. The parameters and their tradeoffs are quickly summarized in the table \ref{table:remaining_params}.
 
 
 %p{0.2\textwidth}
@@ -118,7 +118,7 @@ The remaining hyperparameters concern mostly the \acs{PPO} training algorithm. T
 
 \section{Reward functions capability check}
 
-Previous sections introduced the composite reward function. The composite reward function consists of a weighted sum of individual reward functions. The individual reward functions are designed to encourage the policy to learn the desired behaviour. The goal is to train a policy that guides the agent through the parcour without collisions. This is encapsulated in the event reward function. However the event reward function is a very sparse signal, which makes it hard for the policy to learn from. The other individual reward functions are designed to be dense reward functions, they give rewards in every episode step.
+Previous sections introduced the composite reward function. The composite reward function consists of a weighted sum of individual reward functions. The individual reward functions are designed to encourage the policy to learn the desired behaviour. The goal is to train a policy that guides the agent through the track without collisions. This is encapsulated in the event reward function. However the event reward function is a very sparse signal, which makes it hard for the policy to learn from. The other individual reward functions are designed to be dense reward functions, they give rewards in every episode step.
 
 
 It is important to find appropriate weights of the individual reward functions for the composite reward function. We are conducting experiments to analyse the usefullness of the individual reward functions. First we analyse if the policy is capable of learning the behaviour encouraged by the reward function.
@@ -134,7 +134,7 @@ The experiment results are shown in \ref{table:reward_functions_behaviour} and a
             \hline
             function name     & encouraged behaviour                                & learned behaviour                           & expected behaviour learned? \\ [0.5ex]
             \hline\hline
-            eventReward       & agent drives through the parcour without collisions & agent turns on the spot continuously        & no                          \\
+            eventReward       & agent drives through the track without collisions & agent turns on the spot continuously        & no                          \\
             \hline
             distanceReward    & agent drives towards the next goal                  & agent drives towards the next goal          & yes                         \\
             \hline
@@ -215,12 +215,11 @@ The next step was to train the policy on all difficulty levels at the same time.
 
 The training with mixed tracks for the data collection episodes failed. The policy was not able to learn to solve the tracks as successfully as the isolated training on hard tracks. Further changes to the hyperparameters did not improve the learning process. For example the amount of data collected in each iteration was increased to balance out the increased variety of tracks.
 
-% TODO put figure of mixed difficulty training or in the appendix?
 
 \section{Experiments training with mixed light setting hyperparameter}
 \label{cha:experiment_mixed_light}
 
-In the previous experiments, the complexity of the task was reduced by focussing on single light settings. The goal was to test the parameters and find configurations that enable the policy to learn the tasks with increasing complexity. The experiments showed that a policy that is trained on hard tracks exclusively is able to generalize to the lower difficulty tracks as well. These policies were also able to solve the tracks of differenct light settings with only slight differences in performance.
+In the previous experiments, the complexity of the task was reduced by focusing on single light settings. The goal was to test the parameters and find configurations that enable the policy to learn the tasks with increasing complexity. The experiments showed that a policy that is trained on hard tracks exclusively is able to generalize to the lower difficulty tracks as well. These policies were also able to solve the tracks of differenct light settings with only slight differences in performance.
 
 
 The next step was to train the policy on all light settings at the same time. The goal was to find hyperparameters that would allow the policy to learn to solve the tracks with different light settings better than with the previous exclusive training. The policy was trained on difficult tracks with all light settings. The $lightSetting$ parameter was set to $random$, this results in split of 33\% bright, 33\% standard and 33\% dark illumination for the data collection episodes.
@@ -236,7 +235,7 @@ This improvement may be due to the increased variety of data encountered during 
     \centering
     \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_standard_success_rates_barplot.png}
     \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_standard_collision_rates_barplot.png}
-    \caption{Success and collision rates for all difficulties with standard light for a policy trained on hard tracks with all light settings \acs{MLSP}}
+    \caption{Success and collision rates for all difficulties with standard light for a policy trained on hard tracks with all light settings \ac{MLSP}}
     \label{fig:hardDistance_mixedLight_generalization}
 \end{figure}
 
@@ -251,7 +250,7 @@ This policy performed much better in episodes with bright or dark light setting 
     \centering
     \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}
     \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_collision_rates_barplot.png}
-    \caption{Success and collision rates for a policy trained on hard tracks with all light settings \acs{MLSP}}
+    \caption{Success and collision rates for a policy trained on hard tracks with all light settings \ac{MLSP}}
     \label{fig:hardDistance_mixedLightTraining_results}
 \end{figure}
 
@@ -260,13 +259,13 @@ This policy performed much better in episodes with bright or dark light setting 
 \section{Experiments on the importance of the histogram equalization preprocessing step}
 \label{sec:importance_histogram_equalization}
 
-The previous training results showed that the policy was able to learn to solve the tracks with different light settings. The histogram equalization preprocessing step was applied to the preprocessed image \ref{sec:histogram_equalization} to increase the policy's resiliency towards light changes.
+The previous training results showed that the policy was able to learn to solve the tracks with different light settings. The histogram equalization preprocessing step was applied to the preprocessed image \ref{sec:histogram_equalization} to increase the policy's resilience towards light changes.
 
 Policies that were trained on the standard light setting were able to solve tracks under bright and dark light conditions as well. This implies the histogram equalization plays a big role.
 
 \paragraph{Evaluating a policy without the histogram equalization preprocessing step}
 
-The policy from the previous section about mixed light settings during training \acs{MLSP} was trained with the histogram equalization preprocessing step. This policy was now evaluated without the histogram equalization step. 
+The policy from the previous section about mixed light settings during training \ac{MLSP} was trained with the histogram equalization preprocessing step. This policy was now evaluated without the histogram equalization step. 
 
 The removal of the preprocessing step leads to a performance collapse for the standard and dark settings \ref{fig:hardDistance_mixedLight_comparison_withWithoutHistogramEqualization}. The success rate drops to 0\% for the dark light setting.
 The performance for the bright light setting is not affected as severely. Nevertheless the success rate drops from 98\% to 62\% for the hard tracks.
@@ -277,7 +276,7 @@ The decrease in performance was to be expected, as the policy was trained with t
     \centering
     \subfigure[Success rate with histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}}
     \subfigure[Success rate without histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_evalWithoutHistEqualization_all_success_rates_barplot.png}}
-    \caption{Success rates for a policy trained on all light settings with histogram equalization \acs{MLSP}}
+    \caption{Success rates for a policy trained on all light settings with histogram equalization \ac{MLSP}}
     \label{fig:hardDistance_mixedLight_comparison_withWithoutHistogramEqualization}
 \end{figure}
 
@@ -289,26 +288,26 @@ The policy was not able to learn to solve the hard tracks as successfully as the
 
 \begin{figure}
     \centering
-    \subfigure[Policy trained with histogram equalization (\acs{MLSP})]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}}
-    \subfigure[Policy trained without histogram equalization (\acs{MLSP-noHist})]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_noHistEqualization_all_success_rates_barplot.png}}
+    \subfigure[Policy trained with histogram equalization (\ac{MLSP})]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_all_success_rates_barplot.png}}
+    \subfigure[Policy trained without histogram equalization (\ac{MLSP-noHist})]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_noHistEqualization_all_success_rates_barplot.png}}
     \caption{Success rate comparison for a policy that is trained with or without histogram equalization on all light settings}
     \label{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results}
 \end{figure}
 
 
-The policy \acs{MLSP-noHist} was trained without the histogram equalization preprocessing step. Adding the histogram equalization step after the training results in a decrease in performance \ref{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results_withHistogramEqualization}. 
+The policy \ac{MLSP-noHist} was trained without the histogram equalization preprocessing step. Adding the histogram equalization step after the training results in a decrease in performance \ref{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results_withHistogramEqualization}. 
 
 \begin{figure}
     \centering
     \subfigure[Policy evaluation without histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_noHistEqualization_all_success_rates_barplot.png}}
     \subfigure[Policy evaluation with histogram equalization]{\includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_noHistEqualization_evalWithHistogramEqualization_all_success_rates_barplot.png}}
-    \caption{Success rates for \acs{MLSP-noHist}}
+    \caption{Success rates for \ac{MLSP-noHist}}
     \label{fig:hardDistance_mixedLight_noHistogramEqualizationTraining_results_withHistogramEqualization}
 \end{figure}
 
 
 \paragraph{Conclusion}
-The histogram equalization step contributes strongly to the resiliency to light changes for the trained policies. It is possible to train a resilient policy without the histogram equalization preprocessing step.
+The histogram equalization step contributes strongly to the resilience to light changes for the trained policies. It is possible to train a resilient policy without the histogram equalization preprocessing step.
 However the best performance is achieved when the policy is trained with the histogram equalization preprocessing step and all light settings.
 
 The histogram equalization preprocessing step should never be removed or added after the training is complete, this results in a performance decrease.
@@ -316,7 +315,7 @@ The histogram equalization preprocessing step should never be removed or added a
 \section{Comment on the collision rate}
 \label{sec:comment_on_collision_rate}
 
-The trained policies are able to complete the parcours very reliably. However the policies do not avoid collisions entirely. The collision rate generally increases for higher difficulty tracks. The collision rates vary quite strongly between the different trained policies. The \acs{MLSP} policy has a collision rate of 70\% for the hard tracks with standard light setting \ref{fig:hardDistance_mixedLightTraining_results}. Whereas the \acs{SLSP} policy has a collision rate of only 29\% \ref{fig:hardDistance_generalization}.
+The trained policies are able to complete the tracks very reliably. However the policies do not avoid collisions entirely. The collision rate generally increases for higher difficulty tracks. The collision rates vary quite strongly between the different trained policies. The \ac{MLSP} policy has a collision rate of 70\% for the hard tracks with standard light setting \ref{fig:hardDistance_mixedLightTraining_results}. Whereas the \ac{SLSP} policy has a collision rate of only 29\% \ref{fig:hardDistance_generalization}.
 
 The policies are able to complete the tracks reliably despite the collisions. The analysis of successful episodes with collisions shows that these collisions are only minor collisions. The agent collides with the goal obstacles at its side. The agent basically scapes against the goal posts. The agent does not collide with the goal obstacles head on \ref{fig:example_collision_success}.
 
@@ -332,14 +331,14 @@ The reason for the high collision rates is the selected reward function. The pol
 The minor collisions that occur are not penalized as the agent is still able to move towards the next goal. As a result the policy does not learn to avoid these collisions entirely.
 
 
-\section{Hard Tracks, mixed light settings - the most successful policy \acs{MLSP}}
+\section{Hard Tracks, mixed light settings - the most successful policy \ac{MLSP}}
 \label{sec:most_successful_policy}
 
-This section summarizes how the most successful policy \acs{MLSP} was implemented and trained. The parameters were chosen following the previous experiments. This policy is used for the evaluations of the three main research goals.
+This section summarizes how the most successful policy \ac{MLSP} was implemented and trained. The parameters were chosen following the previous experiments. This policy is used for the evaluations of the three main research goals.
 The policy was trained using the distance reward alone. It was trained on hard tracks with all light settings. The policy used the histogram equalization preprocessing step.
 
 \paragraph{Policy Settings}
-The policy was configured to use the three preprocessing steps downsampling, greyscaling and histogram equalization. The policy used a frame stacking of 10. The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. This results in an observation space of shape $[84, 250, 10]$. The duration of steps was fixed to $0.3$ seconds.
+The policy was configured to use the three preprocessing steps downsampling, grayscaling and histogram equalization. The policy used a frame stacking of 10. The agent camera image had a resolution of $500x168$ which was downsampled to $250x84$. This results in an observation space of shape $[84, 250, 10]$. The duration of steps was fixed to $0.3$ seconds.
 The neural network follows the earlier descriptions exactly \ref{sec:network_architecture}. It consisted of a feature extractor part with 3 convolutional layers and one fully connected layer. The feature extractor takes the observation as input, its outputs are used by the action and value head. The action and value head each consist of a single fully connected layer. The entire network is trained together end-to-end using backpropagation of the loss defined by the PPO algorithm.
 
 \paragraph{Reward function}

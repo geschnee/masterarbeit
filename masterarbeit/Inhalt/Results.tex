@@ -34,7 +34,7 @@ The analysis of successful episodes with collisions shows that these collisions 
     \label{fig:agent_behaviour}
 \end{figure}
 
-The unsuccessful episodes of hard tracks were analyzed to determine why the agent does not reach 100\% success rates. The analysis showed that the agent has frontal collisions with the first goal post at the agents side \ref{fig:unsuccessful_episodes}. This occurs only when the agent is spawned with an extreme rotation. The agent cannot complete the tracks in about 40\% of episodes with the maximum rotation of $15^{\circ}$.
+The unsuccessful episodes of hard tracks were analysed to determine why the agent does not reach 100\% success rates. The analysis showed that the agent has frontal collisions with the first goal post at the agents side \ref{fig:unsuccessful_episodes}. This occurs only when the agent is spawned with an extreme rotation. The agent cannot complete the tracks in about 40\% of episodes with the maximum rotation of $15^{\circ}$.
 
 \begin{figure}
     \centering
@@ -49,11 +49,11 @@ The unsuccessful episodes of hard tracks were analyzed to determine why the agen
 
 \subsection{Conclusion}
 
-The trained policy is able to complete all difficulty levels very reliably. The policy reached success rates of 100\%, 100\% and 99\% for easy, medium and hard tracks. The end-to-end trained \acs{CNN} policy proves to be very effective at solving the autonomous driving task.
+The trained policy is able to complete all difficulty levels very reliably. The policy reached success rates of 100\%, 100\% and 99\% for easy, medium and hard tracks. The end-to-end trained \ac{CNN} policy proves to be very effective at solving the autonomous driving task.
 
 The policy outperforms previous work at the ScaDS.AI by \textcite{maximilian}. The policies developed by \textcite{maximilian} reached success rates of 99\%, 89\% and 64\% for easy, medium and hard tracks.
 
-The policy was trained on the difficult setting only. The policy did not see easy and medium difficulty parcours before the evaluation. The policy is able to generalize to tracks of lower difficulty.
+The policy was trained on the difficult setting only. The policy did not see easy and medium difficulty tracks before the evaluation. The policy is able to generalize to tracks of lower difficulty.
 
 \section{Eval for Question 2 - \questionTwo}
 
@@ -80,7 +80,7 @@ Across all light and difficulty settings the overall success rate is almost 100\
 
 \subsection{Conclusion}
 
-The policy was able to complete the parcours very reliably under the different light settings. The light setting only had a minor impact on the success rate.
+The policy was able to complete the tracks very reliably under the different light settings. The light setting only had a minor impact on the success rate.
 Furthermore the different light settings did not lead to an overall increase in collisions.
 
 The developed policy was trained following the experiments in the previous chapter. The agent used the histogram equalization preprocessing step and mixed light settings during training. Using these settings the policy was able to learn to navigate the tracks with all light conditions.
@@ -115,7 +115,7 @@ Five episodes were recorded for each difficulty and light setting combination. A
 \paragraph{Replay times}
 
 The replay times for the recordings on jetbot hardware are shown in figure \ref{fig:result_replay_times}. The maximum duration was $0.216$ seconds. The mean is much lower at $0.067$ seconds. The plot shows that the maximum duration was an extreme outlier.
-Given the $fixedTimestepLength$ of $0.3$ seconds and the maximum duration of $0.216$ seconds, the hardware is fast enough to replay the episodes. This leaves at least $0.084$ seconds for the agent to recieve an image from the camera and send the new instruction to the motors.
+Given the $fixedTimestepLength$ of $0.3$ seconds and the maximum duration of $0.216$ seconds, the hardware is fast enough to replay the episodes. This leaves at least $0.084$ seconds for the agent to receive an image from the camera and send the new instruction to the motors.
 
 The cameras used in the nvida jetbot are capable of capturing images with a resolution of $1280x720$ pixels at $60$ frames per second. This means the camera can capture an image every $0.0166$ seconds. The hardware is quick enough to compute actions in real time.
 
@@ -171,8 +171,8 @@ The episode results are compared.
 
 \paragraph{Results}
 
-The results show that the agent's performance is very consistent for the different starting rotations regarding the $success\_rate$. The agent successfully completes the parcours with $-15°$ and $0°$ starting rotation. The agent completes the parcour in only 7\% of episodes with $15°$ starting rotation.
-For the different starting rotations, the agent either completes the parcour very reliably or very rarely.
+The results show that the agent's performance is very consistent for the different starting rotations regarding the $success\_rate$. The agent successfully completes the tracks with $-15°$ and $0°$ starting rotation. The agent completes the track in only 7\% of episodes with $15°$ starting rotation.
+For the different starting rotations, the agent either completes the track very reliably or very rarely.
 
 The $collision\_rate$ is not consistent for the episodes with the same starting rotation. The $collision\_rate$ is 60\% and 72\% for the $-15°$ and $0°$ starting rotations. 
 
@@ -190,11 +190,10 @@ The test shows that identical starting conditions do not always lead to the same
 
 The results confirm that the $success\_rates$ of the Basic Evaluation Algorithm are reliable. 
 
-% TODO if there is time and ideas only
 
 \subsection{Fresh Observations Test}
 
-The policy was trained to not use fresh observations \ref{sec:non_blocking_step_calls} with a fixed step duration of 0.3 seconds. The policy input recieves the observation from the start of the previous step as input. The policy input essentially lags 0.3 seconds behind the environment state. This saves processing time during training and evaluation. Alternatively a policy can be run with the $use\_fresh\_obs$ parameter. This makes the policy request a fresh observation from the Unity simulation.
+The policy was trained to not use fresh observations \ref{sec:non_blocking_step_calls} with a fixed step duration of 0.3 seconds. The policy input receives the observation from the start of the previous step as input. The policy input essentially lags 0.3 seconds behind the environment state. This saves processing time during training and evaluation. Alternatively a policy can be run with the $use\_fresh\_obs$ parameter. This makes the policy request a fresh observation from the Unity simulation.
 
 The Fresh Observations Test analyses whether switching the trained policy to use fresh observations improves the performance. The policy is evaluated with fresh observations and without fresh observations for each difficulty level using the Basic Evaluation Algorithm \ref{sec:basic_evaluation_algorithm}. The success rates are compared to determine if fresh observations improve the agent's performance.
 
