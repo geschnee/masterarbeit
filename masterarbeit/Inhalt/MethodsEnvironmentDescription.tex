@@ -272,10 +272,11 @@ Alternatively there is the parameter $use\_fresh\_obs$. If this parameter is set
 This section describes the simulated environment and agent in detail. The environment is a 3D simulation of a physical arena at the ScaDS.AI research facility. The simulated arena consists of a rectangular platform with enclosing walls. Simulated light sources illuminate the platform from above.
 The goal of our agent is to complete tracks in the arena by traversing the track's goals in order. Each goal consists of 2 cuboid pillars of the same colour. The pillars are coloured red or blue. The goals' colours alternate in the track. The distance between the pillars is fixed and the same for all goals. The positions of the goals depends on the episode's track. The tracks are grouped by the difficulty settings easy, medium and hard. An invisible finish line is positioned closely behind the last goal for each track.
 
+
 \paragraph{Track Description}
 The tracks in the easy setting contain 3 goals that are positioned on the arena's center line with even distances between them. The medium setting contains 3 goals that are shifted on the center line towards the arena's walls. The hard setting contains 3 goals that are shifted on the center line towards the arena's walls, resulting in a zig-zag pattern. The zig-zag pattern is the most challenging for the agent to navigate, as it requires the agent to turn sharply to pass the goals. One track from each difficulty setting is shown in figure \ref{fig:track_difficulty_settings}. 
 
-The tracks in each difficulty level are structurally very similar to each other. They differ in goal coloring and the orientation of the shift from the center line. In total there are 10 different tracks. The full list is availible in the appendix \ref{fig:all_tracks}.
+The tracks in each difficulty level are structurally very similar to each other. They differ in goal coloring and the orientation of the shift from the center line. In total there are 10 different tracks. The full list is availible in the appendix \ref{fig:all_tracks}. The tracks are identical to the tracks used in previous work by \textcite{maximilian}.
 
 \begin{figure}
     \centering
