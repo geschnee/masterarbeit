@@ -1,70 +1,6 @@
 \chapter{Appendix}
 \label{cha:Appendix}
 
-\section{Code Repository}
-
-The code repository is publically availible on GitHub:
-
-\href{https://github.com/geschnee/carsim-rl-cnn}{carsim-rl-cnn}
-
-The readme file contains instructions on how to install and run the code.
-
-\section{\ac{HX-P}}
-
-\ac{HX-P}, the most successful policy model is publically availible on Huggingface:
-
-\href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/models/hardDistanceMixedLight.zip}{hardDistanceMixedLight.zip}
-
-
-The episode recordings for question 3 are also hosted there.
-
-\section{Experiments for finding hyperparameters - Configuration files}
-\label{cha:experiment_configs}
-
-how to run a specific config? link readme
-
-\subsection{Reward functions capability check}
-The used configs are the following:
-\begin{itemize}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
-    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
-\end{itemize}
-
-
-\subsection{Most Successful Policy Configuration}
-\label{cha:most_successful_config}
-
-The training config of the model for the final evaluations is availible on GitHub:
-\href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/hardDistanceMixedLight.yaml}{hardDistanceMixedLight.yaml}
-
-\section{Example Video Files}
-\label{cha:example_videos}
-
-Video Files are availible on Huggingface:
-\href{https://huggingface.co/geschnee/carsim-rl-cnn/tree/main/}{carsim-rl-cnn}
-
-\subsection{Video Files with FourWheelJetBot}
-
-\paragraph{Collisions}
-\label{sec:fourwheel_collisions}
-
-The collisions are generally more severe for the FourWheelJetBot:
-
-\begin{itemize}
-    \item \href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/example_videos_FourWheelJetbot/hard_standard_FourWheelJetBot_env_0_video_1_topview.gif}{example\_videos/hard\_standard\_FourWheelJetBot\_env\_0\_video\_1\_topview.gif}
-    \item \href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/example_videos_FourWheelJetbot/hard_standard_FourWheelJetBot_env_0_video_2_topview.gif}{example\_videos/hard\_standard\_FourWheelJetBot\_env\_0\_video\_2\_topview.gif}
-\end{itemize}
-
-\subsection{Reward Function Capability check videos}
-\label{sec:reward_capability_check_videos}
-
-Video Files are availible on HuggingFace:
-\href{https://huggingface.co/geschnee/carsim-rl-cnn/tree/main/rewardCapabilityCheck_videos}{rewardCapabilityCheck\_videos}
-
-% TODO upload the files
-
 \section{All Tracks}
 
 \begin{figure}[h]
@@ -83,9 +19,104 @@ Video Files are availible on HuggingFace:
     \label{fig:all_tracks}
 \end{figure}
 
+\section{Code Repository}
+
+The code repository is publically availible on GitHub:
+
+\href{https://github.com/geschnee/carsim-rl-cnn}{carsim-rl-cnn}
+
+The readme file contains instructions on how to install and run the code.
+
+\section{\ac{HX-P} Model}
+
+\ac{HX-P}, the most successful policy model is publically availible on Huggingface:
+
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/models/hardDistanceMixedLight.zip}{hardDistanceMixedLight.zip}
+
+
+The episode recordings for question 3 are also hosted there.
+
+\section{Experiments for finding hyperparameters - Configuration files}
+\label{cha:experiment_configs}
+
+Config files are availible on GitHub: \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg}{cfg}
+
+\subsection{Reward functions capability check}
+The used configs are the following:
+\begin{itemize}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_orientationReward.yaml}{ppo\_rewardFunction\_capability\_check\_orientationReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_distanceReward.yaml}{ppo\_rewardFunction\_capability\_check\_distanceReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_velocityReward.yaml}{ppo\_rewardFunction\_capability\_check\_velocityReward.yaml}
+    \item \href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/ppo_rewardFunction_capability_check_eventReward.yaml}{ppo\_rewardFunction\_capability\_check\_eventReward.yaml}
+\end{itemize}
+
+
+\subsection{\ac{HX-P} Configuration}
+\label{cha:most_successful_config}
+
+The training config of \ac{HX-P} is availible on GitHub:
+\href{https://github.com/geschnee/carsim-rl-cnn/tree/main/python/cfg/hardDistanceMixedLight.yaml}{hardDistanceMixedLight.yaml}
+
+\section{Video Files}
+\label{cha:example_videos}
+
+Video Files are availible on Huggingface:
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/tree/main/}{carsim-rl-cnn}
+
+\subsection{Example Videos for the \ac{HX-P} Model}
+
+Video Files are availible on HuggingFace:
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/tree/main/example_videos}{example\_videos}
+
+
+\subsection{Reward Function Capability Check Videos}
+\label{sec:reward_capability_check_videos}
+
+Video Files are availible on HuggingFace:
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/tree/main/rewardCapabilityCheck_videos}{rewardCapabilityCheck\_videos}
+
+\subsection{Video Files with FourWheelJetBot Collisions}
+\label{sec:fourwheel_collisions}
+
+The collisions are generally more severe for the FourWheelJetBot:
+
+\begin{itemize}
+    \item \href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/example_videos_FourWheelJetbot/hard_standard_FourWheelJetBot_env_0_video_1_topview.gif}{example\_videos/hard\_standard\_FourWheelJetBot\_env\_0\_video\_1\_topview.gif}
+    \item \href{https://huggingface.co/geschnee/carsim-rl-cnn/blob/main/example_videos_FourWheelJetbot/hard_standard_FourWheelJetBot_env_0_video_2_topview.gif}{example\_videos/hard\_standard\_FourWheelJetBot\_env\_0\_video\_2\_topview.gif}
+\end{itemize}
+
+\section{Replay on JetBot}
+
+\subsection{Installation instructions for executing replays on the Jetbot}
+
+The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{replays\_on\_jetbot.md file} in the code repository.
+
+\subsection{Recorded Episodes}
+
+The recorded episodes of \ac{HX-P} are availible on Huggingface:
+\href{https://huggingface.co/geschnee/carsim-rl-cnn/tree/main/episode_recordings}{episode\_recordings}
+
+
+\section{\ac{NN} Loss Graphs}
+
+Full loss graphs for the action \ref{fig:action_graph} and value head \ref{fig:value_graph} are availible here.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Bilder/action_graph.png}
+    \caption{Action Head Loss graph}
+    \label{fig:action_graph}
+\end{figure}
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.7\textwidth]{Bilder/value_graph.png}
+    \caption{Value Head Loss graph}
+    \label{fig:value_graph}
+\end{figure}
+
 
 \section{Pseudocode}
-
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Collect Data}{ }
@@ -153,26 +184,7 @@ Video Files are availible on HuggingFace:
     \label{pseudocode:train_model}
 \end{pseudocode}
 
-\section{\ac{NN} Architecture}
 
-Full loss graph for the action \ref{fig:action_graph} and value head \ref{fig:value_graph} are availible here.
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\textwidth]{Bilder/action_graph.png}
-    \caption{Action Head Loss graph}
-    \label{fig:action_graph}
-\end{figure}
-
-\begin{figure}
-    \centering
-    \includegraphics[width=0.7\textwidth]{Bilder/value_graph.png}
-    \caption{Value Head Loss graph}
-    \label{fig:value_graph}
-\end{figure}
-
-
-\section{Eval Model Track}
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
 \begin{pseudocode}{Generate Map and Rotation Combinations}{ }
 
@@ -199,7 +211,7 @@ Full loss graph for the action \ref{fig:action_graph} and value head \ref{fig:va
     tracks \GETS []\\
     \FOR i \GETS 0 \TO n\_eval\_episodes - 1 \DO
     \BEGIN
-    tracks.\CALL{append}{i \mod \CALL{len}{track\_numbers}}\\
+    tracks.\CALL{append}{\CALL{GetTrack}{i \mod \CALL{len}{track\_numbers}}}\\
     \END\\
 
     combinations \GETS []\\
@@ -214,12 +226,6 @@ Full loss graph for the action \ref{fig:action_graph} and value head \ref{fig:va
 \end{pseudocode}
 
 
-
-\section{Replay on JetBot}
-
-\subsection{Installation instructions for executing replays on the Jetbot}
-
-The replays are executed on NVIDIA Jetbot hardware. The test does not make use of jetbot specific hardware and software features such as the jetbot camera. The test runs on the jetbot's standard ubuntu installation. Instructions for the installation and execution of the replay test are availible in the \href{https://github.com/geschnee/carsim-rl-cnn/blob/main/replays_on_jetbot.md}{replays\_on\_jetbot.md file} in the code repository.
 
 
 \renewcommand{\thepseudonum}{\roman{pseudonum}}
