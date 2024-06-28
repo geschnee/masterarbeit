@@ -3,10 +3,10 @@
 
 \section{Evaluation metrics}
 
-\subsection{success\_rate}
+\subsection{Success Rate}
 The primary metric of evaluation for the developed agents is the $success\_rate$. The $success\_rate$ is defined as the ratio of successful episodes to the total number of episodes. An episode is considered successful if the agent passes through all three goals within the time limit \ref{time_limit}. Collisions of the agent do not disqualify an episode from being succesful, as long as the agent passes all goals.
 
-\subsection{goal\_completion\_rate}
+\subsection{Goal Completion Rate}
 
 The $goal\_completion\_rate$ is defined as the ratio of passed goals to the total number of goals in the episodes. The $goal\_completion\_rate$ is a more fine-grained metric than the $success\_rate$. However the two metrics are closely related as a high $success\_rate$ implies a high goal\_completion\_rate. The major advantage of the $goal\_completion\_rate$ is that it can used to measure the progress of an agent during training more accurately.
 The $goal\_completion\_rate$ would increase when the agent is able to pass more goals on average, whereas the $success\_rate$ would only increase when the agent is able to pass all goals in an episode more often. The $goal\_completion\_rate$ captures learning progress earlier in training. This behaviour can be observed in training runs, shown in \ref{fig:success_rate_vs_goal_completion_rate}.
@@ -21,14 +21,14 @@ The $goal\_completion\_rate$ would increase when the agent is able to pass more 
 \end{figure}
 % diese Bilder funktionieren nur für frühe Episoden, später sind die Werte sehr gleich
 
-\subsection{collision\_rate}
+\subsection{Collision Rate}
 
 The $collision\_rate$ is defined as the ratio of episodes with one or more collisions to the total number of episodes. The $collision\_rate$ is a measure of the agent's ability to avoid obstacles. The $collision\_rate$ is a secondary metric. The $collision\_rate$ is used in combination with the $success\_rate$ to determine the agent's performance.
 The collision rate is also very useful during the training of the agent. If the agent's goal completion rate is low and there are no collisions, the agent might be stuck in a local optimum. In one such situation, the agent turned on the spot avoiding any collisions and did not move forward at all.
 The collision rate can be used to detect such situations, the training process can then be adjusted accordingly.
 
 
-\section{Basic evaluation algorithm}
+\section{Basic Evaluation Algorithm}
 \label{sec:basic_evaluation_algorithm}
 
 This section explains the most important component of the evaluation algorithms. It explains how the policy's performance is evaluated on a specific light and difficulty setting. The sampling mode, jetbot name and other policy parameters can also be specified \ref{table:basic_eval_algorithm_parameters}. This basic component is widely used in the following tests.
@@ -86,7 +86,7 @@ The evaluation algorithm initializes $n\_eval\_episodes$ environments with the s
 The $success\_rate$ and $collision\_rate$ are calculated from the executed episodes, both metrics are returned to the caller. Many other metrics such as the $goal\_completion\_rate$ and $average\_episode\_length$ are calculated, they are logged to tensorboard if $log==True$.
 
 
-\section{Question 1 - Model evaluation track difficulties}
+\section{Question 1 - Model Evaluation - Track Difficulties}
 
 The agent is evaluated on all three different difficulty settings to determine if the agent is successful in completing the tracks.
 The Basic evaluation algorithm is used with the standard light setting for each of the three difficulty settings.
@@ -99,7 +99,7 @@ The policy is executed in non deterministic mode. This mode showed slight improv
 100 episodes are evaluated for every difficulty setting. The $spawnOrientation$ from the training process is reused for the evaluation.
 
 
-\section{Question 2 - Model evaluation all light settings}
+\section{Question 2 - Model Evaluation - Light Settings}
 
 The agent is evaluated on every combination of light and difficulty settings. The Basic evaluation algorithm is used for these evaluations.
 The $success\_rate$ metric is collected for each combination of light and difficulty settings separately. The collected $success\_rates$ are then averaged to produce aggregate $success\_rates$ for each light setting and difficulty setting as well as the $total\_success\_rate$. All collected and aggregate $success\_rates$ are shown in \ref{table:success_rates_system}.
@@ -134,7 +134,7 @@ The Nvidia Jetbot is designed to be able to execute AI software. However the lim
 
 The developed system takes a camera image from the front of the agent as input and applies preprocessing steps to the image. The preprocessed image is then processed by a \ac{CNN} policy that outputs two acceleration values, one for each motor. The acceleration values are applied to the motors for a fixed amount of time. While the agent is moving, the camera image is constantly updated and the policy is applied to the new image. It is crucial that the agent's policy can be computed quick enough to be able act in real time.
 
-\subsection*{Effects of insufficiently slow policy computation}
+\subsection{Effects of Insufficiently Slow Policy Computation}
 If the jetbot is not able to compute the developed policy in the required time, there are two options that do not require changes to the developed/trained policy. The first option is to stop the motors until the policy is computed and then apply the acceleration values. This would make the jetbot movement overall slower and less smooth.
 The second option is to apply the last computed acceleration values to the motors until the new policy is computed. This could result in a degradation of the jetbot's performance since the actions would be less accurate.
 The two options are shown with visual representations in \ref{fig:slow_policy_computation}.
@@ -192,7 +192,7 @@ The episode recordings and policy are then transfered to the jetbot and executed
 The recorded episodes are replayed on the jetbot. The policy from the recording is used to execute the replays on the jetbot. All recorded images and policy outputs are loaded into memory in preparation of an episode replay.
 The episodes are replayed step by step. The replay of a step consists of all the processing to obtain new acceleration values from a camera image. Image preprocessing and memory mechanism are executed for each step according to the specifications of the saved policy. The policy outputs are then computed. The computed policy outputs and the recorded policy outputs are used to verify the accuracy of the saved policy on the jetbot.
 
-The transfer of a neural network to a new device can result in different outputs due to different hardware. The computed and saved policy outputs are compared to determine the accuracy of the policy on the jetbot.
+The transfer of a \ac{NN} to a new device can result in different outputs due to different hardware. The computed and saved policy outputs are compared to determine the accuracy of the policy on the jetbot.
 
 The test measures the time it takes to replay the recorded steps on the jetbot.
 The measured times are compared against the $fixedTimestepsLength$ parameter of the recorded policy.
@@ -202,30 +202,28 @@ The measured times are compared against the $fixedTimestepsLength$ parameter of 
 
 Episodes of all difficulty and light setting combinations are recorded to have a diverse set of data to evaluate. The episodes are recorded with the same policy as question 1 and 2, the most successful policy.
 
-% we always record in the use_fresh_obs mode
 
 
 \section{Other Experiments}
 
-\subsection{Sampling mode performance test}
+\subsection{Sampling Mode Performance Test}
 \label{sec:deterministic_check}
 
-The PPO policy produces an action distribution when given an input observation. The action distribution is sampled to obtain an action for the agent to execute in the environment. The distribution can be sampled deterministically or non-deterministically. Deterministic sampling returns the most likely action, indicated by the mean of the distribution. Non-deterministic sampling returns a sample from the distribution according to the distribution's probabilities. This results in different output actions for the same observations. The PPO policy uses non-deterministic sampling during training to explore the action space.
+The \ac{PPO} policy produces an action distribution when given an input observation. The action distribution is sampled to obtain an action for the agent to execute in the environment. The distribution can be sampled deterministically or non-deterministically. Deterministic sampling returns the most likely action, indicated by the mean of the distribution. Non-deterministic sampling returns a sample from the distribution according to the distribution's probabilities. This results in different output actions for the same observations. The \ac{PPO} policy uses non-deterministic sampling during training to explore the action space.
 
-While the exploration caused by non-deterministic sampling is beneficial during training, it could be detrimental during evaluation. This exploration could lead the agent to take actions that are not optimal for the given observation and result in a lower $success\_rate$. Non-deterministic sampling can also be used during evaluation to reduce overfitting. This has been used in the Atari paper \textcite{atari} and the human-level control paper \textcite{human_level_control}. The environments examined in these papers are deterministic with identical starting states. Therefore a deterministic policy would result in identical results for the individual evaluation episodes.
+While the exploration caused by non-deterministic sampling is beneficial during training, it could be detrimental during evaluation. This exploration could lead the policy to take actions that are not optimal for the given observation and result in a lower $success\_rate$. Non-deterministic sampling can also be used during evaluation to reduce overfitting. This has been used in the Atari paper \textcite{atari} and the human-level control paper \textcite{human_level_control}. The environments examined in these papers are deterministic with identical starting states. Therefore a deterministic policy would result in identical results for the individual evaluation episodes.
 
-Due to the difference in environment properties between the JetBot environment and the Atari environment, it is not clear if deterministic or non-deterministic sampling is better for the JetBot environment. The sampling mode performance test evaluates the agent with deterministic and non-deterministic sampling to determine if the agent's performance is affected by the sampling method.
+Due to the difference in environment properties between the JetBot environment and the Atari environment, it is not clear if deterministic or non-deterministic sampling is better for the JetBot environment. The sampling mode performance test evaluates the policy with deterministic and non-deterministic sampling to determine if the performance is affected by the sampling method.
 
-The sampling mode performance test uses the Basic evaluation algorithm to evaluate an agent with derministic and non-deterministic sampling for each difficulty level. The test evaluates the agents only using the standard light setting to save evaluation time. The success rates for the two sampling modes are compared to determine if the agent's performance is influenced by the sampling method.
-
-
+The sampling mode performance test uses the Basic evaluation algorithm to evaluate the policy with derministic and non-deterministic sampling for each difficulty level. The test evaluates the policy only using the standard light setting to save evaluation time. The success rates for the two sampling modes are compared to determine if the policy's performance is influenced by the sampling method.
+The better sampling mode is used for the experiments for question 1 and 2.
 
 % atari.pdf and human_level_control.pdf uses epsilon greedy during evals (their environment is deterministic, thus using a deterministic policy would result in the same results for every episode)
 
-% default we use non deterministic, as that has shown (slightly) better results and is also used by atari paper
+% default use non deterministic, as that has shown (slightly) better results and is also used by atari paper
 
 
-\subsection{Identical start condition Test}
+\subsection{Identical Start Condition Test}
 
 The environment is simulated in Untiy. The unity game engine is not fully deterministic \autocite{unity_fixed-update}. This means identical actions in identical environment states can result in slightly different environment states. In addition the policy evaluation may use non-deterministic sampling for selecting actions \ref{sec:action_sampling}. This results in different actions for identical observations. 
 
@@ -246,12 +244,10 @@ The option $use\_fresh\_obs$ controls what observations the policy uses to produ
 The fresh observation test evaluates a trained policy with both $use\_fresh\_obs$ settings to determine if the agent's performance is influenced by the freshness of the observations. The trained policy used one setting of the $use\_fresh\_obs$ parameter during training. The test shows if there is a difference in the agent's performance when using the other setting. The test evaluates the agent on light and difficulty settings following the evaluation algorithm described in \ref{sec:basic_evaluation_algorithm}.
 
 
-\subsection{JetBot generalization Test}
+\subsection{JetBot Generalization Test}
 
 There are two versions of the agent in simulation, the DifferentialJetBot and FourWheelJetBot \ref{fig:jetbots}. The DifferentialJetBot has two front wheels that are accelerated independently for steering. The FourWheelJetBot angles its two front wheels for steering. These differences can result in different agent movement for the same acceleration inputs. The DifferentialJetBot is used during training as this is closer to the physical jetbot availible at the Scads.AI.
 The agent's movement behaviour influences the developed policy. The agent learns from the changes in the environment that result from its actions. The policy might perform worse when the agent's movement behaviour changes.
 
 A policy trained on the DifferentialJetBot might not generalize well to the FourWheelJetBot and vice versa. The JetBot generalization test evaluates the trained policy on both JetBot versions to determine if the policy can be transfered to the FourWheelJetBot without retraining. The test evaluates the agent on the different difficulty levels using the basic evaluation algorithm described in \ref{sec:basic_evaluation_algorithm}. The test is only executed for the standard light condition to save time.
-
-
 

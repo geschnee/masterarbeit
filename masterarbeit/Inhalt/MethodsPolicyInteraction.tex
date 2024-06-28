@@ -1,9 +1,9 @@
 
-\section{Policy interaction with the environment}
+\section{Policy Interaction with the Environment}
 
 This section summarizes the interaction of the policy with the environment. The full interaction is shown in figure \ref{fig:agent_interaction}.
 
-As described in previous sections the agent's actions are controlled by the agent's policy. Given an observation the policy selects actions to execute. The observations represent the environment state. They are built from the agent's camera images. The observation processing steps transform these camera images to the observation space. The policy is a neural network that takes the observation space as input and produces actions as output. 
+As described in previous sections the agent's actions are controlled by the agent's policy. Given an observation the policy selects actions to execute. The observations represent the environment state. They are built from the agent's camera images. The observation processing steps transform these camera images to the observation space. The policy is a \ac{NN} that takes the observation space as input and produces actions as output. 
 The actions are applied to the environment. The environment processes the actions and returns a reward and a new observation.
 
 
@@ -91,7 +91,7 @@ The actions are applied to the environment. The environment processes the action
         node[anchor=north,midway,below=4pt] {Observation Preprocessing};
 
         \node[fit={(8+ \xOffset,0+ \yOffset) (11+ \xOffset,-5+ \yOffset)}, inner sep=0pt, draw=blue, thick] (policy) {};
-        \node[above] (policyText) at (policy.north) {Neural Network};
+        \node[above] (policyText) at (policy.north) {\acl{NN}};
         \node[below] (policyP) at (policy.south) {Python};
 
         \node[below] (pObs) at (9.5+ \xOffset, -1+ \yOffset) {\observationStack};
@@ -117,6 +117,6 @@ The actions are applied to the environment. The environment processes the action
         \node[below, fill=white] at (camArrow.south) {rewards + new agent camera image};
 
     \end{tikzpicture}
-    \caption{Full policy interaction with the environment, communication in red}
+    \caption{Full policy interaction with the environment, \ac{RPC} communication in red}
     \label{fig:agent_interaction}
 \end{figure} % this replaces the old rl_cycle image

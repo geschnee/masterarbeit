@@ -4,7 +4,7 @@
 \subsection{Environment Simulation}
 \label{sec:env_simulation}
 
-The environment is simulated in the Unity game engine. The \ac{RL} algorithm is implemented in Python and builds upon the stable-baselines3 library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the \ac{RL} algorithm and the Unity engine. The communication is implemented using \ac{RPC} with the Peaceful Pie \textcite{peacefulpie} library.
+The environment is simulated in the Unity game engine. The \ac{RL} algorithm is implemented in Python and builds upon the \ac{SB3} library. This library is able to train a proximal policy algorithm on any environment that implement the Gymnasium API. The Unity environment is wrapped in a Python class that implements the Gymnasium API. This class is responsible for the communication between the \ac{RL} algorithm and the Unity engine. The communication is implemented using \ac{RPC} with the Peaceful Pie \textcite{peacefulpie} library.
 
 The interaction is shown in \ref{fig:communication_python_unity}.
 
@@ -92,7 +92,7 @@ The interaction is shown in \ref{fig:communication_python_unity}.
 
 \paragraph{Parallel environment procesing}
 
-The stable-baselines3 library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simulated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires \ac{RPC} calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine is reduced by bundling the calls for all environments in one \ac{RPC} call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
+The \ac{SB3} library supports the parallel processing of multiple environments. The config parameter $n_envs$ specifies how many environments are simulated in parallel. The environments are simulated in the same Unity instance, see \ref{fig:parallel_simulation_unity_instance}. The seperation between the Unity engine and the Python algorithm requires \ac{RPC} calls for every environment step and reset. This can slow the training process. The overhead of sending calls to the Unity engine is reduced by bundling the calls for all environments in one \ac{RPC} call. The $use\_bundled\_calls$ config parameter enables the bundling of calls.
 
 \begin{figure}
     \centering
@@ -608,7 +608,9 @@ The distance reward is opinionated. It guides the agent towards the midpoint of 
 % opinionated was also discused above at intro of dense reward functions
 
 \paragraph{Composite Reward Function}
-The four individual reward functions can be combined in many ways to give the agent dense and meaningful rewards. In previous work the eventReward was combined with the velocityReward to train the agent. In this work we combine the individual reward functions in the composite reward function \ref{fig:reward_functions}. The composite reward function applies scalar weights to the individual reward functions and returns this weighted sum of rewards to the agent. It is crucial to select an appropriate combination of weights for the individual reward functions during training. The weights determine the importance of the individual reward functions and can influence the learned behaviour. If the velocityReward is weighted too high the agent might learn to drive at full speed in circles without ever reaching the finish line. It is also to note that setting a specific reward function's weight to zero essentially removes that reward function.
+The four individual reward functions can be combined in many ways to give the agent dense and meaningful rewards. In previous work by \textcite{maximilian}, the eventReward was combined with the velocityReward to train the agent. In this work the individual reward functions are combined in the composite reward function \ref{fig:reward_functions}. The composite reward function applies scalar weights to the individual reward functions and returns this weighted sum of rewards to the agent. It is crucial to select an appropriate combination of weights for the individual reward functions during training. The weights determine the importance of the individual reward functions and can influence the learned behaviour.
+
+If the velocityReward is weighted too high the agent might learn to drive at full speed in circles without ever reaching the finish line. It is also to note that setting a specific reward function's weight to zero essentially removes that reward function.
 
 \begin{figure}
     \centering
@@ -671,7 +673,7 @@ The modes $oncePerTimestep$, $oncePerTimestep$, $terminate$ and $ignore$ were in
             \hline
             oncePerEpisode  & Negative reward for collision is only given once  per episode per object.                                                  & Limits the negative reward caused by ongoing collisions.                                 \\
             \hline
-            terminate       & Episode is terminated instantly.                                                                                           & No ongoing collisions. The early termination could speed up the neural network training. \\
+            terminate       & Episode is terminated instantly.                                                                                           & No ongoing collisions. The early termination could speed up the policy training. \\
             \hline
             ignore          & Collisions are ignored, no negative reward is given.                                                                       & The agent might learn to avoid collisions based on other rewards.                        \\
             \hline

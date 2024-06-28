@@ -11,9 +11,9 @@ The policy receives an image from the agent camera as input. First the image is 
 
 \subsection{Preprocessing}
 
-The images from the agent camera are preprocessed before they are fed into the neural network. The preprocessing steps are applied to reduce the size of the neural network's input space. They are also applied to reduce the impact of different light settings on the policy's performance.
+The images from the agent camera are preprocessed before they are fed into the \ac{NN}. The preprocessing steps are applied to reduce the size of the \ac{NN}'s input space. They are also applied to reduce the impact of different light settings on the policy's performance.
 Three preprocessing steps have been implemented, downsampling, grayscale conversion, and histogram equalization. The preprocessing steps can be enabled and configured in the environment parameter $image\_preprocessing$. Each preprocessing step transforms an image into a new image. This can change the image dimensions and pixel domains. The steps are applied on the previous step's output. The steps are applied in order of downsampling, grayscale conversion, and histogram equalization. The first step takes the image from the agent camera as input.
-The neural network uses the last step's output for inference.
+The \ac{NN} uses the last step's output for inference.
 
 The preprocessing steps are applied to all images from the agent camera. The table \ref{table:preprocessing_steps} shows how the preprocessing steps make images of different light settings more similar. The images in the table were generated using the configurations employed int the training runs.
 
@@ -47,9 +47,9 @@ The preprocessing steps are applied to all images from the agent camera. The tab
 
 \subsubsection*{Benefits of reducing the input space size}
 
-The reduction of input space size brings a variety of benefits. Some benefits are execution driven, like the reduction of the neural network's inference time. The neural network can make decisions quicker if it has to process fewer inputs. The reduction of the input space size also reduces the amount of data that has to be stored in memory. This is especially important during the training phase since many observations have to be stored in the rollout buffer.
+The reduction of input space size brings a variety of benefits. Some benefits are execution driven, like the reduction of the \ac{NN}'s inference time. The \ac{NN} can make decisions quicker if it has to process fewer inputs. The reduction of the input space size also reduces the amount of data that has to be stored in memory. This is especially important during the training phase since many observations have to be stored in the rollout buffer.
 
-The reduction of the input space size also reduces the number of parameters the neural network has to learn. This can lead to a more robust policy. Networks with smaller input spaces and less parameters are less prone to overfitting. The policy can generalize better to unseen situations.
+The reduction of the input space size also reduces the number of parameters the \ac{NN} has to learn. This can lead to a more robust policy. Networks with smaller input spaces and less parameters are less prone to overfitting. The policy can generalize better to unseen situations.
 
 % what datatype is used for the images? uint8? float32?
 % there was a problem before with some datatype requiring more space than others
@@ -58,7 +58,7 @@ The reduction of the input space size also reduces the number of parameters the 
 \subsubsection*{Benefits of reducing the impact of different light settings}
 
 The policy has to be able to complete the different tracks for three different light settings. The policy is not provided with information about what light setting is active for the current episode. This means that the policy has to learn to produce correct actions for images of all three light settings. If images of the light settings look very different, the policy has to learn to the light settings as well as what action to take.
-The preprocessing steps are applied to make images of different light settings more similar. The neural network is relieved of learning the different light settings. This can make learning easier and faster.
+The preprocessing steps are applied to make images of different light settings more similar. The \ac{NN} is relieved of learning the different light settings. This can make learning easier and faster.
 The preprocessing steps can also make the policy generalize better to unseen light settings. The policy can be trained on a single light setting and achieve good results for the other light setttings \ref{cha:experiment_fixed_difficulty_light_settings}.
 
 
@@ -75,7 +75,7 @@ Downsampling preserves the image content while reducing the size of the input sp
 The grayscale step converts the image to grayscale. The step can be enabled or disabled with the $grayscale$ parameter. The agent's camera image has three channels, red, green, and blue. The grayscale step changes the amount of channels and returns an image with a single grayscale channel. The grayscale image has the same width and height dimensions as the input image. The grayscaling reduces the input space size by a third.
 The pixel values of the grayscale image are calculated as the weighted sum of intensities of the red, green, and blue channels. The weights are determined by the human eye's perception of the different colors. The grayscale value is computed as $Y = 0.2125 * R + 0.7154 * G + 0.0721 * B$.
 
-The conversion to grayscale removes color information from the image. The alternating goal colors red and blue are no longer distinguishible. The advantage of grayscale images is that the policy's neural network does not have to learn the three dimensional colorspace of RGB images.
+The conversion to grayscale removes color information from the image. The alternating goal colors red and blue are no longer distinguishible. The advantage of grayscale images is that the policy's \ac{NN} does not have to learn the three dimensional colorspace of RGB images.
 
 
 
@@ -85,7 +85,7 @@ The conversion to grayscale removes color information from the image. The altern
 The histogram equalization step increases the contrast of the image. The step can be enabled or disabled with the $equalize\_histogram$ parameter. The histogram equalization step requires a grayscale image as input. The step changes the pixel values of the image. The step does not change the input space size.
 The histogram equalization step changes the pixel values of the image. The histogram of the pixel intensities are made more uniform. First the cumulative histogram of the pixel intensities is calculated. The pixel values are then mapped to new values by using the cumulative histogram. The pixel values are distributed more evenly over the pixel value domain \ref{fig:histogram_equalization}.
 
-The histogram equalization step can make images of different light settings more similar. The step also increases the contrast in the images. This can make it easier for the neural network to detect the objects.
+The histogram equalization step can make images of different light settings more similar. The step also increases the contrast in the images. This can make it easier for the \ac{NN} to detect the objects.
 
 \begin{figure}
     \centering
@@ -101,7 +101,7 @@ The histogram equalization step can make images of different light settings more
 \subsection{Memory Mechanism}
 
 Memory mechanisms are a common approach to enhancing a \ac{RL} agent. Memory mechanisms can be implemented in many different ways. Our memory mechanism uses frame stacking, similar to \textcite{maximilian} and \textcite{atari}. The memory is configured with the $frame_stacking$ parameter. The memory is a simple first-in-first-out buffer that stores the last $frame_stacking$ images. The memory is updated by inserting the new image and removing the oldest image. The inserted images are the outputs of the preprocessing steps.
-The images from the memory buffer are concatenated along the channel axis to produce the neural network input. This neural network input is essentially an image with many channels.
+The images from the memory buffer are concatenated along the channel axis to produce the \ac{NN} input. This \ac{NN} input is essentially an image with many channels.
 The memory buffer is reset at the start of every episode. The reset fills the entire buffer with zeros. The zeros are used as a placeholder. The first-in-first-out mechanism removes the zeros over the first $frame\_stacking$ timesteps.
 
 The memory mechanism enables the policy to use information from previous time steps. The policy can use this information to detect objects that are not visible in the current image. Depending on the agent's position and orientation, the next goal might only be partially visible or not visible at all. The past images can help the policy reason about the next goal's position and how to continue.

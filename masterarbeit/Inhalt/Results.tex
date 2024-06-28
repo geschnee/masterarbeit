@@ -132,9 +132,9 @@ The policy outputs from the recordings and the replays on jetbot hardware are ne
 
 The jetbot hardware is capable enough to compute the policy in real time. The differences of the policy outputs between the recordings and the replays are very small, the policy outputs were reproduced very closely. This suggests the differences in hardware and software do not impact the policy significantly.
 
-\section{Other experiments}
+\section{Other Experiments}
 
-\subsection{Sampling mode performance test}
+\subsection{Sampling Mode Performance Test}
 \label{ref:sampling_mode_test_results}
 
 The sampling mode performance test uses the Basic evaluation algorithm to evaluate an agent with derministic and non-deterministic sampling for each difficulty level. The success rates for the two sampling modes are compared to determine if the agent's performance is influenced by the sampling method. The sampling mode test was executed for all agents during the experimentation phase of this project using standard light.
@@ -152,12 +152,12 @@ The tests showed that the difference in performance for the sampling modes was v
 \paragraph{Discussion}
 The test indicates that the non-deterministic sampling mode performes better, although the differences in performance are quite small. Given these results, the main evaluations for question 1 and 2 were conducted with non-deterministic sampling.
 
-\subsection{Identical start condition Test}
+\subsection{Identical Start Condition Test}
 
-The environment is not 100\% deterministic. This is due to the environment implementation in Unity \autocite{unity_fixed-update}. The environment uses physics simulations which are not fuly deterministic. In addition the policy's actions are sampled non-deterministically during the evaluation.
+The environment is not 100\% deterministic. This is due to the environment implementation in Unity \autocite{unity_fixed-update}. The environment uses physics simulations which are not fully deterministic. In addition the policy's actions are sampled non-deterministically during the evaluation.
 This means that identical start conditions of an episode may result in different trajectories and results. This test evaluates the impact of the non-deterministic environment and sampling on the agent's behaviour. 
 
-The agent is placed in the same start conditions for 100 episodes. The starting conditions entail the selected track, light condition and the agent's starting rotation. The test was executed for the hardBlueFirstRight trach with the standard lighting. Three starting rotations were used \ref{fig:identical_start_conditions_test_rotations}.
+The agent with \ac{HX-P} is placed in the same start conditions for 100 episodes. The starting conditions entail the selected track, light condition and the agent's starting rotation. The test was executed for the hardBlueFirstRight trach with the standard lighting. Three starting rotations were used \ref{fig:identical_start_conditions_test_rotations}.
 The episode results are compared.
 
 \begin{figure}
@@ -171,7 +171,7 @@ The episode results are compared.
 
 \paragraph{Results}
 
-The results show that the agent's performance is very consistent for the different starting rotations regarding the $success\_rate$. The agent successfully completes the tracks with $-15°$ and $0°$ starting rotation. The agent completes the track in only 7\% of episodes with $15°$ starting rotation.
+The results show that the policies's performance is very consistent for the different starting rotations regarding the $success\_rate$. The agent successfully completes the tracks with $-15°$ and $0°$ starting rotation. The agent completes the track in only 7\% of episodes with $15°$ starting rotation.
 For the different starting rotations, the agent either completes the track very reliably or very rarely.
 
 The $collision\_rate$ is not consistent for the episodes with the same starting rotation. The $collision\_rate$ is 60\% and 72\% for the $-15°$ and $0°$ starting rotations. 
@@ -193,7 +193,7 @@ The results confirm that the $success\_rates$ of the Basic Evaluation Algorithm 
 
 \subsection{Fresh Observations Test}
 
-The policy was trained to not use fresh observations \ref{sec:non_blocking_step_calls} with a fixed step duration of 0.3 seconds. The policy input receives the observation from the start of the previous step as input. The policy input essentially lags 0.3 seconds behind the environment state. This saves processing time during training and evaluation. Alternatively a policy can be run with the $use\_fresh\_obs$ parameter. This makes the policy request a fresh observation from the Unity simulation.
+\ac{HX-P} was trained to not use fresh observations with a fixed step duration of 0.3 seconds. The policy input receives the observation from the start of the previous step as input. The policy input essentially lags 0.3 seconds behind the environment state. This saves processing time during training and evaluation. Alternatively a policy can be run with the $use\_fresh\_obs$ parameter. This makes the policy request a fresh observation from the Unity simulation, see \ref{sec:non_blocking_step_calls}.
 
 The Fresh Observations Test analyses whether switching the trained policy to use fresh observations improves the performance. The policy is evaluated with fresh observations and without fresh observations for each difficulty level using the Basic Evaluation Algorithm \ref{sec:basic_evaluation_algorithm}. The success rates are compared to determine if fresh observations improve the agent's performance.
 
@@ -202,7 +202,7 @@ The Fresh Observations Test analyses whether switching the trained policy to use
 \begin{figure}
     \centering
     \includegraphics[width=0.8\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_freshNonFresh_success_rates_barplot.png}
-    \caption{Success rates for policy evaluation using fresh and non-fresh observations}
+    \caption{Success rates for \ac{HX-P} using fresh and non-fresh observations}
     \label{fig:fresh_observations_test_result}
 \end{figure}
 
@@ -219,9 +219,9 @@ This suggests that the policy has learned to work with the lag of 0.3 seconds be
 The test confirms that the $use\_fresh\_obs$ parameter should not be changed after the training has been completed.
 
 
-\subsection{Jetbot generalization}
+\subsection{Jetbot Generalization Test}
 
-The policy was trained using the DifferentialJetBot shown in figure \ref{fig:jetbots}. The Jetbot Generalization test evaluates the same policy using the FourWheelJetBot. The policy is only evaluated on the standard light setting to save time.
+\ac{HX-P} was trained using the DifferentialJetBot shown in figure \ref{fig:jetbots}. The Jetbot Generalization test evaluates the same policy using the FourWheelJetBot. The policy is only evaluated on the standard light setting to save time.
 
 \paragraph{Results}
 
@@ -229,7 +229,7 @@ The policy was trained using the DifferentialJetBot shown in figure \ref{fig:jet
     \centering
     \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_jetbot_generalization_success_rates_barplot.png}
     \includegraphics[width=0.45\textwidth]{Bilder/notebook_images/hardDistanceMixedLight_eval_jetbot_generalization_collision_rates_barplot.png}
-    \caption{Evaluation of the DifferentialJetBot policy with both jetbot versions}
+    \caption{Evaluation of the DifferentialJetBot policy \ac{HX-P} with both jetbot versions}
     \label{fig:result_jetbot_generalization}
 \end{figure} % a chart showing the replay outputs
 

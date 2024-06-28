@@ -1,23 +1,16 @@
 \chapter{Methods}
 \label{cha:Methods}
 
-This chapter explains how the environment, observation preprocessing, policy and training algorithm are implemented. The environment is implemented in the Unity game engine, this includes the arena, the jetbot agent and the reward function. The observation preprocessing, policy and \ac{RL} training algorithm are implemented in Python. This requires communication between the Unity environment and the Python script.
+This chapter explains how the environment, observation preprocessing, policy and training algorithm are implemented. The environment is implemented in the Unity game engine, this includes the arena, the jetbot agent and the reward function. The observation preprocessing, policy and \ac{RL} training algorithm are implemented in Python.
 
-The environment is describes first. The communication between the Unity environment and the Python environment wrapper are explained. The arena, the jetbot agent and the developed reward function are then explained in detail.
+The environment is describes first. The Python algorithm and Unity communicate via \ac{RPC}. The arena, the jetbot agent and the developed reward function are then explained in detail.
 
-The observation processing transforms the raw camera images from the Unity environment into a format that can be used by the policy. The observation processing steps apply further processing to improve the performance of the policy.
+The observation processing transforms the raw camera images from the Unity environment for processing by the policy. The observation processing steps apply image preprocessing and a memory mechanism to improve the performance of the policy.
 
-The policy network structure is then explained. This is followed by a section that ties the environment, observation processing and policy together. The  interactions between these parts are shown visually \ref{fig:agent_interaction}.
+The policy network's structure is then explained. This is followed by a section that ties the environment, observation processing and policy together. The  interactions between these parts are shown visually in \ref{fig:agent_interaction}.
 
-Finally the training algorithm is explained. The training algorithm is based on the \ac{PPO} algorithm. The training algorithm is implemented in Python and uses the \ac{SB3} library.
-
-
-% big TODO rewrite this page
+Finally the training algorithm is explained. The training algorithm is based on the \ac{PPO} algorithm. The training algorithm is implemented in Python and uses the \ac{SB3} library \autocite{sb3}.
 
 % TODO abgeben 2 mal ausgedruckt
 % einmal digital (digitalversion muss mit gedruckten übereinstimmen)
 % digital mit code auf stick
-
-% TODO grayscale not greyscale!!!!
-
-% TODO we entfernen
